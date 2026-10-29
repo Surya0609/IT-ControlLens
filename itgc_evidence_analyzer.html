@@ -1,525 +1,910 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITGC Evidence Analyzer</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>IT ControlLens | Premium Audit Workspace</title>
     
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- 
+      100% OFFLINE CUSTOM CSS SYSTEM
+      No external CDNs. Preserves premium gradients, glassmorphism, 
+      shadows, and strict color hierarchy.
+    -->
     <style>
-        /* Custom scrollbar for better dark mode integration */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        :root {
+            /* Brand Identity */
+            --brand-blue: #0055a5;
+            --brand-blue-hover: #003d7a;
+            --brand-blue-transparent: rgba(0, 85, 165, 0.15);
+            
+            /* Typography */
+            --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            
+            /* Dark Theme Defaults (Premium) */
+            --bg-base: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-surface-hover: #334155;
+            --bg-input: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+            --header-glass: rgba(15, 23, 42, 0.85);
+            
+            /* Status Colors */
+            --status-pass-bg: rgba(34, 197, 94, 0.1);
+            --status-pass-text: #4ade80;
+            --status-fail-bg: rgba(239, 68, 68, 0.1);
+            --status-fail-text: #f87171;
+            --status-warn-bg: rgba(234, 179, 8, 0.1);
+            --status-warn-text: #facc15;
         }
-        ::-webkit-scrollbar-track {
-            background: #1f2937; 
+
+        [data-theme="light"] {
+            --bg-base: #f1f5f9;
+            --bg-surface: #ffffff;
+            --bg-surface-hover: #f8fafc;
+            --bg-input: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --header-glass: rgba(255, 255, 255, 0.85);
+            
+            --status-pass-bg: #dcfce7;
+            --status-pass-text: #166534;
+            --status-fail-bg: #fee2e2;
+            --status-fail-text: #991b1b;
+            --status-warn-bg: #fef9c3;
+            --status-warn-text: #854d0e;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #374151; 
+
+        /* Base Resets */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-family); background-color: var(--bg-base); color: var(--text-main); line-height: 1.5; transition: background-color 0.3s, color 0.3s; overflow-x: hidden; }
+        button, input, select { font-family: inherit; color: inherit; border: none; outline: none; background: none; }
+        ul { list-style: none; }
+        a { text-decoration: none; color: inherit; }
+
+        /* Layout & Spacing */
+        .hidden { display: none !important; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .gap-2 { gap: 0.5rem; } .gap-4 { gap: 1rem; } .gap-6 { gap: 1.5rem; } .gap-8 { gap: 2rem; }
+        .w-full { width: 100%; } .h-full { height: 100%; }
+        .grid { display: grid; }
+        .grid-cols-1 { grid-template-columns: 1fr; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+        /* Header & Navigation */
+        .app-header {
+            position: sticky; top: 0; z-index: 50;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 2rem;
+            background-color: var(--header-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .header-logo-container {
+            background-color: #ffffff; /* PKF logo needs white bg */
+            padding: 0.25rem 0.5rem;
             border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #4b5563; 
+        .header-logo-container img { height: 35px; object-fit: contain; }
+        .header-divider { width: 1px; height: 35px; background-color: var(--border-color); margin: 0 1rem; }
+        
+        .product-brand {
+            display: flex; align-items: center; gap: 0.75rem;
+            font-size: 1.25rem; font-weight: 700; letter-spacing: 0.5px;
+            cursor: pointer;
         }
+        .product-brand svg { width: 24px; height: 24px; color: var(--brand-blue); }
+
+        /* Premium Components */
+        .view-section {
+            max-w-7xl; margin: 0 auto; padding: 3rem 2rem;
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .premium-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .premium-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--brand-blue), transparent);
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .premium-card.interactive:hover {
+            transform: translateY(-4px);
+            border-color: var(--brand-blue);
+            box-shadow: 0 20px 25px -5px rgba(0, 85, 165, 0.1), 0 10px 10px -5px rgba(0, 85, 165, 0.05);
+            cursor: pointer;
+        }
+        .premium-card.interactive:hover::before { opacity: 1; }
+
+        .card-icon-wrapper {
+            width: 56px; height: 56px;
+            border-radius: 12px;
+            background-color: var(--brand-blue-transparent);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+        .card-icon-wrapper svg { width: 28px; height: 28px; color: var(--brand-blue); }
+
+        /* Typography & Utilities */
+        h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.5px; }
+        h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; }
+        h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+        p { color: var(--text-muted); font-size: 0.95rem; }
+        .text-brand { color: var(--brand-blue); }
+        .badge-coming-soon { background-color: var(--bg-surface-hover); color: var(--text-muted); font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; border: 1px solid var(--border-color); display: inline-block; margin-top: 0.75rem;}
+
+        /* Buttons & Forms */
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; font-size: 0.9rem;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .btn-primary { background-color: var(--brand-blue); color: #fff; box-shadow: 0 4px 6px -1px rgba(0,85,165,0.4); }
+        .btn-primary:hover { background-color: var(--brand-blue-hover); transform: translateY(-1px); }
+        .btn-outline { border: 1px solid var(--border-color); background: transparent; color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--brand-blue); color: var(--brand-blue); }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .form-input {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 8px;
+            background-color: var(--bg-input); border: 1px solid var(--border-color);
+            color: var(--text-main); font-size: 0.95rem; transition: border-color 0.2s;
+        }
+        .form-input:focus { border-color: var(--brand-blue); outline: none; box-shadow: 0 0 0 3px var(--brand-blue-transparent); }
+
+        /* Assessment Workspace Layout */
+        .workspace-container { display: flex; height: calc(100vh - 68px); overflow: hidden; }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px; background-color: var(--bg-surface); border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column; overflow-y: auto; padding: 1.5rem 1rem;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem 1rem; margin-bottom: 0.25rem;
+            border-radius: 8px; color: var(--text-muted); font-weight: 500; font-size: 0.95rem;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .nav-item svg { width: 20px; height: 20px; transition: color 0.2s; }
+        .nav-item:hover { background-color: var(--bg-surface-hover); color: var(--text-main); }
+        .nav-item.active { background-color: var(--brand-blue); color: #fff; box-shadow: 0 4px 12px rgba(0,85,165,0.3); }
+        
+        /* Main Workspace Content */
+        .workspace-main { flex: 1; display: flex; flex-direction: column; background-color: var(--bg-base); overflow: hidden; }
+        .workspace-header {
+            background-color: var(--bg-surface); border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;
+        }
+        .meta-pill { background-color: var(--bg-base); padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--border-color); display: flex; gap: 0.5rem;}
+        .meta-label { color: var(--text-muted); font-weight: 500; }
+        .meta-val { font-weight: 700; color: var(--text-main); }
+        
+        .workspace-content { flex: 1; padding: 2rem; overflow-y: auto; }
+
+        /* Tables & Matrices */
+        .matrix-container { overflow-x: auto; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--bg-surface); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background-color: var(--bg-surface-hover); padding: 1rem; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid var(--border-color); }
+        td { padding: 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        tr:hover td { background-color: var(--brand-blue-transparent); }
+        
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; }
+        .status-pass { background-color: var(--status-pass-bg); color: var(--status-pass-text); }
+        .status-fail { background-color: var(--status-fail-bg); color: var(--status-fail-text); }
+        .status-review { background-color: var(--status-warn-bg); color: var(--status-warn-text); }
+
+        /* Code Blocks */
+        .code-block { background-color: var(--bg-base); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.75rem; display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; font-family: monospace; font-size: 0.9rem; color: var(--text-main); }
+        
+        /* Helpers */
+        .max-w-7xl { max-width: 80rem; margin: 0 auto; }
+        .mt-4 { margin-top: 1rem; } .mb-4 { margin-bottom: 1rem; } .mb-8 { margin-bottom: 2rem; }
+        .text-center { text-align: center; }
+        .opacity-50 { opacity: 0.5; pointer-events: none; }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-100 font-sans min-h-screen flex flex-col selection:bg-blue-500/30">
+<body>
 
-    <!-- Navbar -->
-    <nav class="bg-gray-800 border-b border-gray-700 px-6 py-4 sticky top-0 z-50 shadow-md">
-        <div class="max-w-6xl mx-auto flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
-                <i class="fa-solid fa-shield-halved text-xl"></i>
+    <!-- PERSISTENT HEADER -->
+    <header class="app-header">
+        <div class="flex items-center">
+            <!-- PKF Logo[cite: 2] -->
+            <div class="header-logo-container">
+                <img src="R.png" alt="PKF Sridhar & Santhanam LLP" onerror="this.outerHTML='<span style=\'color:black;font-weight:bold;\'>PKF S&S LLP</span>'" />
             </div>
-            <div>
-                <h1 class="font-semibold text-lg tracking-wide text-white">ITGC Evidence Analyzer</h1>
+            <div class="header-divider"></div>
+            <!-- IT ControlLens Branding -->
+            <div class="product-brand" onclick="navigateTo('landing')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                IT ControlLens
             </div>
         </div>
-    </nav>
-
-    <!-- Main Content Container -->
-    <main class="flex-grow w-full max-w-6xl mx-auto p-6 relative">
         
-        <!-- ==================== LANDING VIEW ==================== -->
-        <div id="landing-view" class="view-section space-y-8 animate-fade-in">
-            
-            <div class="bg-gray-800 rounded-xl p-8 border border-gray-700 shadow-lg text-center md:text-left">
-                <h2 class="text-2xl font-bold text-white mb-4">Welcome to the Analyzer Workspace</h2>
-                <p class="text-gray-300 leading-relaxed mb-4 max-w-4xl">
-                    This tool analyzes configuration evidence and validates Information Technology General Controls (ITGC). It automatically maps system parameters against standard baselines to output comprehensive risk matrices and compliance reports.
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="btn btn-outline" style="padding: 0.4rem; border-radius: 50%;">
+            <svg id="icon-sun" style="width:20px;height:20px;" class="hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <svg id="icon-moon" style="width:20px;height:20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+        </button>
+    </header>
+
+    <main id="app-root">
+
+        <!-- 1. LANDING PAGE -->
+        <section id="view-landing" class="view-section">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 3rem auto;">
+                <h1>IT ControlLens</h1>
+                <p style="font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--text-main);">
+                    IT ControlLens is an IT control assessment workspace designed to support Information Technology General Controls (ITGC) reviews across multiple technology environments.
                 </p>
-                <div class="inline-flex items-center bg-blue-500/10 text-blue-400 px-4 py-2 rounded border border-blue-500/20 text-sm">
-                    <i class="fa-solid fa-info-circle mr-2"></i>
-                    <strong>Non-Intrusive:</strong> This tool only parses output files. It does not modify systems, nor does it require an active connection to your servers.
+                <div class="premium-card" style="padding: 1rem; border-left: 4px solid var(--brand-blue); text-align: left;">
+                    <p><strong>Non-Intrusive Assessment:</strong> The platform helps auditors organize evidence requirements, configure testing policies, and review offline evidence. IT ControlLens is designed around offline evidence review and does not directly connect to, modify, configure, or execute commands against the systems being reviewed.</p>
                 </div>
             </div>
 
-            <div>
-                <h3 class="text-xl font-semibold mb-6 flex items-center gap-2">
-                    <i class="fa-solid fa-layer-group text-blue-400"></i> Select Target Environment
-                </h3>
+            <div class="grid grid-cols-3 gap-6">
+                <!-- Start Assessment -->
+                <div class="premium-card interactive flex flex-col items-center text-center" onclick="navigateTo('target-select')">
+                    <div class="card-icon-wrapper">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3>Start / Continue Assessment</h3>
+                    <p style="flex: 1;">Configure policies, upload collected evidence, document findings, and generate ITGC matrices for target environments.</p>
+                </div>
+
+                <!-- Evidence Collector -->
+                <div class="premium-card interactive flex flex-col items-center text-center" onclick="navigateTo('collector-select')">
+                    <div class="card-icon-wrapper">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3>Evidence Collector</h3>
+                    <p style="flex: 1;">Generate or review evidence collection requirements and scripts for supported technology environments prior to assessment.</p>
+                </div>
+
+                <!-- Knowledge Repository -->
+                <div class="premium-card interactive flex flex-col items-center text-center" onclick="navigateTo('knowledge-repo')">
+                    <div class="card-icon-wrapper">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    </div>
+                    <h3>Knowledge Repository</h3>
+                    <p style="flex: 1;">Maintain testing guidance, control procedures, audit methodology, policy references and assessment knowledge.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. KNOWLEDGE REPOSITORY (PLACEHOLDER) -->
+        <section id="view-knowledge-repo" class="view-section hidden text-center">
+            <button class="btn btn-outline mb-8" onclick="navigateTo('landing')">&larr; Back to Home</button>
+            <div class="premium-card" style="max-width: 600px; margin: 0 auto; padding: 4rem 2rem;">
+                <div class="card-icon-wrapper" style="margin: 0 auto 1.5rem auto; width: 72px; height: 72px;">
+                    <svg style="width:36px; height:36px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <h2>Knowledge Repository</h2>
+                <div class="badge-coming-soon mb-4">Coming Soon</div>
+                <p>Future modules will maintain testing procedures, ITGC baselines, audit methodology, and policy references directly within IT ControlLens.</p>
+            </div>
+        </section>
+
+        <!-- 3. EVIDENCE COLLECTOR / TARGET SELECTION -->
+        <section id="view-collector-select" class="view-section hidden">
+            <button class="btn btn-outline mb-8" onclick="navigateTo('landing')">&larr; Back to Home</button>
+            <h2>Select System Category</h2>
+            <p class="mb-8">Select a target environment category to access detailed evidence requirements and collection scripts.</p>
+            
+            <div class="grid grid-cols-4 gap-6 mb-8">
+                <div class="premium-card interactive" onclick="showOsOptions('unix')">
+                    <h3>Unix / Linux</h3>
+                    <p>RHEL, Ubuntu, SUSE, AIX, Solaris...</p>
+                </div>
+                <div class="premium-card interactive" onclick="showOsOptions('windows')">
+                    <h3>Windows Server</h3>
+                    <p>Windows Server 2008 - 2025</p>
+                </div>
+                <div class="premium-card interactive" onclick="showOsOptions('db')">
+                    <h3>Databases / SQL</h3>
+                    <p>MS SQL, Oracle, MySQL, Postgres...</p>
+                </div>
+                <div class="premium-card interactive" onclick="showOsOptions('sap')">
+                    <h3>SAP</h3>
+                    <p>SAP ECC, S4/HANA</p>
+                </div>
+            </div>
+
+            <!-- Dynamic Sub-Options -->
+            <div id="os-options-container" class="premium-card hidden">
+                <h3 id="os-options-title" class="mb-6">Select Version / Flavour</h3>
+                <div id="os-options-grid" class="grid grid-cols-4 gap-4">
+                    <!-- JS populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. EVIDENCE COLLECTOR OUTPUT -->
+        <section id="view-collector-output" class="view-section hidden">
+            <button class="btn btn-outline mb-8" onclick="navigateTo('collector-select')">&larr; Back to System Selection</button>
+            <h2 id="collector-output-title">Unix / Linux Evidence Requirements</h2>
+            
+            <div class="grid grid-cols-2 gap-8 mt-4">
+                <!-- Method 1 -->
+                <div class="premium-card">
+                    <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Method 1: Individual Commands</h3>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-blue); font-weight: 700;">Password Policy</span>
+                        <p style="color: var(--text-main); font-weight: 600; margin-top: 0.25rem;">Review password expiration parameters.</p>
+                        <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">Expected output: Contents of login.defs displaying PASS_MAX_DAYS.</p>
+                        <div class="code-block">
+                            <span>cat /etc/login.defs | grep PASS</span>
+                            <button title="Copy Command"><svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-blue); font-weight: 700;">Privileged Access</span>
+                        <p style="color: var(--text-main); font-weight: 600; margin-top: 0.25rem;">Identify accounts with administrative privileges.</p>
+                        <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">Expected output: Active sudoers configuration without comments.</p>
+                        <div class="code-block">
+                            <span>cat /etc/sudoers | grep -v "^#"</span>
+                            <button title="Copy Command"><svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Method 2 -->
+                <div class="premium-card flex flex-col">
+                    <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Method 2: Consolidated Evidence Collection Script</h3>
+                    <p style="margin-bottom: 1.5rem;">Collect the required ITGC configuration evidence in a consolidated format for upload into IT ControlLens.</p>
+                    
+                    <div style="flex:1; border: 1px dashed var(--border-color); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; background-color: var(--bg-base);">
+                        <svg style="width:48px;height:48px;color:var(--text-muted);margin-bottom:1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                        <h4 style="margin-bottom: 0.5rem;">Consolidated Script</h4>
+                        <div class="badge-coming-soon mb-4">UI Placeholder</div>
+                        <p style="text-align: center; font-size: 0.85rem; margin-bottom: 1.5rem;">Evidence collector implementation coming in a future version.</p>
+                        <div class="flex gap-4">
+                            <button class="btn btn-outline opacity-50">View Script</button>
+                            <button class="btn btn-primary opacity-50">Download Script</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. START ASSESSMENT / TARGET SELECT -->
+        <section id="view-target-select" class="view-section hidden">
+            <button class="btn btn-outline mb-8" onclick="navigateTo('landing')">&larr; Back to Home</button>
+            <h2>Select Target Environment</h2>
+            <p class="mb-8">Choose the operating system or application architecture to initiate the assessment workspace.</p>
+
+            <div class="grid grid-cols-4 gap-6">
+                <!-- Unix / Linux -->
+                <div class="premium-card interactive" onclick="navigateTo('pre-setup')">
+                    <div class="flex items-center gap-3 mb-2">
+                        <svg style="width:24px;height:24px;color:var(--brand-blue);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <h3 style="margin:0;">Unix / Linux</h3>
+                    </div>
+                    <p>Start an ITGC analysis workspace for Unix/Linux servers.</p>
+                </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Windows Card -->
-                    <div onclick="alert('Windows module is coming soon.')" class="bg-gray-800 border border-gray-700 rounded-xl p-6 hover:bg-gray-750 hover:border-gray-500 transition-all cursor-pointer group flex flex-col items-center text-center">
-                        <div class="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
-                            <i class="fa-brands fa-windows text-3xl text-gray-400 group-hover:text-blue-400 transition-colors"></i>
-                        </div>
-                        <h4 class="font-semibold text-white">Windows Server</h4>
-                        <p class="text-sm text-gray-400 mt-2">Active Directory & OS ITGC</p>
+                <!-- Placeholders -->
+                <div class="premium-card opacity-50">
+                    <div class="flex items-center gap-3 mb-2">
+                        <svg style="width:24px;height:24px;color:var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path></svg>
+                        <h3 style="margin:0;">Windows Server</h3>
                     </div>
+                    <div class="badge-coming-soon mt-2">Coming Soon</div>
+                </div>
 
-                    <!-- SAP Card -->
-                    <div onclick="alert('SAP module is coming soon.')" class="bg-gray-800 border border-gray-700 rounded-xl p-6 hover:bg-gray-750 hover:border-gray-500 transition-all cursor-pointer group flex flex-col items-center text-center">
-                        <div class="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
-                            <i class="fa-solid fa-sitemap text-3xl text-gray-400 group-hover:text-blue-400 transition-colors"></i>
-                        </div>
-                        <h4 class="font-semibold text-white">SAP ERP</h4>
-                        <p class="text-sm text-gray-400 mt-2">Basis & Security Settings</p>
+                <div class="premium-card opacity-50">
+                    <div class="flex items-center gap-3 mb-2">
+                        <svg style="width:24px;height:24px;color:var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                        <h3 style="margin:0;">SQL / Databases</h3>
                     </div>
+                    <div class="badge-coming-soon mt-2">Coming Soon</div>
+                </div>
 
-                    <!-- SQL Card -->
-                    <div onclick="alert('SQL module is coming soon.')" class="bg-gray-800 border border-gray-700 rounded-xl p-6 hover:bg-gray-750 hover:border-gray-500 transition-all cursor-pointer group flex flex-col items-center text-center">
-                        <div class="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
-                            <i class="fa-solid fa-database text-3xl text-gray-400 group-hover:text-blue-400 transition-colors"></i>
-                        </div>
-                        <h4 class="font-semibold text-white">SQL Database</h4>
-                        <p class="text-sm text-gray-400 mt-2">DB Access & Configurations</p>
+                <div class="premium-card opacity-50">
+                    <div class="flex items-center gap-3 mb-2">
+                        <svg style="width:24px;height:24px;color:var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <h3 style="margin:0;">SAP</h3>
                     </div>
-
-                    <!-- Unix/Linux Card (Active) -->
-                    <div onclick="navigateTo('setup-view')" class="bg-gray-800 border border-gray-600 rounded-xl p-6 hover:bg-gray-750 hover:border-blue-500 transition-all cursor-pointer group flex flex-col items-center text-center relative overflow-hidden ring-1 ring-transparent hover:ring-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
-                        <div class="absolute top-0 right-0 bg-blue-600 text-xs font-bold px-2 py-1 rounded-bl-lg">ACTIVE</div>
-                        <div class="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
-                            <i class="fa-solid fa-terminal text-3xl text-gray-400 group-hover:text-blue-400 transition-colors"></i>
-                        </div>
-                        <h4 class="font-semibold text-white">Unix / Linux</h4>
-                        <p class="text-sm text-gray-400 mt-2">OS Security & Access Controls</p>
-                    </div>
+                    <div class="badge-coming-soon mt-2">Coming Soon</div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- ==================== SETUP VIEW ==================== -->
-        <div id="setup-view" class="view-section hidden space-y-6">
-            <div class="mb-4">
-                <button onclick="navigateTo('landing-view')" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-arrow-left"></i> Back to Environment Selection
-                </button>
-            </div>
-
-            <div class="max-w-2xl mx-auto bg-gray-800 rounded-xl border border-gray-700 shadow-xl overflow-hidden">
-                <div class="bg-gray-750 border-b border-gray-700 p-6 bg-gradient-to-r from-gray-800 to-gray-750">
-                    <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                        <i class="fa-solid fa-terminal text-blue-400"></i> Pre-Analysis Setup
-                    </h2>
-                    <p class="text-gray-400 mt-2 text-sm">Please provide the environment details for the final export report. This information is stored temporarily in your browser.</p>
-                </div>
+        <!-- 6. PRE-ANALYSIS SETUP -->
+        <section id="view-pre-setup" class="view-section hidden">
+            <button class="btn btn-outline mb-8" onclick="navigateTo('target-select')">&larr; Back to Environment Select</button>
+            
+            <div class="premium-card" style="max-width: 700px; margin: 0 auto;">
+                <h2 style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">Pre-Analysis Setup: Unix / Linux</h2>
                 
-                <form id="setup-form" class="p-6 space-y-6">
-                    <div>
-                        <label for="clientName" class="block text-sm font-medium text-gray-300 mb-2">Client / Organization Name <span class="text-red-400">*</span></label>
-                        <input type="text" id="clientName" required class="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="e.g., Acme Corp">
-                    </div>
+                <div style="background-color: var(--brand-blue-transparent); padding: 1rem; border-left: 4px solid var(--brand-blue); border-radius: 4px; margin: 1.5rem 0; font-size: 0.9rem;">
+                    <strong>Note:</strong> Infrastructure characteristics will be determined from uploaded evidence where sufficient information is available.
+                </div>
 
-                    <div>
-                        <label for="serverName" class="block text-sm font-medium text-gray-300 mb-2">Linux Server Hostname <span class="text-red-400">*</span></label>
-                        <input type="text" id="serverName" required class="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="e.g., prd-lnx-db01">
+                <form onsubmit="launchWorkspace(event)">
+                    <div class="form-group">
+                        <label class="form-label">Client Name *</label>
+                        <input type="text" id="setup-client" class="form-input" required placeholder="Enter client organization name">
                     </div>
-
-                    <div>
-                        <label for="serverType" class="block text-sm font-medium text-gray-300 mb-2">Server Infrastructure Type <span class="text-red-400">*</span></label>
-                        <div class="relative">
-                            <select id="serverType" required class="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-2.5 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                                <option value="" disabled selected>Select an infrastructure type...</option>
-                                <option value="Virtual Machine (VM)">Virtual Machine (VM)</option>
-                                <option value="Physical Server (Bare Metal)">Physical Server (Bare Metal)</option>
-                                <option value="Cloud Instance (EC2/VM)">Cloud Instance (EC2/Azure VM)</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
-                                <i class="fa-solid fa-chevron-down text-sm"></i>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Assessment Name *</label>
+                        <input type="text" id="setup-assessment" class="form-input" required placeholder="e.g. FY2026 ITGC Review">
                     </div>
-
-                    <div class="pt-4 flex justify-end">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 px-6 rounded-lg shadow shadow-blue-500/20 transition-colors flex items-center gap-2">
-                            Continue to Upload <i class="fa-solid fa-arrow-right"></i>
-                        </button>
+                    <div class="form-group">
+                        <label class="form-label">Server Name *</label>
+                        <input type="text" id="setup-server" class="form-input" required placeholder="e.g. PRD-DB-01">
+                    </div>
+                    <div style="margin-top: 2.5rem; display: flex; justify-content: flex-end;">
+                        <button type="submit" class="btn btn-primary">Initialize Assessment Workspace &rarr;</button>
                     </div>
                 </form>
             </div>
-        </div>
+        </section>
 
-        <!-- ==================== UPLOAD VIEW ==================== -->
-        <div id="upload-view" class="view-section hidden flex flex-col h-[calc(100vh-140px)]">
-            <div class="mb-4">
-                <button onclick="navigateTo('setup-view')" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-arrow-left"></i> Back to Setup
-                </button>
-            </div>
-
-            <div class="flex-grow max-w-4xl mx-auto w-full">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-white mb-3">Unix/Linux ITGC Analysis</h2>
-                    <p class="text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                        The collector script runs non-intrusive commands on the target server to gather configuration data. It generates both a <code class="bg-gray-800 text-blue-300 px-1 rounded">.TXT</code> and an <code class="bg-gray-800 text-blue-300 px-1 rounded">.HTML</code> file. You may upload either format below to begin the analysis.
-                    </p>
-                </div>
-
-                <div class="bg-gray-800 border-2 border-dashed border-gray-600 rounded-xl p-10 flex flex-col items-center justify-center transition-colors hover:border-blue-500 group relative">
-                    <input type="file" id="evidence-upload" accept=".txt,.html" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="handleFileUpload(event)">
-                    
-                    <div class="w-20 h-20 rounded-full bg-gray-700 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 group-hover:text-blue-400 transition-colors text-gray-400">
-                        <i class="fa-solid fa-cloud-arrow-up text-4xl"></i>
+        <!-- 7. ASSESSMENT WORKSPACE (THE MAIN TOOL UI) -->
+        <section id="view-analyzer-workspace" class="workspace-container hidden">
+            
+            <!-- Persistent Sidebar Order Strictly Maintained -->
+            <aside class="sidebar">
+                <nav style="flex: 1;">
+                    <div class="nav-item active" onclick="switchTab('tab-collect', this)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 
+                        Evidence Collection
                     </div>
-                    
-                    <h3 class="text-xl font-medium text-white mb-2" id="upload-status-title">Drag & Drop or Click to Upload</h3>
-                    <p class="text-gray-400 text-sm text-center" id="upload-status-desc">Supported formats: .txt or .html generated by the collector script.</p>
-                    
-                    <div id="file-success" class="hidden mt-6 flex items-center text-emerald-400 bg-emerald-500/10 px-4 py-2 rounded border border-emerald-500/20">
-                        <i class="fa-solid fa-circle-check mr-2"></i> File loaded successfully. Ready for analysis.
+                    <div class="nav-item" onclick="switchTab('tab-upload', this)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> 
+                        Upload Evidence
                     </div>
+                    <div class="nav-item" onclick="switchTab('tab-policy', this)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg> 
+                        Configure Policy
+                    </div>
+                    <div class="nav-item" onclick="switchTab('tab-findings', this)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> 
+                        Audit Findings
+                    </div>
+                    <div class="nav-item" onclick="switchTab('tab-dashboard', this)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> 
+                        Dashboard
+                    </div>
+                    <div class="nav-item" onclick="switchTab('tab-export', this)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> 
+                        Export Reports
+                    </div>
+                    <div class="nav-item" onclick="switchTab('tab-matrix', this)">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> 
+                        Control Matrix
+                    </div>
+                </nav>
+                <div style="border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                    <button class="btn btn-outline" style="width: 100%; justify-content: center;" onclick="navigateTo('landing')">Exit Workspace</button>
                 </div>
-            </div>
+            </aside>
 
-            <!-- Sticky Action Bar for Upload View -->
-            <div class="sticky bottom-0 bg-gray-800 border-t border-gray-700 p-4 -mx-6 mt-8 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex justify-end">
-                <button id="btn-run-analysis" onclick="runAnalysis()" disabled class="bg-blue-600 disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed hover:bg-blue-500 text-white font-medium py-2.5 px-8 rounded-lg shadow shadow-blue-500/20 transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-microchip"></i> Run Analysis
-                </button>
-            </div>
-        </div>
-
-        <!-- ==================== RESULTS VIEW ==================== -->
-        <div id="results-view" class="view-section hidden pb-20">
-            <!-- Header for results view -->
-            <div class="flex justify-between items-end mb-6 border-b border-gray-700 pb-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-blue-400"></i> Analysis Dashboard
-                    </h2>
-                    <p class="text-gray-400 text-sm mt-1">Reviewing extracted configuration data against standard ITGC baselines.</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Rules Library (Left Col) -->
-                <div class="lg:col-span-1 space-y-6">
-                    <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden shadow-lg">
-                        <div class="bg-gray-750 px-5 py-3 border-b border-gray-700">
-                            <h3 class="text-blue-400 font-semibold uppercase tracking-wider text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-book-bookmark"></i> Rules Library
-                            </h3>
+            <main class="workspace-main">
+                <!-- Assessment Header -->
+                <header class="workspace-header">
+                    <div class="flex gap-4">
+                        <div class="meta-pill">
+                            <span class="meta-label">Client</span>
+                            <span class="meta-val" id="ws-client">--</span>
                         </div>
-                        <div class="p-5 space-y-4">
-                            <div class="border-l-2 border-emerald-500 pl-3">
-                                <p class="text-white font-medium text-sm">Password Complexity</p>
-                                <p class="text-gray-400 text-xs mt-1">Enforce strong passwords (min 8 chars, mixed case, numbers, symbols).</p>
-                            </div>
-                            <div class="border-l-2 border-amber-500 pl-3">
-                                <p class="text-white font-medium text-sm">Root Login Prevention</p>
-                                <p class="text-gray-400 text-xs mt-1">Direct SSH login as root should be disabled (PermitRootLogin no).</p>
-                            </div>
-                            <div class="border-l-2 border-gray-500 pl-3">
-                                <p class="text-white font-medium text-sm">Account Lockout</p>
-                                <p class="text-gray-400 text-xs mt-1">Lock account after N failed attempts to prevent brute force.</p>
-                            </div>
-                            <div class="border-l-2 border-emerald-500 pl-3">
-                                <p class="text-white font-medium text-sm">Sudo Privileges</p>
-                                <p class="text-gray-400 text-xs mt-1">Ensure wheel/sudo group access is restricted to authorized users.</p>
-                            </div>
+                        <div class="meta-pill">
+                            <span class="meta-label">Assessment</span>
+                            <span class="meta-val" id="ws-assessment">--</span>
+                        </div>
+                        <div class="meta-pill">
+                            <span class="meta-label">Server</span>
+                            <span class="meta-val" id="ws-server">--</span>
                         </div>
                     </div>
-                </div>
+                    <div class="flex gap-4" style="font-size: 0.85rem;">
+                        <div><span class="meta-label">Detected OS:</span> <span style="font-style: italic;">Pending Evidence</span></div>
+                        <div><span class="meta-label">Infrastructure:</span> <span style="font-style: italic;">Pending Evidence</span></div>
+                    </div>
+                </header>
 
-                <!-- Control Matrix (Right Col) -->
-                <div class="lg:col-span-2">
-                    <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden shadow-lg">
-                        <div class="bg-gray-750 px-5 py-3 border-b border-gray-700 flex justify-between items-center">
-                            <h3 class="text-blue-400 font-semibold uppercase tracking-wider text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-table-list"></i> Control Matrix
-                            </h3>
-                            <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Mock Results</span>
+                <div class="workspace-content">
+                    
+                    <!-- TAB: Evidence Collection -->
+                    <div id="tab-collect" class="tab-pane">
+                        <h2>Evidence Collection Requirements</h2>
+                        <div class="grid grid-cols-2 gap-8">
+                            <div class="premium-card">
+                                <h3>Individual Commands</h3>
+                                <p style="margin-bottom: 1.5rem;">Commands grouped by ITGC control area.</p>
+                                
+                                <div style="margin-bottom: 1rem;">
+                                    <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-blue); font-weight: 700;">Password Policy</span>
+                                    <div class="code-block">
+                                        <span>cat /etc/login.defs</span>
+                                        <button><svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="premium-card">
+                                <h3>Consolidated Evidence Collector</h3>
+                                <p style="margin-bottom: 1.5rem;">Collect the required ITGC configuration evidence in a consolidated format for upload into IT ControlLens.</p>
+                                <div style="border: 1px dashed var(--border-color); padding: 2rem; text-align: center; border-radius: 8px;">
+                                    <div class="badge-coming-soon mb-4">UI Placeholder</div>
+                                    <p style="font-size: 0.9rem;">Implementation coming in future version.</p>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- TAB: Upload Evidence -->
+                    <div id="tab-upload" class="tab-pane hidden">
+                        <h2>Upload Evidence</h2>
                         
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm whitespace-nowrap">
-                                <thead class="bg-gray-800/50 text-gray-400 text-xs uppercase border-b border-gray-700">
+                        <div style="border: 2px dashed var(--border-color); border-radius: 12px; padding: 4rem 2rem; text-align: center; background-color: var(--bg-surface); margin-bottom: 2rem;">
+                            <svg style="width:64px;height:64px;color:var(--text-muted);margin:0 auto 1rem auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            <h3 style="margin-bottom: 0.5rem;">Drag and drop evidence files here</h3>
+                            <p style="margin-bottom: 1.5rem;">Supports TXT, LOG, CSV, HTML, JSON, and Configuration files</p>
+                            <button class="btn btn-primary">Browse Files</button>
+                        </div>
+
+                        <h3>Uploaded Files</h3>
+                        <div class="matrix-container" style="margin-top: 1rem;">
+                            <table>
+                                <thead>
                                     <tr>
-                                        <th class="px-5 py-3 font-medium">Control Element</th>
-                                        <th class="px-5 py-3 font-medium">Observed Value</th>
-                                        <th class="px-5 py-3 font-medium">Risk Status</th>
+                                        <th>File Name</th>
+                                        <th>Size</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th style="text-align: right;">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700 text-gray-200">
-                                    <tr class="hover:bg-gray-750/50 transition-colors">
-                                        <td class="px-5 py-4 font-medium">SSH Root Login</td>
-                                        <td class="px-5 py-4 font-mono text-xs">PermitRootLogin yes</td>
-                                        <td class="px-5 py-4">
-                                            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
-                                                <i class="fa-solid fa-triangle-exclamation"></i> High Risk
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-gray-750/50 transition-colors">
-                                        <td class="px-5 py-4 font-medium">Password Min Length</td>
-                                        <td class="px-5 py-4 font-mono text-xs">PASS_MIN_LEN = 12</td>
-                                        <td class="px-5 py-4">
-                                            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                                <i class="fa-solid fa-check"></i> Compliant
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-gray-750/50 transition-colors">
-                                        <td class="px-5 py-4 font-medium">Password Expiration</td>
-                                        <td class="px-5 py-4 font-mono text-xs">PASS_MAX_DAYS = 90</td>
-                                        <td class="px-5 py-4">
-                                            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                                <i class="fa-solid fa-check"></i> Compliant
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-gray-750/50 transition-colors">
-                                        <td class="px-5 py-4 font-medium">SSH Protocol</td>
-                                        <td class="px-5 py-4 font-mono text-xs">Protocol 2</td>
-                                        <td class="px-5 py-4">
-                                            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                                <i class="fa-solid fa-check"></i> Compliant
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-gray-750/50 transition-colors">
-                                        <td class="px-5 py-4 font-medium">Unowned Files</td>
-                                        <td class="px-5 py-4 font-mono text-xs">Found 14 orphan files</td>
-                                        <td class="px-5 py-4">
-                                            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                                                <i class="fa-solid fa-circle-exclamation"></i> Medium Risk
-                                            </span>
-                                        </td>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>sys_config.txt</strong></td>
+                                        <td>142 KB</td>
+                                        <td>TXT</td>
+                                        <td><span class="status-badge" style="background-color:var(--brand-blue-transparent); color:var(--brand-blue);">Ready for Analysis</span></td>
+                                        <td style="text-align: right;"><button style="color: #ef4444; font-size: 0.85rem; font-weight: 600;">Remove</button></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Sticky Action Bar for Results -->
-            <div class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 p-4 shadow-[0_-4px_15px_-3px_rgba(0,0,0,0.5)] z-40">
-                <div class="max-w-6xl mx-auto flex justify-between items-center">
-                    <button onclick="downloadCollector()" class="text-gray-300 hover:text-white hover:bg-gray-700 py-2 px-4 rounded transition-colors flex items-center gap-2 text-sm">
-                        <i class="fa-solid fa-download"></i> Download Collector Script
-                    </button>
-                    
-                    <button onclick="exportAssessment()" class="bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-6 rounded shadow shadow-blue-500/20 transition-colors flex items-center gap-2">
-                        <i class="fa-solid fa-file-export"></i> Export Assessment
-                    </button>
+                    <!-- TAB: Configure Policy -->
+                    <div id="tab-policy" class="tab-pane hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 style="margin: 0;">Configure Policy</h2>
+                            <div class="flex gap-4">
+                                <button class="btn btn-outline">Reset to Baseline</button>
+                                <button class="btn btn-primary">Save Policy</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-8">
+                            <div class="premium-card">
+                                <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">Password Policy</h3>
+                                <div class="form-group flex justify-between items-center">
+                                    <label class="form-label" style="margin:0;">Minimum Password Length</label>
+                                    <input type="number" class="form-input" style="width: 80px; text-align: center;" value="12">
+                                </div>
+                                <div class="form-group flex justify-between items-center">
+                                    <label class="form-label" style="margin:0;">Password Age (Days)</label>
+                                    <input type="number" class="form-input" style="width: 80px; text-align: center;" value="90">
+                                </div>
+                                <div class="form-group flex justify-between items-center">
+                                    <label class="form-label" style="margin:0;">Password History</label>
+                                    <input type="number" class="form-input" style="width: 80px; text-align: center;" value="5">
+                                </div>
+                            </div>
+
+                            <div class="premium-card">
+                                <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">Access Controls</h3>
+                                <div class="form-group flex justify-between items-center">
+                                    <label class="form-label" style="margin:0;">Allow Root Login (SSH)</label>
+                                    <select class="form-input" style="width: 100px;">
+                                        <option>No</option>
+                                        <option>Yes</option>
+                                    </select>
+                                </div>
+                                <div class="form-group flex justify-between items-center">
+                                    <label class="form-label" style="margin:0;">Account Lockout Threshold</label>
+                                    <input type="number" class="form-input" style="width: 80px; text-align: center;" value="5">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: Audit Findings -->
+                    <div id="tab-findings" class="tab-pane hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 style="margin:0;">Audit Findings</h2>
+                            <div class="badge-coming-soon" style="margin:0;">UI Preview / Sample Data</div>
+                        </div>
+
+                        <div class="premium-card" style="padding: 0; margin-bottom: 1.5rem;">
+                            <div style="background-color: var(--status-fail-bg); padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                                <div class="flex items-center gap-4">
+                                    <span class="status-badge status-fail">HIGH RISK</span>
+                                    <h3 style="margin:0; color: var(--status-fail-text);">F-001: Root Login Enabled via SSH</h3>
+                                </div>
+                                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Control ID: UAM-03</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-6 p-6">
+                                <div>
+                                    <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Expected Configuration</p>
+                                    <div class="code-block" style="color: var(--status-pass-text);">PermitRootLogin no</div>
+                                </div>
+                                <div>
+                                    <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Actual Configuration</p>
+                                    <div class="code-block" style="color: var(--status-fail-text);">PermitRootLogin yes</div>
+                                </div>
+                                <div style="grid-column: span 2;">
+                                    <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Observation</p>
+                                    <p>Analysis of the sshd_config file indicates direct remote root access is permitted, bypassing individual accountability requirements.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: Dashboard -->
+                    <div id="tab-dashboard" class="tab-pane hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 style="margin:0;">Assessment Dashboard</h2>
+                            <div class="badge-coming-soon" style="margin:0;">Sample / UI Preview</div>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-6 mb-8">
+                            <div class="premium-card text-center">
+                                <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Controls Tested</p>
+                                <span style="font-size: 2.5rem; font-weight: 800; color: var(--text-main);">42</span>
+                            </div>
+                            <div class="premium-card text-center">
+                                <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--status-pass-text); margin-bottom: 0.5rem;">Passed</p>
+                                <span style="font-size: 2.5rem; font-weight: 800; color: var(--status-pass-text);">35</span>
+                            </div>
+                            <div class="premium-card text-center">
+                                <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--status-fail-text); margin-bottom: 0.5rem;">Failed</p>
+                                <span style="font-size: 2.5rem; font-weight: 800; color: var(--status-fail-text);">4</span>
+                            </div>
+                            <div class="premium-card text-center">
+                                <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--status-warn-text); margin-bottom: 0.5rem;">Review Required</p>
+                                <span style="font-size: 2.5rem; font-weight: 800; color: var(--status-warn-text);">3</span>
+                            </div>
+                        </div>
+                        
+                        <div class="premium-card">
+                            <h3 style="margin-bottom: 1.5rem;">Assessment Progress (Preview)</h3>
+                            <div style="width: 100%; height: 12px; background-color: var(--bg-base); border-radius: 6px; display: flex; overflow: hidden; margin-bottom: 1rem;">
+                                <div style="width: 83%; background-color: var(--status-pass-text);"></div>
+                                <div style="width: 10%; background-color: var(--status-fail-text);"></div>
+                                <div style="width: 7%; background-color: var(--status-warn-text);"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: Export Reports -->
+                    <div id="tab-export" class="tab-pane hidden">
+                        <h2>Export Reports</h2>
+                        <div class="premium-card" style="border-left: 4px solid var(--brand-blue); padding: 1rem 1.5rem; margin-bottom: 2rem;">
+                            <p style="font-weight: 600;">Report generation will be enabled after integration of the assessment engine.</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="premium-card flex justify-between items-center opacity-50">
+                                <div>
+                                    <h3 style="margin-bottom: 0.25rem;">Executive Summary (PDF)</h3>
+                                    <p>High-level summary of findings.</p>
+                                </div>
+                                <svg style="width:32px;height:32px;color:var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            </div>
+                            <div class="premium-card flex justify-between items-center opacity-50">
+                                <div>
+                                    <h3 style="margin-bottom: 0.25rem;">Control Matrix (Excel)</h3>
+                                    <p>Complete export of all ITGC tests.</p>
+                                </div>
+                                <svg style="width:32px;height:32px;color:var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: Control Matrix -->
+                    <div id="tab-matrix" class="tab-pane hidden">
+                        <div class="flex justify-between items-end mb-6">
+                            <h2 style="margin:0;">Control Matrix</h2>
+                            <div class="badge-coming-soon" style="margin:0;">UI Preview</div>
+                        </div>
+
+                        <div class="matrix-container">
+                            <table style="min-width: 1000px;">
+                                <thead>
+                                    <tr>
+                                        <th>Control ID</th>
+                                        <th>Domain</th>
+                                        <th>Control Objective</th>
+                                        <th>Testing Procedure</th>
+                                        <th>Evidence Required</th>
+                                        <th>Policy / Baseline</th>
+                                        <th>Result</th>
+                                        <th>Risk</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-weight: 700;">PW-01</td>
+                                        <td>Logical Access</td>
+                                        <td>Password Expiration Enforced</td>
+                                        <td>Check PASS_MAX_DAYS</td>
+                                        <td>/etc/login.defs</td>
+                                        <td style="font-family: monospace; font-size: 0.85rem;"><= 90</td>
+                                        <td><span class="status-badge status-pass">PASS</span></td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 700;">UAM-03</td>
+                                        <td>Logical Access</td>
+                                        <td>Direct Root SSH Login Disabled</td>
+                                        <td>Check PermitRootLogin</td>
+                                        <td>/etc/ssh/sshd_config</td>
+                                        <td style="font-family: monospace; font-size: 0.85rem;">no</td>
+                                        <td><span class="status-badge status-fail">FAIL</span></td>
+                                        <td style="color: var(--status-fail-text); font-weight: 700;">High</td>
+                                        <td>Permitted in config</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 700;">LOG-01</td>
+                                        <td>Audit Logging</td>
+                                        <td>Syslog Service Active</td>
+                                        <td>Check service status</td>
+                                        <td>systemctl status</td>
+                                        <td style="font-family: monospace; font-size: 0.85rem;">Active</td>
+                                        <td><span class="status-badge status-review">REVIEW</span></td>
+                                        <td style="color: var(--status-warn-text); font-weight: 700;">Low</td>
+                                        <td>Manual review required</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
-        </div>
+            </main>
+        </section>
 
     </main>
 
-    <!-- Global Scripts -->
+    <!-- SPA Logic & State Management -->
     <script>
-        // Application State
-        const appState = {
-            clientName: '',
-            serverName: '',
-            serverType: '',
-            fileContent: '',
-            fileName: ''
-        };
+        /* Theme Toggle Logic */
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        const iconSun = document.getElementById('icon-sun');
+        const iconMoon = document.getElementById('icon-moon');
 
-        // Navigation Manager
-        function navigateTo(viewId) {
-            // Hide all views
-            document.querySelectorAll('.view-section').forEach(el => {
-                el.classList.add('hidden');
-                el.classList.remove('animate-fade-in');
-            });
-            
-            // Show target view
-            const target = document.getElementById(viewId);
-            if(target) {
-                target.classList.remove('hidden');
-                // Simple fade in effect class addition (handled by tailwind in a real scenario, simulated here)
-                target.style.opacity = '0';
-                setTimeout(() => {
-                    target.style.transition = 'opacity 0.3s ease';
-                    target.style.opacity = '1';
-                }, 10);
+        function setTheme(isDark) {
+            if(isDark) {
+                html.setAttribute('data-theme', 'dark');
+                iconSun.classList.remove('hidden');
+                iconMoon.classList.add('hidden');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                iconSun.classList.add('hidden');
+                iconMoon.classList.remove('hidden');
             }
         }
 
-        // Setup Form Handler
-        document.getElementById('setup-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Save state
-            appState.clientName = document.getElementById('clientName').value;
-            appState.serverName = document.getElementById('serverName').value;
-            appState.serverType = document.getElementById('serverType').value;
-            
-            // Proceed to upload
-            navigateTo('upload-view');
+        // Initialize theme from storage (default to dark if unset)
+        let isDarkMode = localStorage.getItem('it-control-lens-theme') !== 'light';
+        setTheme(isDarkMode);
+
+        themeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('it-control-lens-theme', isDarkMode ? 'dark' : 'light');
+            setTheme(isDarkMode);
         });
 
-        // File Upload Logic
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            appState.fileName = file.name;
-            const titleElement = document.getElementById('upload-status-title');
-            const descElement = document.getElementById('upload-status-desc');
-            const successElement = document.getElementById('file-success');
-            const runBtn = document.getElementById('btn-run-analysis');
-
-            // Update UI indicating processing
-            titleElement.innerText = "Processing...";
-            titleElement.classList.add("text-blue-400");
-            descElement.innerText = file.name;
-
-            const reader = new FileReader();
+        /* Router Logic */
+        function navigateTo(viewId) {
+            // Hide all
+            document.querySelectorAll('.view-section, .workspace-container').forEach(el => el.classList.add('hidden'));
             
-            reader.onload = (e) => {
-                let content = e.target.result;
-                
-                // If it's an HTML file, extract just the inner text
-                if (file.name.toLowerCase().endsWith('.html')) {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(content, 'text/html');
-                    // Extract body text, removing HTML structure
-                    content = doc.body.innerText || doc.body.textContent;
-                }
-
-                // Store raw text content in state
-                appState.fileContent = content;
-
-                // Update UI to success state
-                titleElement.innerText = "Ready for Analysis";
-                titleElement.classList.remove("text-blue-400");
-                successElement.classList.remove('hidden');
-                
-                // Enable run button
-                runBtn.disabled = false;
-            };
-
-            reader.onerror = () => {
-                titleElement.innerText = "Error reading file";
-                titleElement.classList.add("text-red-400");
-            };
-
-            reader.readAsText(file);
+            // Show target
+            const target = document.getElementById('view-' + viewId);
+            if(target) target.classList.remove('hidden');
         }
 
-        function runAnalysis() {
-            if(!appState.fileContent) {
-                alert("Please upload a valid evidence file first.");
-                return;
-            }
-            // In a real application, regex parsing would happen here against appState.fileContent
-            navigateTo('results-view');
-        }
-
-        // Export Actions
-        function exportAssessment() {
-            console.log("=========================================");
-            console.log("      ITGC ASSESSMENT EXPORT INITIATED   ");
-            console.log("=========================================");
-            console.log("Client Name   :", appState.clientName);
-            console.log("Server Name   :", appState.serverName);
-            console.log("Server Type   :", appState.serverType);
-            console.log("Evidence File :", appState.fileName);
-            console.log("=========================================");
+        /* Evidence Collector Dynamic OS Selector */
+        function showOsOptions(category) {
+            const container = document.getElementById('os-options-container');
+            const grid = document.getElementById('os-options-grid');
+            const title = document.getElementById('os-options-title');
             
-            // Custom UI Notification instead of alert
-            showNotification("Assessment report data logged to console successfully. Check dev tools.", "success");
-        }
-
-        function downloadCollector() {
-            // Mock collector script generation
-            const scriptContent = `#!/bin/bash
-# ITGC Unix/Linux Evidence Collector Script
-# Generates both TXT and HTML output
-
-OUTPUT_PREFIX="evidence_$(hostname)_$(date +%Y%m%d)"
-TXT_FILE="$OUTPUT_PREFIX.txt"
-HTML_FILE="$OUTPUT_PREFIX.html"
-
-echo "Running ITGC checks..."
-
-# Text generation
-echo "=== PASSWORD POLICY ===" > $TXT_FILE
-grep -E "PASS_MAX_DAYS|PASS_MIN_LEN" /etc/login.defs >> $TXT_FILE
-
-# HTML generation
-echo "<html><body><h2>Password Policy</h2><pre>" > $HTML_FILE
-grep -E "PASS_MAX_DAYS|PASS_MIN_LEN" /etc/login.defs >> $HTML_FILE
-echo "</pre></body></html>" >> $HTML_FILE
-
-echo "Complete. Upload $TXT_FILE or $HTML_FILE to the Analyzer Workspace."
-`;
+            container.classList.remove('hidden');
+            grid.innerHTML = '';
             
-            const blob = new Blob([scriptContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'itgc_collector.sh';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showNotification("Collector script downloaded.", "info");
-        }
-
-        // Helper Notification System
-        function showNotification(message, type) {
-            const notif = document.createElement('div');
-            notif.className = `fixed top-6 right-6 px-6 py-3 rounded shadow-lg flex items-center gap-3 z-50 transform transition-all duration-300 translate-x-10 opacity-0`;
-            
-            if (type === 'success') {
-                notif.classList.add('bg-gray-800', 'border-l-4', 'border-blue-500', 'text-white');
-                notif.innerHTML = `<i class="fa-solid fa-circle-check text-blue-400"></i> ${message}`;
-            } else {
-                notif.classList.add('bg-gray-800', 'border-l-4', 'border-gray-500', 'text-white');
-                notif.innerHTML = `<i class="fa-solid fa-info-circle text-gray-400"></i> ${message}`;
+            let options = [];
+            if(category === 'unix') {
+                title.innerText = "Select Unix / Linux Flavour";
+                options = ["RHEL 8", "RHEL 9", "Ubuntu 22.04", "Ubuntu 24.04", "SLES 15", "Oracle Linux 9", "AlmaLinux 9", "AIX 7.3", "Solaris 11", "HP-UX 11i v3"];
+            } else if (category === 'windows') {
+                title.innerText = "Select Windows Server Version";
+                options = ["Windows Server 2012 R2", "Windows Server 2016", "Windows Server 2019", "Windows Server 2022", "Windows Server 2025"];
+            } else if (category === 'db') {
+                title.innerText = "Select Database Platform";
+                options = ["Microsoft SQL Server", "Oracle Database", "MySQL", "PostgreSQL", "SAP HANA"];
+            } else if (category === 'sap') {
+                title.innerText = "Select SAP Environment";
+                options = ["SAP ECC", "SAP S/4HANA"];
             }
 
-            document.body.appendChild(notif);
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "btn btn-outline";
+                btn.style.width = "100%";
+                btn.style.justifyContent = "center";
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    document.getElementById('collector-output-title').innerText = opt + " Evidence Requirements";
+                    navigateTo('collector-output');
+                };
+                grid.appendChild(btn);
+            });
             
-            // Animate in
-            setTimeout(() => {
-                notif.classList.remove('translate-x-10', 'opacity-0');
-            }, 10);
-
-            // Animate out
-            setTimeout(() => {
-                notif.classList.add('translate-x-10', 'opacity-0');
-                setTimeout(() => notif.remove(), 300);
-            }, 3000);
+            // Scroll to options smoothly
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
+        /* Pre-Analysis Setup -> Workspace transition */
+        function launchWorkspace(e) {
+            e.preventDefault();
+            
+            // Populate meta header
+            document.getElementById('ws-client').innerText = document.getElementById('setup-client').value || '--';
+            document.getElementById('ws-assessment').innerText = document.getElementById('setup-assessment').value || '--';
+            document.getElementById('ws-server').innerText = document.getElementById('setup-server').value || '--';
+            
+            navigateTo('analyzer-workspace');
+        }
+
+        /* Workspace Sidebar Tabs */
+        function switchTab(tabId, clickedElement) {
+            // Hide all tab panes
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Set active nav
+            clickedElement.classList.add('active');
+        }
     </script>
 </body>
 </html>

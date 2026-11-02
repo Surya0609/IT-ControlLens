@@ -147,6 +147,52 @@
         .max-w-7xl { max-width: 80rem; margin: 0 auto; }
         .mt-4 { margin-top: 1rem; } .mb-4 { margin-bottom: 1rem; } .mb-8 { margin-bottom: 2rem; }
         .text-center { text-align: center; } .opacity-50 { opacity: 0.5; pointer-events: none; }
+
+
+        .server-details { margin-top:1.5rem; } .server-details .form-input { max-width:460px; }
+        .findings-filters { display:grid;grid-template-columns:1fr 1.2fr 1.2fr 1.6fr;gap:1rem; }
+        .results-table { min-width:1100px; } .results-table td { vertical-align:top; }
+        .result-id { min-width:125px; } .result-control { min-width:280px; }
+        .result-evidence { min-width:170px;overflow-wrap:anywhere; }
+        .result-values { min-width:140px;white-space:pre-wrap;overflow-wrap:anywhere; }
+        .result-values pre { white-space:pre-wrap;max-height:140px;overflow:auto;max-width:270px; }
+        .result-details { margin-top:.6rem; } .result-details[open] { min-width:420px; }
+        .result-details p { margin:.65rem 0; } .result-details textarea { min-height:100px; }
+        .guide-control summary { cursor:pointer;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap; }
+        .guide-domain { margin-left:auto;color:var(--text-muted);font-size:.85rem; }
+        .guide-body { border-top:1px solid var(--border-color);margin-top:1rem;padding-top:1rem; }
+        .guide-body p { margin-bottom:.75rem; } .workspace-header { gap:1rem;flex-wrap:wrap; }
+        [data-theme="light"] { --bg-base:#f0f4f9;--bg-surface:#ffffff;--bg-surface-hover:#eaf1f9;--bg-input:#f8fafd;--border-color:#cfdae8;--text-muted:#53657d;--card-shadow:0 3px 12px rgba(31,66,110,.07);--header-glass:rgba(241,246,252,.96);--brand-blue-transparent:rgba(0,85,165,.07); }
+        [data-theme="light"] .sidebar { background:#e5edf6; }
+        [data-theme="light"] .workspace-header { background:#eaf0f7; }
+        [data-theme="light"] .upload-zone { background:#f8fbff;border-color:#b5c7dd; }
+        [data-theme="light"] .server-details,[data-theme="light"] .findings-filters { background:#eaf2fb; }
+        [data-theme="light"] .meta-pill { background:#f8fbff; }
+        [data-theme="light"] .guide-control { border-left:3px solid #adc9e6; }
+        [data-theme="light"] .nav-item:hover { background:#d7e5f5; }
+        [data-theme="light"] .nav-item.active { background:var(--brand-blue);color:#fff; }
+        @media(max-width:1050px){.findings-filters{grid-template-columns:1fr 1fr;}}
+
+        /* Scoped reference component styles; shared theme and shell remain authoritative. */
+        #tab-dashboard > .flex { margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap; }
+        #tab-dashboard .grid-cols-4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+        #tab-dashboard .dashboard-progress { width:100%;height:12px;background:var(--bg-base);border-radius:6px;display:flex;overflow:hidden;margin-bottom:1rem; }
+        #tab-dashboard .dashboard-progress > div { width:0;min-width:0; }
+        #tab-dashboard [data-progress="PASS"],#tab-dashboard [data-dot="PASS"] { background:var(--status-pass-text); }
+        #tab-dashboard [data-progress="FAIL"],#tab-dashboard [data-dot="FAIL"] { background:var(--status-fail-text); }
+        #tab-dashboard [data-progress="REVIEW"],#tab-dashboard [data-dot="REVIEW"] { background:var(--status-warn-text); }
+        #tab-dashboard [data-progress="NT"],#tab-dashboard [data-dot="NT"] { background:var(--text-muted); }
+        #tab-dashboard [data-progress="N/A"],#tab-dashboard [data-dot="N/A"] { background:var(--status-info-text); }
+        #tab-dashboard .dashboard-legend { display:flex;gap:1.5rem;flex-wrap:wrap;font-size:.85rem;color:var(--text-muted); }
+        #tab-dashboard .dashboard-legend > span { display:inline-flex;align-items:center;gap:.4rem; }
+        #tab-dashboard .dashboard-legend i { width:9px;height:9px;border-radius:50%;display:inline-block; }
+        #view-collector-select #os-options-title { margin-bottom:1.5rem; }
+        #view-collector-output .collector-preview-note { border-left:3px solid var(--brand-blue);padding:.75rem 1rem;background:var(--brand-blue-transparent); }
+        #view-collector-output .code-block { gap:1rem; }
+        #view-collector-output .badge-coming-soon { font-size:.75rem;padding:4px 8px;border-radius:4px;text-transform:uppercase;font-weight:700;letter-spacing:.5px;border:1px solid var(--border-color);display:inline-block;margin-top:.75rem; }
+        #view-collector-output button:disabled { cursor:not-allowed;opacity:.5; }
+        @media(max-width:1100px){#tab-dashboard .grid-cols-4,#view-collector-select .grid-cols-4{grid-template-columns:repeat(2,minmax(0,1fr));}}
+        @media(max-width:750px){#view-collector-output .grid-cols-2{grid-template-columns:1fr;}}
     </style>
 </head>
 <body>
@@ -242,7 +288,7 @@
             <h2>Select Target Environment</h2>
             <p class="mb-8">Choose the operating system or application architecture to initiate the assessment workspace.</p>
             <div class="grid grid-cols-4 gap-6">
-                <div class="premium-card interactive" onclick="navigateTo('pre-setup')">
+                <div class="premium-card interactive" onclick="openWorkspace()">
                     <div class="flex items-center gap-3 mb-2"><svg style="width:24px;height:24px;color:var(--brand-blue);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg><h3 style="margin:0;">Unix / Linux</h3></div>
                     <p>Start an ITGC analysis workspace for Unix/Linux servers.</p>
                 </div>
@@ -261,28 +307,87 @@
             </div>
         </section>
 
-        <!-- (Collector Options UI Placeholder) -->
+        <!-- 3. EVIDENCE COLLECTOR / TARGET SELECTION -->
         <section id="view-collector-select" class="view-section hidden">
-            <button class="btn btn-outline mb-8" onclick="navigateTo('landing')">&larr; Back</button>
-            <div class="premium-card"><h3 class="mb-4">Evidence Collector Options</h3><div class="badge badge-coming-soon">UI Preserved</div></div>
+            <button class="btn btn-outline mb-8" onclick="navigateTo('landing')">&larr; Back to Home</button>
+            <h2>Select System Category</h2>
+            <p class="mb-8">Select a target environment category to preview the evidence collection interface. Collection functionality is temporarily inactive.</p>
+            
+            <div class="grid grid-cols-4 gap-6 mb-8">
+                <div class="premium-card interactive" onclick="showOsOptions('unix')">
+                    <h3>Unix / Linux</h3>
+                    <p>RHEL, Ubuntu, SUSE, AIX, Solaris...</p>
+                </div>
+                <div class="premium-card interactive" onclick="showOsOptions('windows')">
+                    <h3>Windows Server</h3>
+                    <p>Windows Server 2008 - 2025</p>
+                </div>
+                <div class="premium-card interactive" onclick="showOsOptions('db')">
+                    <h3>Databases / SQL</h3>
+                    <p>MS SQL, Oracle, MySQL, Postgres...</p>
+                </div>
+                <div class="premium-card interactive" onclick="showOsOptions('sap')">
+                    <h3>SAP</h3>
+                    <p>SAP ECC, S4/HANA</p>
+                </div>
+            </div>
+
+            <!-- Dynamic Sub-Options -->
+            <div id="os-options-container" class="premium-card hidden">
+                <h3 id="os-options-title" class="mb-6">Select Version / Flavour</h3>
+                <div id="os-options-grid" class="grid grid-cols-4 gap-4">
+                    <!-- JS populated -->
+                </div>
+            </div>
         </section>
 
-        <!-- 4. PRE-ANALYSIS SETUP -->
-        <section id="view-pre-setup" class="view-section hidden">
-            <button class="btn btn-outline mb-8" onclick="navigateTo('target-select')">&larr; Back to Environment Select</button>
-            <div class="premium-card" style="max-width: 700px; margin: 0 auto;">
-                <h2 style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">Pre-Analysis Setup: Unix / Linux</h2>
-                <div style="background-color: var(--brand-blue-transparent); padding: 1rem; border-left: 4px solid var(--brand-blue); border-radius: 4px; margin: 1.5rem 0; font-size: 0.9rem;">
-                    <strong>Note:</strong> Infrastructure characteristics will be determined from uploaded evidence where sufficient information is available.
-                </div>
-                <form id="setup-form" onsubmit="launchWorkspace(event)">
-                    <div class="form-group"><label class="form-label">Client Name *</label><input type="text" id="setup-client" class="form-input" required></div>
-                    <div class="form-group"><label class="form-label">Assessment Name *</label><input type="text" id="setup-assessment" class="form-input" required></div>
-                    <div class="form-group"><label class="form-label">Server Name *</label><input type="text" id="setup-server" class="form-input" required></div>
-                    <div style="margin-top: 2.5rem; display: flex; justify-content: flex-end;">
-                        <button type="submit" class="btn btn-primary">Launch Workspace &rarr;</button>
+        <!-- 4. EVIDENCE COLLECTOR OUTPUT -->
+        <section id="view-collector-output" class="view-section hidden">
+            <button class="btn btn-outline mb-8" onclick="navigateTo('collector-select')">&larr; Back to System Selection</button>
+            <h2 id="collector-output-title">Unix / Linux Evidence Requirements</h2><p class="mb-4 collector-preview-note">UI preview only. The commands below are illustrative Linux examples, not requirements for the selected platform. Command copying and script generation are inactive.</p>
+            
+            <div class="grid grid-cols-2 gap-8 mt-4">
+                <!-- Method 1 -->
+                <div class="premium-card">
+                    <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Method 1: Individual Commands</h3>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-blue); font-weight: 700;">Password Policy</span>
+                        <p style="color: var(--text-main); font-weight: 600; margin-top: 0.25rem;">Review password expiration parameters.</p>
+                        <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">Expected output: Contents of login.defs displaying PASS_MAX_DAYS.</p>
+                        <div class="code-block">
+                            <span>cat /etc/login.defs | grep PASS</span>
+                            <button title="Command copying is temporarily inactive" disabled aria-label="Copy command (inactive)"><svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
+                        </div>
                     </div>
-                </form>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-blue); font-weight: 700;">Privileged Access</span>
+                        <p style="color: var(--text-main); font-weight: 600; margin-top: 0.25rem;">Identify accounts with administrative privileges.</p>
+                        <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">Expected output: Active sudoers configuration without comments.</p>
+                        <div class="code-block">
+                            <span>cat /etc/sudoers | grep -v "^#"</span>
+                            <button title="Command copying is temporarily inactive" disabled aria-label="Copy command (inactive)"><svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Method 2 -->
+                <div class="premium-card flex flex-col">
+                    <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem;">Method 2: Consolidated Evidence Collection Script</h3>
+                    <p style="margin-bottom: 1.5rem;">Collect the required ITGC configuration evidence in a consolidated format for upload into IT ControlLens.</p>
+                    
+                    <div style="flex:1; border: 1px dashed var(--border-color); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; background-color: var(--bg-base);">
+                        <svg style="width:48px;height:48px;color:var(--text-muted);margin-bottom:1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                        <h4 style="margin-bottom: 0.5rem;">Consolidated Script</h4>
+                        <div class="badge-coming-soon mb-4">UI Placeholder</div>
+                        <p style="text-align: center; font-size: 0.85rem; margin-bottom: 1.5rem;">Evidence collector implementation coming in a future version.</p>
+                        <div class="flex gap-4">
+                            <button class="btn btn-outline opacity-50" disabled>View Script</button>
+                            <button class="btn btn-primary opacity-50" disabled>Download Script</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -291,8 +396,7 @@
             <!-- Sidebar -->
             <aside class="sidebar">
                 <nav style="flex: 1;">
-                    <div class="nav-item active" onclick="switchTab('tab-collect', this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> Evidence Collection</div>
-                    <div class="nav-item" onclick="switchTab('tab-upload', this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Upload Evidence</div>
+                    <div class="nav-item active" onclick="switchTab('tab-upload', this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Upload Evidence</div>
                     <div class="nav-item" onclick="switchTab('tab-policy', this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg> Configure Policy</div>
                     <div class="nav-item" onclick="switchTab('tab-findings', this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Audit Findings</div>
                     <div class="nav-item" onclick="switchTab('tab-dashboard', this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Dashboard</div>
@@ -307,9 +411,7 @@
                 <!-- Assessment Header -->
                 <header class="workspace-header">
                     <div class="flex gap-4">
-                        <div class="meta-pill"><span class="meta-label">Client</span><span class="meta-val" id="ws-client">--</span></div>
-                        <div class="meta-pill"><span class="meta-label">Assessment</span><span class="meta-val" id="ws-assessment">--</span></div>
-                        <div class="meta-pill"><span class="meta-label">Server</span><span class="meta-val" id="ws-server">--</span></div>
+                        <div class="meta-pill"><span class="meta-label">Server</span><span class="meta-val" id="ws-server">Not entered</span></div>
                     </div>
                     <div class="flex gap-4" style="font-size: 0.85rem;">
                         <div><span class="meta-label">Detected OS:</span> <span id="ws-os" style="font-style: italic;">Pending Evidence</span></div>
@@ -319,46 +421,11 @@
 
                 <div class="workspace-content">
                     
-                    <!-- TAB: Evidence Collection -->
-                    <div id="tab-collect" class="tab-pane">
-                        <h2>Evidence Collection Requirements</h2>
-                        <div class="grid grid-cols-2 gap-8">
-                            <div class="premium-card">
-                                <h3>Individual Commands</h3>
-                                <p style="margin-bottom: 1.5rem;">Run these commands manually to gather required configurations.</p>
-                                <div style="margin-bottom: 1rem;">
-                                    <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-blue); font-weight: 700;">Password Policy</span>
-                                    <div class="code-block"><span>cat /etc/login.defs</span></div>
-                                </div>
-                                <div style="margin-bottom: 1rem;">
-                                    <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-blue); font-weight: 700;">SSH Configuration</span>
-                                    <div class="code-block"><span>cat /etc/ssh/sshd_config</span></div>
-                                </div>
-                                <div style="margin-bottom: 1rem;">
-                                    <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-blue); font-weight: 700;">Privileged Access</span>
-                                    <div class="code-block"><span>cat /etc/sudoers | grep -v "^#"</span></div>
-                                </div>
-                                <div style="margin-bottom: 1rem;">
-                                    <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--brand-blue); font-weight: 700;">User Accounts</span>
-                                    <div class="code-block"><span>cat /etc/passwd</span></div>
-                                </div>
-                            </div>
-                            <div class="premium-card">
-                                <h3>Consolidated Evidence Collector</h3>
-                                <p style="margin-bottom: 1.5rem;">Collect the required ITGC configuration evidence in a consolidated format for upload into IT ControlLens.</p>
-                                <div style="border: 1px dashed var(--border-color); padding: 2rem; text-align: center; border-radius: 8px;">
-                                    <div class="badge badge-coming-soon mb-4">UI Placeholder</div>
-                                    <p style="font-size: 0.9rem;">Implementation coming in future version.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- TAB: Upload Evidence -->
-                    <div id="tab-upload" class="tab-pane hidden">
+                    <div id="tab-upload" class="tab-pane">
                         <div class="flex justify-between items-center mb-6">
                             <h2 style="margin:0;">Upload Evidence</h2>
-                            <button class="btn btn-primary" onclick="runAnalysisEngine()">Run Analysis</button>
+                            
                         </div>
                         
                         <div id="upload-toast" class="toast-banner hidden">
@@ -366,6 +433,8 @@
                             <button onclick="this.parentElement.classList.add('hidden')">&times;</button>
                         </div>
                         
+                        <div class="premium-card server-details mb-4"><h3>Server Details</h3><label class="form-label" for="server-name">Server Name *</label><input id="server-name" class="form-input" type="text" placeholder="e.g. APP-SRV-01" required maxlength="255" autocomplete="off"><p class="mt-4">Enter the server name before running analysis. Evidence can be uploaded while you complete this field.</p></div>
+                        <h3 class="mb-4">Evidence Upload</h3>
                         <div id="upload-zone" class="upload-zone">
                             <svg style="width:64px;height:64px;color:var(--text-muted);margin:0 auto 1rem auto;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             <h3 style="margin-bottom: 0.5rem;">Drag and drop evidence files here</h3>
@@ -383,6 +452,8 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="premium-card mt-4"><h3>Assessment Management</h3><div class="flex gap-4 mt-4"><button class="btn btn-outline" onclick="saveAssessment()">Save Assessment</button><button class="btn btn-outline" onclick="document.getElementById('assessment-load').click()">Load Assessment</button></div><input id="assessment-load" type="file" accept=".json" class="hidden"><p class="mt-4">Resume with saved evidence, server details, policy and auditor comments. Run analysis after loading to refresh results.</p></div>
+                        <div class="mt-4"><button class="btn btn-primary" onclick="runAnalysisEngine()">Run Analysis</button></div>
                     </div>
 
                     <!-- TAB: Configure Policy -->
@@ -418,60 +489,60 @@
                     </div>
 
                     <!-- TAB: Audit Findings -->
-                    <div id="tab-findings" class="tab-pane hidden">
-                        <h2 style="margin-bottom: 1.5rem;">Audit Findings</h2>
-                        <div id="findings-container">
-                            <div class="premium-card text-center"><p>Upload evidence and run analysis to generate findings.</p></div>
-                        </div>
+                    <div id="tab-findings" class="tab-pane hidden"><h2>Control Testing Results &amp; Audit Findings</h2>
+                        <div class="premium-card findings-filters mb-4">
+                            <div><label class="form-label" for="filter-result">Result</label><select id="filter-result" class="form-input"><option value="">All results</option><option value="PASS">Pass</option><option value="FAIL">Fail</option><option value="REVIEW">Review</option><option value="NT">Not Tested</option><option value="N/A">N/A</option></select></div>
+                            <div><label class="form-label" for="filter-domain">Domain</label><select id="filter-domain" class="form-input"><option value="">All domains</option></select></div>
+                            <div><label class="form-label" for="filter-risk">Risk</label><input id="filter-risk" type="search" class="form-input" placeholder="Search risk descriptions"></div>
+                            <div><label class="form-label" for="filter-search">Search</label><input id="filter-search" type="search" class="form-input" placeholder="Control, evidence or result text"></div>
+                        </div><p id="findings-count" class="mb-4" aria-live="polite"></p>
+                        <div id="findings-container" class="matrix-container"><table class="results-table"><thead><tr><th>Control ID</th><th>Control / Domain</th><th>Evidence Source</th><th>Expected Baseline</th><th>Actual Configuration</th><th>Result</th></tr></thead><tbody id="results-body"></tbody></table></div>
                     </div>
 
                     <!-- TAB: Dashboard -->
                     <div id="tab-dashboard" class="tab-pane hidden">
-                        <h2 style="margin-bottom: 1.5rem;">Assessment Dashboard</h2>
-                        <div class="grid grid-cols-5 gap-4 mb-8">
-                            <div class="premium-card text-center" style="padding: 1rem;">
-                                <p style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Applicable Controls</p>
-                                <span id="dash-total" style="font-size: 2rem; font-weight: 800; color: var(--text-main);">0</span>
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 style="margin:0;">Assessment Dashboard</h2>
+                            <span id="dashboard-state" class="badge" style="margin:0;">Not yet analyzed</span>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-6 mb-8">
+                            <div class="premium-card text-center">
+                                <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">Applicable Controls</p>
+                                <span id="dash-total" style="font-size: 2.5rem; font-weight: 800; color: var(--text-main);">0</span>
                             </div>
-                            <div class="premium-card text-center" style="padding: 1rem;">
-                                <p style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--status-pass-text); margin-bottom: 0.5rem;">Passed</p>
-                                <span id="dash-pass" style="font-size: 2rem; font-weight: 800; color: var(--status-pass-text);">0</span>
+                            <div class="premium-card text-center">
+                                <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--status-pass-text); margin-bottom: 0.5rem;">Passed</p>
+                                <span id="dash-pass" style="font-size: 2.5rem; font-weight: 800; color: var(--status-pass-text);">0</span>
                             </div>
-                            <div class="premium-card text-center" style="padding: 1rem;">
-                                <p style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--status-fail-text); margin-bottom: 0.5rem;">Failed</p>
-                                <span id="dash-fail" style="font-size: 2rem; font-weight: 800; color: var(--status-fail-text);">0</span>
+                            <div class="premium-card text-center">
+                                <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--status-fail-text); margin-bottom: 0.5rem;">Failed</p>
+                                <span id="dash-fail" style="font-size: 2.5rem; font-weight: 800; color: var(--status-fail-text);">0</span>
                             </div>
-                            <div class="premium-card text-center" style="padding: 1rem;">
-                                <p style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--status-warn-text); margin-bottom: 0.5rem;">Review Req</p>
-                                <span id="dash-rev" style="font-size: 2rem; font-weight: 800; color: var(--status-warn-text);">0</span>
-                            </div>
-                            <div class="premium-card text-center" style="padding: 1rem;">
-                                <p style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--status-nt-text); margin-bottom: 0.5rem;">Not Tested</p>
-                                <span id="dash-nt" style="font-size: 2rem; font-weight: 800; color: var(--status-nt-text);">0</span>
+                            <div class="premium-card text-center">
+                                <p style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; color: var(--status-warn-text); margin-bottom: 0.5rem;">Review Required</p>
+                                <span id="dash-rev" style="font-size: 2.5rem; font-weight: 800; color: var(--status-warn-text);">0</span>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- TAB: Export -->
-                    <div id="tab-export" class="tab-pane hidden">
-                        <h2>Export Reports</h2>
-                        <div class="premium-card"><div class="flex gap-4"><button class="btn btn-primary" onclick="exportReport()">HTML Report</button><button class="btn btn-outline" onclick="exportOriginal('generatePDF')">PDF</button><button class="btn btn-outline" onclick="exportOriginal('generateExcel')">Excel</button><button class="btn btn-outline" onclick="saveAssessment()">Save Assessment JSON</button><button class="btn btn-outline" onclick="document.getElementById('assessment-load').click()">Load Assessment JSON</button></div><input id="assessment-load" type="file" accept=".json" class="hidden"><p class="mt-4">Saved assessments contain redacted evidence, policy and auditor remarks. Loading recalculates conclusions.</p></div>
+                        
+                        <div class="premium-card">
+                            <h3 style="margin-bottom: 1.5rem;">Assessment Progress</h3>
+                            <div class="dashboard-progress" role="img" aria-label="No analysis results" id="dashboard-progress">
+                                <div data-progress="PASS"></div><div data-progress="FAIL"></div><div data-progress="REVIEW"></div><div data-progress="NT"></div><div data-progress="N/A"></div>
+                            </div>
+                            <div class="dashboard-legend"><span><i data-dot="PASS"></i>Pass</span><span><i data-dot="FAIL"></i>Fail</span><span><i data-dot="REVIEW"></i>Review</span><span><i data-dot="NT"></i>Not Tested: <strong id="dash-nt">0</strong></span><span><i data-dot="N/A"></i>N/A: <strong id="dash-na">0</strong></span></div>
+                            <p id="dashboard-progress-text" class="mt-4"></p><details class="mt-4"><summary style="cursor:pointer">Controls by domain</summary><div id="dashboard-domains" class="matrix-container mt-4"></div></details>
+
+                        </div>
                     </div>
 
+                    <!-- TAB: Export -->
+                    <div id="tab-export" class="tab-pane hidden"><h2>Export Reports</h2><div class="premium-card"><div class="flex gap-4"><button class="btn btn-primary" onclick="exportReport()">HTML Report</button><button class="btn btn-outline" onclick="exportOriginal('generatePDF')">PDF</button><button class="btn btn-outline" onclick="exportOriginal('generateExcel')">Excel</button></div><p class="mt-4">Reports use the current control results and auditor comments. Run analysis after evidence or policy changes.</p></div></div>
+
                     <!-- TAB: Control Matrix -->
-                    <div id="tab-matrix" class="tab-pane hidden">
-                        <div class="flex justify-between items-end mb-6">
-                            <h2 style="margin:0;">Control Matrix</h2>
-                        </div>
-                        <div class="matrix-container">
-                            <table style="min-width: 1000px;">
-                                <thead><tr><th>Control ID</th><th>Control Objective</th><th>Evidence Mapping</th><th>Expected Baseline</th><th>Actual Configuration</th><th>Result</th></tr></thead>
-                                <tbody id="matrix-body">
-                                    <!-- Populated dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <div id="tab-matrix" class="tab-pane hidden"><h2>Control Matrix &amp; Testing Guide</h2><p class="mb-4">What IT ControlLens tests: the complete control catalogue, required evidence and testing logic. Server-specific results are in Audit Findings.</p>
+                    <details class="premium-card mb-4"><summary><strong>What results mean</strong></summary><div class="guide-body"><p><b>PASS:</b> The individual automated check meets its stated criterion. Population extraction and log presence checks do not establish full control effectiveness.</p><p><b>FAIL:</b> Evidence establishes an exception to the check or configured policy.</p><p><b>REVIEW:</b> Interpretation, conflicting evidence or auditor judgement prevents a definitive conclusion.</p><p><b>NOT TESTED:</b> Required evidence is unavailable or insufficient.</p><p><b>N/A:</b> The auditor has recorded why the control does not apply.</p></div></details>
+                    <h3 class="mb-4">30 control checks across 6 ITGC framework areas</h3><div id="guide-controls"></div><h3 class="mb-4">4 AIX per-user check templates</h3><p class="mb-4">These expand into individual account checks when AIX effective-user evidence is supplied.</p><div id="guide-templates"></div></div>
 
                 </div>
             </main>
@@ -902,23 +973,11 @@ t.sheetStubs=true}if(t.type=="array"){t.type="binary";var a=xk(e,t);t.type="arra
             if(target) target.classList.remove('hidden');
         }
 
-        function launchWorkspace(e) {
-            // FIX: Form submission properly sets the context and opens the workspace without requiring evidence.
-            e.preventDefault();
-            document.getElementById('ws-client').innerText = document.getElementById('setup-client').value || '--';
-            document.getElementById('ws-assessment').innerText = document.getElementById('setup-assessment').value || '--';
-            document.getElementById('ws-server').innerText = document.getElementById('setup-server').value || '--';
-            
-            // Initialize empty matrix
-            initializeControlMatrix();
-            navigateTo('analyzer-workspace');
-        }
-
         function switchTab(tabId, el) {
             document.querySelectorAll('.tab-pane').forEach(e => e.classList.add('hidden'));
             document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
             document.getElementById(tabId).classList.remove('hidden');
-            if(el) el.classList.add('active');
+            const nav=el||document.querySelector('.nav-item[onclick*="'+tabId+'"]');if(nav) nav.classList.add('active');
         }
 
 
@@ -2891,8 +2950,7 @@ const types=[...new Set([...Object.keys(typeKeys),'Software Patches (rpm)','Soft
 function fileKey(f){return typeKeys[f.type]||(f.type.startsWith('Software Patches')?'patches':'');}
 function relevantKeys(rule){let deps=[...(rule.dependencies||[])],os=State.manualOS||State.os.family;if(['PWD-AGE-001','PWD-LEN-001','PWD-CMP-001','PWD-HIS-001','AUTH-LOCK-001'].includes(rule.id)){const byOS={AIX:['aix_user'],Solaris:['solaris_passwd','solaris_login','solaris_policy','pam'],'HP-UX':['hpux_security'],Linux:['logindefs','pwquality','pam','faillock']};if(byOS[os])deps=deps.filter(k=>byOS[os].includes(k));}return deps;}
 function sources(rule){let deps=relevantKeys(rule);return State.files.filter(f=>deps.includes(fileKey(f)));}
-function contextNow(){return {client:document.getElementById('setup-client').value.trim(),assessment:document.getElementById('setup-assessment').value.trim(),server:document.getElementById('setup-server').value.trim()};}
-const originalLaunch=launchWorkspace;launchWorkspace=function(e){const next=contextNow();if(Lens.context.server&&next.server!==Lens.context.server&&State.files.length){if(!confirm('Start a separate server assessment? Save the current assessment first if needed.')){e.preventDefault();return;}State.files=[];Lens.remarks=Object.create(null);Lens.na=Object.create(null);invalidate();}Lens.context=next;originalLaunch(e);refreshEvidence();};
+function contextNow(){return {server:document.getElementById('server-name').value.trim()};}
 function notify(msg){document.getElementById('upload-toast-msg').textContent=msg;document.getElementById('upload-toast').classList.remove('hidden');document.getElementById('assessment-status').textContent=msg;}
 function invalidate(){Lens.dirty=true;Upgrade.dirty=true;Lens.results=[];State.findings=[];State.untested=[];document.getElementById('assessment-status').textContent='Evidence or policy changed — run analysis.';renderResults();}
 Upgrade.invalidate=invalidate;
@@ -2922,11 +2980,38 @@ function currentRows(){return Lens.results.length?Lens.results:sourceRules.map(r
 function baseline(r){if(r.params?.length)return r.params.map(p=>p.label+': '+p.required).join('\n');const rule=sourceRules.find(x=>x.id===r.id);if(rule?.policyKeys.length)return rule.policyKeys.map(k=>k+' = '+State.policy[k]).join('\n');return r.testPerformed||r.rec||'See testing procedure';}
 function detail(r){return '<p><b>Objective:</b> '+esc(r.description||r.title)+'</p><p><b>Procedure:</b> '+esc(r.testPerformed||'Compare effective user settings with policy.')+'</p><p><b>Evidence source:</b> '+esc(r.src||r.targetEvidence||'Not received')+' · '+esc(r.line||'')+'</p><p><b>Analysis:</b> '+esc(r.observation)+'</p><p><b>Risk:</b> '+esc(r.risk)+'</p><p><b>Recommendation:</b> '+esc(r.rec)+'</p>'+(r.params?.length?'<div class="matrix-container"><table><tr><th>Parameter</th><th>Actual</th><th>Expected</th><th>Result</th></tr>'+r.params.map(p=>'<tr><td>'+esc(p.label+' ('+p.key+')')+'</td><td>'+esc(p.actual)+'</td><td>'+esc(p.required)+'</td><td>'+esc(p.pass?'PASS':'FAIL')+'</td></tr>').join('')+'</table></div>':'')+'<p><b>Actual configuration:</b></p><pre style="white-space:pre-wrap;max-height:300px;overflow:auto">'+esc(r.val)+'</pre>';}
 function badge(s){return '<span class="status-badge status-'+({'N/A':'na',REVIEW:'review',PASS:'pass',FAIL:'fail',NT:'nt'}[s]||'nt')+'">'+esc(s)+'</span>';}
-function renderResults(){const rows=currentRows();document.getElementById('matrix-body').innerHTML=rows.map((r,i)=>'<tr><td>'+esc(r.id)+'<p>'+esc(r.frameworkId)+'</p></td><td><strong>'+esc(r.title)+'</strong><details><summary>Test details & auditor remarks</summary>'+detail(r)+'<label class="form-label">Auditor remarks</label><textarea class="form-input" data-remark="'+esc(r.id)+'">'+esc(Lens.remarks[r.id]||'')+'</textarea><label class="form-label">Not applicable reason (leave blank to test)</label><input class="form-input" data-na="'+esc(r.id)+'" value="'+esc(Lens.na[r.id]||'')+'"></details></td><td>'+esc(r.src||r.targetEvidence)+'</td><td style="white-space:pre-wrap">'+esc(baseline(r))+'</td><td><pre style="white-space:pre-wrap;max-height:110px;overflow:auto;max-width:300px">'+esc(r.val||'—')+'</pre></td><td>'+badge(r.status)+'</td></tr>').join('');
- const issues=rows.filter(r=>['FAIL','REVIEW'].includes(r.status));document.getElementById('findings-container').innerHTML=issues.map(r=>'<div class="premium-card mb-4"><div class="flex justify-between"><h3>'+esc(r.id+' — '+r.title)+'</h3>'+badge(r.status)+'</div>'+detail(r)+'<label class="form-label">Auditor comment</label><textarea class="form-input" data-remark="'+esc(r.id)+'">'+esc(Lens.remarks[r.id]||'')+'</textarea></div>').join('')||'<div class="premium-card text-center"><p>'+(Lens.dirty?'Upload evidence and run analysis to generate findings.':'No FAIL or REVIEW results. Check NT and N/A coverage before concluding.')+'</p></div>';
+// Presentation-only views reuse the migrated control definitions and result dataset.
+function openWorkspace(){navigateTo('analyzer-workspace');switchTab('tab-upload',document.querySelector('[onclick*="tab-upload"]'));refreshEvidence();renderResults();}
+function syncServer(){Lens.context={server:document.getElementById('server-name').value.trim()};document.getElementById('ws-server').textContent=Lens.context.server||'Not entered';}
+function serverChanged(){syncServer();refreshEvidence();invalidate();}
+function visibleResultRows(){const status=document.getElementById('filter-result').value,domain=document.getElementById('filter-domain').value,query=document.getElementById('filter-search').value.trim().toLowerCase(),risk=document.getElementById('filter-risk').value.trim().toLowerCase();return currentRows().filter(r=>(!status||r.status===status)&&(!domain||r.area===domain)&&(!risk||String(r.risk||'').toLowerCase().includes(risk))&&(!query||[r.id,r.title,r.area,r.targetEvidence,r.src,r.status,r.status==='NT'?'Not Tested':'',r.observation,r.val].join(' ').toLowerCase().includes(query)));}
+function renderFindingsView(){const all=currentRows(),domain=document.getElementById('filter-domain'),selected=domain.value;domain.innerHTML='<option value="">All domains</option>'+[...new Set(all.map(r=>r.area).filter(Boolean))].sort().map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('');domain.value=selected;const rows=visibleResultRows();document.getElementById('findings-count').textContent=rows.length+' of '+all.length+' controls shown'+(Lens.dirty?' · Run analysis to calculate results.':'');document.getElementById('results-body').innerHTML=rows.map(r=>{const spec=sourceRules.find(x=>x.id===r.id);const received=spec?sources(spec).filter(f=>!f.excluded&&!f.collectorFailed):State.files.filter(f=>f.type==='AIX Effective Users'&&!f.excluded&&!f.collectorFailed);const trace=received.map(f=>(f.origin?f.origin+' / ':'')+f.name).join('; ');return '<tr><td class="result-id">'+esc(r.id)+'<p>'+esc(r.frameworkId)+'</p></td><td class="result-control"><strong>'+esc(r.title)+'</strong><p>'+esc(r.area||'')+'</p><details class="result-details"><summary>Analysis, risk & auditor comment</summary><p><b>Evidence required:</b> '+esc(r.targetEvidence||'AIX effective user policy')+'</p><p><b>Evidence received:</b> '+esc(trace||'No usable evidence received')+'</p>'+detail(r)+'<label class="form-label">Auditor comment</label><textarea class="form-input" data-remark="'+esc(r.id)+'">'+esc(Lens.remarks[r.id]||'')+'</textarea><label class="form-label mt-4">Not applicable reason (leave blank to test)</label><input class="form-input" data-na="'+esc(r.id)+'" value="'+esc(Lens.na[r.id]||'')+'"></details></td><td class="result-evidence">'+esc(trace||'Not received')+'</td><td class="result-values">'+esc(baseline(r))+'</td><td class="result-values"><pre>'+esc(r.val||'Not available')+'</pre></td><td>'+badge(r.status)+'</td></tr>';}).join('')||'<tr><td colspan="6" class="text-center">No controls match these filters.</td></tr>';}
+function renderResults(){const rows=currentRows();renderFindingsView();
  const count=s=>rows.filter(r=>r.status===s).length;for(const [id,n]of Object.entries({'dash-total':rows.length-count('N/A'),'dash-pass':count('PASS'),'dash-fail':count('FAIL'),'dash-rev':count('REVIEW'),'dash-nt':count('NT'),'dash-na':count('N/A')})){const el=document.getElementById(id);if(el)el.textContent=n;}
  const cov=document.getElementById('evidence-coverage');if(cov)cov.innerHTML='<h3>Evidence Coverage</h3><p>'+rows.length+' registered checks · '+(count('PASS')+count('FAIL')+count('REVIEW'))+' assessed · '+count('NT')+' not tested · '+count('N/A')+' not applicable</p><div class="matrix-container mt-4"><table><tr><th>Control</th><th>Required evidence</th><th>Received / excluded</th></tr>'+sourceRules.map(r=>'<tr><td>'+esc(r.id)+'</td><td>'+esc(r.targetEvidence)+'</td><td>'+esc(sources(r).map(f=>f.name+(f.excluded?' (different host)':f.collectorFailed?' (collection failed)':'')).join(', ')||'Not received')+'</td></tr>').join('')+'</table></div>';
+ updateReferenceDashboard();
 }
+const guideParameters={
+ 'AUTH-AD-001':'id_provider / auth_provider', 'SSH-PWD-002':'PermitEmptyPasswords',
+ 'PWD-AGE-001':'Linux PASS_MAX_DAYS; AIX maxage (weeks × 7); Solaris MAXWEEKS (weeks × 7); HP-UX PASSWORD_MAXDAYS',
+ 'PWD-LEN-001':'Linux PASS_MIN_LEN / pwquality or PAM minlen; AIX minlen; Solaris PASSLENGTH; HP-UX MIN_PASSWORD_LENGTH',
+ 'PAM-AUTH-001':'PAM auth stack and authentication modules','PAM-ACCT-001':'PAM account stack',
+ 'AUTH-LOCK-001':'Linux deny; AIX loginretries; Solaris RETRIES and LOCK_AFTER_RETRIES; HP-UX AUTH_MAXTRIES',
+ 'PWD-CMP-001':'Linux minlen, dcredit, ucredit, lcredit, ocredit, minclass, maxrepeat, retry; AIX minalpha, minother, maxrepeats; Solaris MINALPHA, MINNONALPHA, MAXREPEATS and PAM module; HP-UX PASSWORD_MIN_*_CHARS',
+ 'PWD-HIS-001':'Linux PAM remember / history; AIX histsize; Solaris HISTORY; HP-UX PASSWORD_HISTORY_DEPTH',
+ 'PWD-SHD-001':'Shadow password state (empty hash field)','SSH-ROOT-001':'PermitRootLogin',
+ 'PRIV-SUDO-001':'NOPASSWD directives','PRIV-SUDO-002':'Explicit sudo access grants','PRIV-SUDO-003':'#include / #includedir directives',
+ 'ACC-UID0-001':'Account UID and root identity','ACC-GID-001':'Primary GID','ACC-GRP-001':'Privileged group names and membership',
+ 'ACC-TTY-001':'Permitted terminal entries','TRUST-HOST-001':'hosts.equiv entries and + wildcards','TRUST-HOST-002':'.rhosts entries and + wildcards',
+ 'ACC-SHELL-001':'Account shell and interactive status','ACC-SYS-001':'Default system-account password lock state','PAM-SESS-001':'PAM session stack',
+ 'PATCH-GEN-001':'Installed software / patch inventory','CRON-ACC-001':'cron.allow / cron.deny entries','AT-ACC-001':'at.allow / at.deny entries',
+ 'LOG-CRON-001':'Cron activity records','LOG-PRIV-001':'su activity records','LOG-AUTH-001':'Authentication events','LOG-SYS-001':'System log records'
+};
+function guideOS(r){if(r.id==='AUTH-AD-001')return 'Linux environments using SSSD';if(['PWD-SHD-001','ACC-SYS-001'].includes(r.id))return 'Linux / Solaris / HP-UX with shadow evidence';if(r.id==='ACC-TTY-001')return 'Systems using securetty (commonly Linux / HP-UX)';if(r.id==='PATCH-GEN-001')return 'Linux (RPM), AIX (lslpp), Solaris (showrev), HP-UX (swlist)';return 'Linux, AIX, Solaris, HP-UX — using the applicable evidence format and OS branch';}
+function guideLogic(r){if(/^(ACC-SHELL|ACC-GRP|PRIV-SUDO-002)/.test(r.id))return 'Extracts an access population for auditor review. A populated list normally returns REVIEW; the tool does not confirm business authorization.';if(r.id==='PATCH-GEN-001')return 'PASS indicates that inventory was extracted; it does not establish patch currency or change approval. Reconcile with approved changes and vulnerability evidence.';if(r.id.startsWith('LOG-'))return 'Available log records support the presence check; empty or unrecognized records require REVIEW. Log samples do not prove complete retention or monitoring effectiveness.';if(r.id==='AUTH-AD-001')return 'A recognized AD/LDAP/IPA provider establishes centralized authentication configuration; directory policy still requires separate review.';return r.testPerformed+' '+(r.policyKeys.length?'Compare detected parameters with the configured policy. ':'')+'Definite exceptions produce FAIL; missing evidence produces NOT TESTED and unresolved evidence produces REVIEW.';}
+function renderTestingGuide(){document.getElementById('guide-controls').innerHTML=sourceRules.map(r=>'<details class="premium-card guide-control mb-4"><summary><span class="badge">'+esc(r.id)+'</span> <strong>'+esc(r.title)+'</strong><span class="guide-domain">'+esc(r.area)+'</span></summary><div class="guide-body"><p><b>Framework:</b> '+esc(r.frameworkId+' — '+(ControlFramework.find(f=>f.id===r.frameworkId)?.name||''))+'</p><p><b>Objective:</b> '+esc(r.description)+'</p><p><b>What the tool checks:</b> '+esc(r.testPerformed)+'</p><p><b>Evidence / command output expected:</b> '+esc(r.targetEvidence)+'</p><p><b>Relevant parameters:</b> '+esc(guideParameters[r.id]||r.targetEvidence)+'</p><p><b>Policy / baseline:</b> '+esc(r.policyKeys.length?r.policyKeys.join(', ')+' — configured in Configure Policy':r.rec)+'</p><p><b>Applicable systems:</b> '+esc(guideOS(r))+'</p><p><b>Result logic:</b> '+esc(guideLogic(r))+'</p><p><b>Risk addressed:</b> '+esc(r.risk)+'</p></div></details>').join('');
+ const templates=[['AIX-USER-LEN','Effective per-user minimum length','minlen','min_len','>='],['AIX-USER-AGE','Effective per-user maximum age','maxage (weeks × 7)','max_age','positive and <='],['AIX-USER-LOCK','Effective per-user lockout threshold','loginretries','pam_deny','positive and <='],['AIX-USER-HISTORY','Effective per-user password history','histsize','pam_hist','>=']];document.getElementById('guide-templates').innerHTML=templates.map(([id,title,param,policy,op])=>'<details class="premium-card guide-control mb-4"><summary><span class="badge">'+id+':account</span> <strong>'+title+'</strong></summary><div class="guide-body"><p><b>Domain:</b> AIX effective user policy · UNIX.05</p><p><b>Applicable system:</b> AIX</p><p><b>Objective:</b> Identify per-account overrides that weaken the approved policy.</p><p><b>Evidence expected:</b> AIX Effective Users stanza output (aix_effective_users), generated using the original collection catalogue.</p><p><b>Parameter / baseline:</b> '+param+' '+esc(op)+' configured '+policy+'.</p><p><b>Logic:</b> Evaluate each named account separately. Meets threshold: PASS; below the required standard: FAIL; missing numeric evidence: NOT TESTED; conflicting snapshots: REVIEW.</p></div></details>').join('');}
+
 // Gate only affected controls, allowing the remaining original checks to run.
 const migratedEvaluate=AuditEngine.evaluateRule.bind(AuditEngine);
 AuditEngine.evaluateRule=function(rule){const spec=sourceRules.find(x=>x.id===rule.id)||rule,deps=relevantKeys(spec);let reason='';if(Lens.na[rule.id]){State.untested.push({...rule,naReason:Lens.na[rule.id]});return;}if(deps.some(k=>Lens.conflictKeys?.has(k)))reason='Conflicting evidence snapshots: '+Lens.conflictNames.filter(f=>deps.includes(fileKey(f))).map(f=>f.name).join(', ')+'. Remove superseded evidence and re-run.';if(Lens.osConflict&&!State.manualOS&&/^(PWD-(AGE|LEN|CMP|HIS)|AUTH-LOCK|PAM-AUTH)/.test(rule.id))reason='Conflicting OS evidence prevents selection of the applicable rule.';
@@ -2935,25 +3020,76 @@ AuditEngine.evaluateRule=function(rule){const spec=sourceRules.find(x=>x.id===ru
  const os=State.manualOS||State.os.family,p=State.parsedData;let missing=false;if(['PWD-AGE-001','PWD-LEN-001','PWD-CMP-001','PWD-HIS-001','AUTH-LOCK-001'].includes(rule.id)){if(os==='AIX')missing=!p.aix_user.file;if(os==='HP-UX')missing=!p.hpux_security.file;if(os==='Solaris')missing=rule.id==='AUTH-LOCK-001'?(!p.solaris_login.file||!p.solaris_policy.file):!p.solaris_passwd.file;if(os==='Solaris'&&rule.id==='PWD-CMP-001')missing=missing||!p.pam.length;}if(missing){State.untested.push({...rule,targetEvidence:rule.targetEvidence});return;}
  let err='';const guarded={...rule,check(){try{const r=rule.check();if(/\bNaN\b/.test(JSON.stringify(r)))throw Error('Invalid numeric evidence');return r;}catch(e){err=e.message;return {status:'WARNING',obs:'Control could not be evaluated: '+e.message,val:'Invalid / unsupported evidence'};}}};migratedEvaluate(guarded);
 };
-function runAnalysisEngine(){if(Lens.busy){alert('Wait for evidence upload to finish.');return;}try{readPolicy();refreshEvidence();const all=State.files;const active=all.filter(f=>!f.excluded);Lens.conflictKeys=new Set();Lens.conflictNames=[];const multi=new Set(['pam','sudoers','rhosts','hosts_equiv','cron_allow_deny','at_allow_deny','cron_log']);const seen=new Map();for(const f of active){const k=fileKey(f);if(!k||f.collectorFailed)continue;const key=multi.has(k)?k+'|'+f.name:k;if(seen.has(key)){Lens.conflictKeys.add(k);Lens.conflictNames.push(seen.get(key),f);}else seen.set(key,f);}
+function runAnalysisEngine(){syncServer();if(!Lens.context.server){notify('Enter Server Name before running analysis.');switchTab('tab-upload');document.getElementById('server-name').focus();return;}if(Lens.busy){alert('Wait for evidence upload to finish.');return;}try{readPolicy();refreshEvidence();const all=State.files;const active=all.filter(f=>!f.excluded);Lens.conflictKeys=new Set();Lens.conflictNames=[];const multi=new Set(['pam','sudoers','rhosts','hosts_equiv','cron_allow_deny','at_allow_deny','cron_log']);const seen=new Map();for(const f of active){const k=fileKey(f);if(!k||f.collectorFailed)continue;const key=multi.has(k)?k+'|'+f.name:k;if(seen.has(key)){Lens.conflictKeys.add(k);Lens.conflictNames.push(seen.get(key),f);}else seen.set(key,f);}
  State.files=active;try{Parsers.identifyAndParse();AuditEngine.run();}finally{State.files=all;}const byId=new Map(State.findings.map(f=>[f.id,f]));Lens.results=sourceRules.map(r=>{const f=byId.get(r.id);const na=Lens.na[r.id];let row={...r,...f,status:na?'N/A':f?({WARNING:'REVIEW','UNABLE TO DETERMINE':'NT'}[f.status]||f.status):'NT',observation:na?'Auditor marked not applicable: '+na:f?.observation||'Required evidence not received or insufficient to test: '+r.targetEvidence,val:na?'Not applicable':f?.val||'Not available'};const matched=sources(r).filter(x=>!x.excluded&&!x.collectorFailed);row.src=matched.length?matched.map(x=>(x.origin?x.origin+' / ':'')+x.name).join('; '):r.targetEvidence;return row;});for(const f of State.findings.filter(f=>!sourceRules.some(r=>r.id===f.id)))Lens.results.push({...f,status:Lens.conflictKeys.has('aix_effective')?'REVIEW':f.status==='WARNING'?'REVIEW':f.status,observation:Lens.conflictKeys.has('aix_effective')?'Conflicting effective-user snapshots; reconcile evidence before concluding.':f.observation});for(const f of State.untested.filter(f=>!sourceRules.some(r=>r.id===f.id)))Lens.results.push({...f,status:'NT',observation:'Effective numeric evidence missing.',val:'Not available'});
- Lens.dirty=false;Upgrade.dirty=false;State.stats={pass:Lens.results.filter(r=>r.status==='PASS').length,fail:Lens.results.filter(r=>r.status==='FAIL').length,warn:Lens.results.filter(r=>r.status==='REVIEW').length,tested:Lens.results.filter(r=>['PASS','FAIL','REVIEW'].includes(r.status)).length};renderResults();notify('Analysis complete: '+Lens.results.length+' checks; '+State.stats.tested+' assessed.');renderWarnings();migrationValidation();switchTab('tab-dashboard',document.querySelector('[onclick*="tab-dashboard"]'));
+ Lens.dirty=false;Upgrade.dirty=false;State.stats={pass:Lens.results.filter(r=>r.status==='PASS').length,fail:Lens.results.filter(r=>r.status==='FAIL').length,warn:Lens.results.filter(r=>r.status==='REVIEW').length,tested:Lens.results.filter(r=>['PASS','FAIL','REVIEW'].includes(r.status)).length};renderResults();notify('Analysis complete: '+Lens.results.length+' checks; '+State.stats.tested+' assessed.');renderWarnings();migrationValidation();switchTab('tab-findings',document.querySelector('[onclick*="tab-findings"]'));
  }catch(e){invalidate();notify('Analysis could not complete: '+e.message);console.error(e);}}
 function migrationValidation(){const rows=currentRows(),summary={originalControls:30,registeredControls:AuditEngine.rules.length,frameworkAreas:ControlFramework.length,originalPerUserTemplates:4,originalParsers:20,registeredParsers:sourceParserNames.filter(k=>typeof Parsers[k]==='function').length,osFamilies:['Linux','AIX','Solaris','HP-UX'],collectorProfiles:Object.keys(CollectionCatalog).length,evidenceBlocks:State.files.length,parsedBlocks:State.files.filter(f=>f.status==='Parsed'&&!f.excluded).length,parserErrors:State.files.filter(f=>f.status==='Error').length,excludedBlocks:State.files.filter(f=>f.excluded).length,controlsEvaluated:rows.filter(r=>['PASS','FAIL','REVIEW'].includes(r.status)).length,statuses:Object.fromEntries(['PASS','FAIL','REVIEW','NT','N/A'].map(s=>[s,rows.filter(r=>r.status===s).length]))};console.info('IT ControlLens Migration Validation',summary);return summary;}
 function download(name,text,type){Upgrade.download(name,text,type);}
-function saveAssessment(){try{readPolicy();download('IT_ControlLens_Assessment.json',JSON.stringify({format:'it-controllens',version:1,context:Lens.context,policy:State.policy,manualOS:State.manualOS,remarks:Lens.remarks,na:Lens.na,files:State.files.map(f=>({...f,content:Upgrade.redact(f.name,f.content)}))},null,2),'application/json');}catch(e){alert(e.message);}}
-async function loadAssessment(file){try{if(file.size>150*1024*1024)throw Error('Assessment exceeds 150 MB.');const s=JSON.parse(await file.text());let data;if(s.format==='unix-itgc-assessment'){const v=Upgrade.validate(s);data={...v,context:{server:v.host,client:'Imported',assessment:v.assessmentDate}};}else{if(s.format!=='it-controllens'||s.version!==1)throw Error('Unsupported assessment format.');data=Upgrade.validate({format:'unix-itgc-assessment',version:3,...s,format:'unix-itgc-assessment',version:3,host:''});data={...data,context:s.context,remarks:s.remarks,na:s.na};}if(!data.context||['server','client','assessment'].some(k=>typeof data.context[k]!=='string'))throw Error('Invalid assessment metadata.');State.files=data.files;State.policy=data.policy;State.manualOS=data.manualOS;Lens.context=data.context;Lens.remarks=Object.assign(Object.create(null),data.remarks||{});Lens.na=Object.assign(Object.create(null),data.na||{});for(const k of ['client','assessment','server']){document.getElementById('setup-'+k).value=Lens.context[k];document.getElementById('ws-'+k).textContent=Lens.context[k];}for(const [k,v]of Object.entries(State.policy)){const e=document.getElementById('pol_'+k);if(e)e.value=v;}document.getElementById('manual-os').value=State.manualOS||'';refreshEvidence();invalidate();navigateTo('analyzer-workspace');switchTab('tab-upload');}catch(e){alert('Could not load assessment: '+e.message);}}
+function saveAssessment(){try{syncServer();readPolicy();download('IT_ControlLens_Assessment.json',JSON.stringify({format:'it-controllens',version:1,context:Lens.context,policy:State.policy,manualOS:State.manualOS,remarks:Lens.remarks,na:Lens.na,files:State.files.map(f=>({...f,content:Upgrade.redact(f.name,f.content)}))},null,2),'application/json');}catch(e){alert(e.message);}}
+async function loadAssessment(file){try{if(file.size>150*1024*1024)throw Error('Assessment exceeds 150 MB.');const s=JSON.parse(await file.text());let data;if(s.format==='unix-itgc-assessment'){const v=Upgrade.validate(s);data={...v,context:{server:v.host}};}else{if(s.format!=='it-controllens'||s.version!==1)throw Error('Unsupported assessment format.');data=Upgrade.validate({format:'unix-itgc-assessment',version:3,...s,format:'unix-itgc-assessment',version:3,host:''});data={...data,context:s.context,remarks:s.remarks,na:s.na};}if(!data.context||typeof data.context.server!=='string')throw Error('Invalid assessment metadata.');State.files=data.files;State.policy=data.policy;State.manualOS=data.manualOS;Lens.context={server:data.context.server};Lens.remarks=Object.assign(Object.create(null),data.remarks||{});Lens.na=Object.assign(Object.create(null),data.na||{});document.getElementById('server-name').value=Lens.context.server;syncServer();for(const [k,v]of Object.entries(State.policy)){const e=document.getElementById('pol_'+k);if(e)e.value=v;}document.getElementById('manual-os').value=State.manualOS||'';refreshEvidence();invalidate();navigateTo('analyzer-workspace');switchTab('tab-upload');}catch(e){alert('Could not load assessment: '+e.message);}}
 function exportOriginal(method){if(Lens.dirty){alert('Run analysis before exporting.');return;}const saved=State.findings;State.findings=Lens.results.map(r=>({...r,status:r.status==='REVIEW'?'WARNING':r.status,observation:r.observation+(Lens.remarks[r.id]?' Auditor remarks: '+Lens.remarks[r.id]:''),src:r.src||r.targetEvidence,val:r.val||'Not available'}));try{Exporters[method]();}finally{State.findings=saved;}}
 function exportReport(){if(Lens.dirty){alert('Run analysis before exporting.');return;}const rows=Lens.results;const content='<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\';style-src \'unsafe-inline\'"><title>IT ControlLens report</title><style>body{font:14px system-ui;max-width:1100px;margin:36px auto;color:#172a46}section{border-top:1px solid #ddd;padding:20px 0}pre{white-space:pre-wrap}table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:8px}p{line-height:1.6}</style></head><body><h1>IT ControlLens — ITGC Assessment</h1><p>'+esc(Object.entries(Lens.context).map(([k,v])=>k+': '+v).join(' | '))+'</p><p>OS: '+esc(document.getElementById('ws-os').textContent)+'</p><pre>'+esc(JSON.stringify(migrationValidation().statuses,null,2))+'</pre><h2>Baseline</h2><pre>'+esc(JSON.stringify(State.policy,null,2))+'</pre>'+rows.map(r=>'<section><h2>'+esc(r.id+' — '+r.title+' — '+r.status)+'</h2>'+detail(r)+'<p>Auditor remarks: '+esc(Lens.remarks[r.id]||'')+'</p></section>').join('')+'<h2>Evidence warnings</h2>'+Lens.warnings.map(w=>'<p>'+esc(w)+'</p>').join('')+'</body></html>';download('IT_ControlLens_Report.html',content,'text/html');}
 function renderRequirements(){const c=CollectionCatalog[document.getElementById('collector-os').value];document.getElementById('command-list').innerHTML=c.commands.map(x=>'<details class="mb-4"><summary>'+esc(x.title)+' — '+esc(x.type)+'</summary><div class="code-block"><code>'+esc(x.command+' > '+x.key+'.txt 2> '+x.key+'.err')+'</code></div><p>'+esc(x.note)+'</p></details>').join('');document.getElementById('collector-preview').textContent=c.script;}
+        function showOsOptions(category) {
+            const container = document.getElementById('os-options-container');
+            const grid = document.getElementById('os-options-grid');
+            const title = document.getElementById('os-options-title');
+            
+            container.classList.remove('hidden');
+            grid.innerHTML = '';
+            
+            let options = [];
+            if(category === 'unix') {
+                title.innerText = "Select Unix / Linux Flavour";
+                options = ["RHEL 8", "RHEL 9", "Ubuntu 22.04", "Ubuntu 24.04", "SLES 15", "Oracle Linux 9", "AlmaLinux 9", "AIX 7.3", "Solaris 11", "HP-UX 11i v3"];
+            } else if (category === 'windows') {
+                title.innerText = "Select Windows Server Version";
+                options = ["Windows Server 2012 R2", "Windows Server 2016", "Windows Server 2019", "Windows Server 2022", "Windows Server 2025"];
+            } else if (category === 'db') {
+                title.innerText = "Select Database Platform";
+                options = ["Microsoft SQL Server", "Oracle Database", "MySQL", "PostgreSQL", "SAP HANA"];
+            } else if (category === 'sap') {
+                title.innerText = "Select SAP Environment";
+                options = ["SAP ECC", "SAP S/4HANA"];
+            }
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "btn btn-outline";
+                btn.style.width = "100%";
+                btn.style.justifyContent = "center";
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    document.getElementById('collector-output-title').innerText = opt + " Evidence Requirements";
+                    navigateTo('collector-output');
+                };
+                grid.appendChild(btn);
+            });
+            
+            // Scroll to options smoothly
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+
+// Reference dashboard presentation reads the existing rendered counts; it does not change evaluation.
+function updateReferenceDashboard(){
+ const count=id=>Number(document.getElementById(id).textContent)||0;
+ const counts={PASS:count('dash-pass'),FAIL:count('dash-fail'),REVIEW:count('dash-rev'),NT:count('dash-nt'),'N/A':count('dash-na')};
+ const total=Object.values(counts).reduce((a,b)=>a+b,0),tested=counts.PASS+counts.FAIL+counts.REVIEW,applicable=count('dash-total');
+ document.querySelectorAll('#dashboard-progress [data-progress]').forEach(el=>{const status=el.dataset.progress;el.style.width=(total?counts[status]/total*100:0)+'%';el.title=status+': '+counts[status];});
+ document.getElementById('dashboard-progress').setAttribute('aria-label',Object.entries(counts).map(([status,n])=>status+': '+n).join(', '));
+ document.getElementById('dashboard-state').textContent=Lens.dirty?'Not yet analyzed / results need refresh':'Analysis current';
+ document.getElementById('dashboard-progress-text').textContent=tested+' of '+applicable+' applicable controls assessed'+(applicable?' ('+Math.round(tested/applicable*100)+'%)':'')+'. '+counts.NT+' not tested; '+counts['N/A']+' not applicable. Bar shows all '+total+' registered results.';
+ const groups=new Map();for(const r of currentRows()){const key=r.area||'Other';if(!groups.has(key))groups.set(key,{PASS:0,FAIL:0,REVIEW:0,NT:0,'N/A':0});groups.get(key)[r.status]++;}
+ document.getElementById('dashboard-domains').innerHTML='<table><thead><tr><th>Domain</th><th>Pass</th><th>Fail</th><th>Review</th><th>Not Tested</th><th>N/A</th></tr></thead><tbody>'+[...groups].map(([domain,c])=>'<tr><td>'+esc(domain)+'</td>'+['PASS','FAIL','REVIEW','NT','N/A'].map(k=>'<td>'+c[k]+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+}
 function setupAdapter(){const labels={pam_hist:'Password History',pam_comp:'Require Complexity',pam_dcredit:'Required Digits',pam_ucredit:'Required Uppercase Characters',pam_lcredit:'Required Lowercase Characters',pam_ocredit:'Required Special Characters',pam_minclass:'Minimum Character Classes',pam_maxrepeat:'Maximum Repeated Characters',pam_retry:'Password-change Retry Limit',pam_deny:'Failed-login Lockout Threshold'};const grid=document.querySelector('#tab-policy .grid');const card=document.createElement('div');card.className='premium-card';card.innerHTML='<h3>Original Policy Baselines</h3>'+Object.entries(labels).map(([k,label])=>'<div class="form-group flex justify-between items-center"><label class="form-label" for="pol_'+k+'">'+label+'</label>'+(typeof State.policy[k]==='number'?'<input type="number" min="0" max="100000" class="form-input" style="width:100px" id="pol_'+k+'" value="'+State.policy[k]+'">':'<select class="form-input" style="width:100px" id="pol_'+k+'"><option value="yes">yes</option><option value="no">no</option></select>')+'</div>').join('');grid.append(card);
  const os=document.createElement('div');os.className='premium-card';os.innerHTML='<h3>Operating System Applicability</h3><p>Automatic detection uses supplied evidence. Select an OS only when independently confirmed.</p><select id="manual-os" class="form-input"><option value="">Automatic detection</option>'+['Linux','AIX','Solaris','HP-UX'].map(x=>'<option>'+x+'</option>').join('')+'</select>';grid.append(os);document.getElementById('manual-os').onchange=e=>{State.manualOS=e.target.value||null;refreshEvidence();invalidate();};document.getElementById('tab-policy').addEventListener('input',invalidate);
- const dash=document.getElementById('tab-dashboard');dash.querySelector('.grid').insertAdjacentHTML('beforeend','<div class="premium-card text-center" style="padding:1rem"><p>Not Applicable</p><span id="dash-na" style="font-size:2rem;font-weight:800">0</span></div>');dash.insertAdjacentHTML('beforeend','<div id="evidence-coverage" class="premium-card"></div>');
- const collect=document.querySelector('#tab-collect .grid');collect.children[0].innerHTML='<h3>Individual Commands</h3><select id="collector-os" class="form-input mb-4">'+Object.entries(CollectionCatalog).map(([k,c])=>'<option value="'+k+'">'+esc(c.label)+'</option>').join('')+'</select><div id="command-list"></div>';collect.children[1].innerHTML='<h3>Consolidated Evidence Collector</h3><p>Original OS-specific collector. Review and run locally using an approved account. This application does not run commands.</p><button class="btn btn-primary mt-4" onclick="download(document.getElementById(\'collector-os\').value+\'_ITGC_collector.sh\',CollectionCatalog[document.getElementById(\'collector-os\').value].script)">Download Collector</button><details class="mt-4"><summary>Review collector script</summary><pre id="collector-preview" style="white-space:pre-wrap"></pre></details>';document.getElementById('collector-os').onchange=renderRequirements;renderRequirements();
+ const dash=document.getElementById('tab-dashboard');dash.insertAdjacentHTML('beforeend','<div id="evidence-coverage" class="premium-card mt-4"></div>');
  document.getElementById('file-input').onchange=e=>processUpload(e.target.files);const zone=document.getElementById('upload-zone');zone.ondragover=e=>{e.preventDefault();zone.classList.add('dragover');};zone.ondragleave=()=>zone.classList.remove('dragover');zone.ondrop=e=>{e.preventDefault();zone.classList.remove('dragover');processUpload(e.dataTransfer.files);};document.getElementById('assessment-load').onchange=e=>{if(e.target.files[0])loadAssessment(e.target.files[0]);e.target.value='';};document.addEventListener('change',e=>{if(e.target.dataset.remark){Lens.remarks[e.target.dataset.remark]=e.target.value;document.querySelectorAll('[data-remark]').forEach(x=>{if(x.dataset.remark===e.target.dataset.remark)x.value=e.target.value;});}if(e.target.dataset.na){Lens.na[e.target.dataset.na]=e.target.value.trim();invalidate();}});
- renderResults();}
+ document.getElementById('server-name').addEventListener('input',serverChanged);for(const id of ['filter-result','filter-domain','filter-risk','filter-search'])document.getElementById(id).addEventListener('input',renderFindingsView);renderTestingGuide();renderResults();}
 setupAdapter();
-document.querySelector('#view-collector-select .premium-card').innerHTML='<h3>Evidence Collector Options</h3><p>Unix/Linux commands and consolidated collectors are available for all six original OS profiles.</p><button class="btn btn-primary mt-4" onclick="navigateTo(\'analyzer-workspace\');switchTab(\'tab-collect\')">Open Unix/Linux Collectors</button>';
 
 window.ITControlLens={State,Parsers,AuditEngine,ControlFramework,Upgrade,Lens,CollectionCatalog,sourceRules,sourceParserNames,runAnalysisEngine,processUpload,migrationValidation};
 

@@ -193,7 +193,69 @@
         #view-collector-output button:disabled { cursor:not-allowed;opacity:.5; }
         @media(max-width:1100px){#tab-dashboard .grid-cols-4,#view-collector-select .grid-cols-4{grid-template-columns:repeat(2,minmax(0,1fr));}}
         @media(max-width:750px){#view-collector-output .grid-cols-2{grid-template-columns:1fr;}}
+
+        /* Database target sub-selector: scoped additions; dark theme remains unchanged. */
+        .db-sub-selector {border-color:var(--border-color);background:var(--bg-surface);}
+        .db-engine-row {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;}
+        .db-engine-option {display:flex;gap:.75rem;align-items:center;padding:1.1rem;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-base);text-align:left;color:var(--text-main);cursor:pointer;transition:box-shadow .2s,border-color .2s,transform .2s;min-height:85px;}
+        .db-engine-option:hover,.db-engine-option:focus-visible {border-color:var(--brand-blue);box-shadow:0 0 0 3px var(--brand-blue-transparent);}
+        .db-engine-option.selected,.db-selected {border-color:var(--brand-blue)!important;}
+        .db-engine-option strong {font-size:.9rem;display:block;}
+        .db-engine-option small {display:block;color:var(--text-muted);line-height:1.4;margin-top:.3rem;}
+        .db-engine-bullet {font-size:.7rem;font-weight:800;flex-shrink:0;background:var(--brand-blue-transparent);color:var(--brand-blue);padding:.5rem;border-radius:7px;min-width:40px;text-align:center;}
+        @media(max-width:920px){.db-engine-row{grid-template-columns:1fr;}}
+        /* Light theme refresh: dark-mode variables and styles are intentionally untouched. */
+        [data-theme="light"] {
+            --bg-base:#f4f6f9;
+            --bg-surface:#ffffff;
+            --bg-surface-hover:#edf2f7;
+            --bg-input:#ffffff;
+            --text-main:#1e293b;
+            --text-muted:#475569;
+            --border-color:#e2e8f0;
+            --card-shadow:0 4px 6px -1px rgba(0,0,0,.05), 0 2px 4px -1px rgba(0,0,0,.03);
+            --header-glass:rgba(248,250,252,.94);
+            --brand-blue:#125ab1;
+            --brand-blue-hover:#0b438e;
+            --brand-blue-transparent:rgba(18,90,177,.085);
+            --status-pass-bg:#dcfce7;
+            --status-pass-text:#166534;
+            --status-fail-bg:#fee2e2;
+            --status-fail-text:#991b1b;
+            --status-warn-bg:#fef3c7;
+            --status-warn-text:#92400e;
+            --status-info-bg:#dbeafe;
+            --status-info-text:#1d4ed8;
+            --status-nt-bg:#f1f5f9;
+            --status-nt-text:#475569;
+        }
+        [data-theme="light"] .sidebar {background:#eef2f7;border-right:1px solid #dce4ee;}
+        [data-theme="light"] .workspace-header {background:#ffffff;border-bottom:1px solid #e2e8f0;}
+        [data-theme="light"] .server-details,[data-theme="light"] .findings-filters {background:#ffffff;}
+        [data-theme="light"] .upload-zone {background:#ffffff;border-color:#cbd5e1;box-shadow:var(--card-shadow);}
+        [data-theme="light"] .upload-zone:hover {border-color:var(--brand-blue);}
+        [data-theme="light"] .meta-pill {background:#f8fafc;}
+        [data-theme="light"] .guide-control {border-left:3px solid #a8c2e6;}
+        [data-theme="light"] .nav-item:hover {background:#e0e9f4;}
+        [data-theme="light"] .nav-item.active {background:var(--brand-blue);color:#ffffff;}
+        [data-theme="light"] .matrix-container {background:#ffffff;border:1px solid #e2e8f0;box-shadow:var(--card-shadow);}
+        [data-theme="light"] th {background:#f6f8fb;color:#475569;}
+        [data-theme="light"] td {border-bottom:1px solid #e8eef4;}
+        [data-theme="light"] .premium-card {border:1px solid #e2e8f0;box-shadow:var(--card-shadow);}
+        [data-theme="light"] .form-input {background:#ffffff;border:1px solid #cbd5e1;}
+        [data-theme="light"] .form-input:focus {border-color:var(--brand-blue);}
+        [data-theme="light"] .db-engine-option {background:#f8fafc;}
+        [data-theme="light"] .db-engine-option:hover {background:#ffffff;}
+        [data-theme="light"] .btn-primary {color:#ffffff;}
+        [data-theme="light"] .code-block {background:#f8fafc;}
     </style>
+<style>
+/* Responsive integration controls; original environment styling remains untouched. */
+@media (max-width: 760px) {
+  #view-collector-hub > .grid { grid-template-columns: 1fr; }
+  #view-requirements-assistant { padding: 1.25rem 1rem !important; }
+}
+</style>
 </head>
 <body>
 
@@ -252,7 +314,7 @@
                     <h3>Start / Continue Assessment</h3>
                     <p style="flex: 1;">Configure policies, upload collected evidence, document findings, and generate ITGC matrices for target environments.</p>
                 </div>
-                <div class="premium-card interactive flex flex-col items-center text-center" onclick="navigateTo('collector-select')">
+                <div class="premium-card interactive flex flex-col items-center text-center" onclick="navigateTo('collector-hub')">
                     <div class="card-icon-wrapper">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
@@ -296,20 +358,64 @@
                     <div class="flex items-center gap-3 mb-2"><svg aria-label="Windows" role="img" style="width:24px;height:24px;color:var(--brand-blue);flex-shrink:0" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 4.3L11 3.1v8.3H2.5zM12.6 2.9L21.5 1.5v9.9h-8.9zM2.5 13H11v8.1l-8.5-1.2zM12.6 13h8.9v9.5l-8.9-1.3z"/></svg><h3 style="margin:0;">Windows Server</h3></div>
                     <p>Analyze Windows Server and Active Directory evidence.</p>
                 </div>
-                <div class="premium-card opacity-50">
-                    <div class="flex items-center gap-3 mb-2"><svg style="width:24px;height:24px;color:var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg><h3 style="margin:0;">Databases</h3></div>
-                    <div class="badge badge-coming-soon mt-2">Coming Soon</div>
+                <div id="db-target-card" class="premium-card interactive" role="button" tabindex="0" aria-controls="db-sub-selector" aria-label="Select database environment" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
+                    <div class="flex items-center gap-3 mb-2"><svg style="width:24px;height:24px;color:var(--brand-blue);flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg><h3 style="margin:0;">Databases</h3></div>
+                    <p>Select MS SQL Server, Oracle DB or SAP HANA DB before uploading TXT evidence.</p>
                 </div>
-                <div class="premium-card opacity-50">
-                    <div class="flex items-center gap-3 mb-2"><svg style="width:24px;height:24px;color:var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg><h3 style="margin:0;">SAP</h3></div>
-                    <div class="badge badge-coming-soon mt-2">Coming Soon</div>
+                <div id="sap-target-card" class="premium-card interactive" role="button" tabindex="0" aria-controls="sap-sub-selector" aria-label="Select SAP landscape">
+                    <div class="flex items-center gap-3 mb-2"><svg style="width:24px;height:24px;color:var(--brand-blue);flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg><h3 style="margin:0;">SAP Landscape</h3></div>
+                    <p>Select SAP ABAP (ECC / S/4HANA) or SAP AS Java. SAP HANA DB remains under Databases.</p>
+                </div>
+            </div>
+            <div id="db-sub-selector" class="premium-card db-sub-selector hidden mt-4" role="group" aria-label="Database engine selection">
+                <div class="flex justify-between items-center" style="flex-wrap:wrap;gap:1rem"><div><h3>Select Database Engine</h3><p>Each engine has its own ITGC matrix, TXT parser and saved assessment context.</p></div><span class="badge">Step 2 of 2</span></div>
+                <div class="db-engine-row mt-4">
+                    <button type="button" class="db-engine-option" data-db-engine="mssql"><span class="db-engine-bullet">SQL</span><span><strong>MS SQL Server</strong><small>Instance, logins, permissions and audits</small></span></button>
+                    <button type="button" class="db-engine-option" data-db-engine="oracle"><span class="db-engine-bullet">ORA</span><span><strong>Oracle DB</strong><small>Instance / PDB, profiles and auditing</small></span></button>
+                    <button type="button" class="db-engine-option" data-db-engine="hana"><span class="db-engine-bullet">HDB</span><span><strong>SAP HANA DB</strong><small>Tenant, users, privileges and policies</small></span></button>
+                </div>
+            </div>
+            <div id="sap-sub-selector" class="premium-card db-sub-selector hidden mt-4" role="group" aria-label="SAP system selection">
+                <div class="flex justify-between items-center" style="flex-wrap:wrap;gap:1rem"><div><h3>Select SAP System</h3><p>SAP ABAP and AS Java have independent TXT/CSV evidence, policy and control matrices. SAP HANA DB is available under Databases.</p></div><span class="badge">Step 2 of 2</span></div>
+                <div class="db-engine-row mt-4" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+                    <button type="button" class="db-engine-option" data-sap-engine="abap"><span class="db-engine-bullet">ABAP</span><span><strong>SAP ABAP (ECC &amp; S/4HANA)</strong><small>Profiles, default users and client security</small></span></button>
+                    <button type="button" class="db-engine-option" data-sap-engine="java"><span class="db-engine-bullet">JAVA</span><span><strong>SAP AS Java</strong><small>UME authentication and administrators</small></span></button>
                 </div>
             </div>
         </section>
 
         <!-- 3. EVIDENCE COLLECTOR / TARGET SELECTION -->
-        <section id="view-collector-select" class="view-section hidden">
+        <!-- INTEGRATED REQUIREMENTS ASSISTANT: Evidence Collector landing choice -->
+        <section id="view-collector-hub" class="view-section hidden">
             <button class="btn btn-outline mb-8" onclick="navigateTo('landing')">&larr; Back to Home</button>
+            <div style="max-width:780px;margin-bottom:2rem;">
+                <h2 style="margin-bottom:.6rem;">Evidence Collector</h2>
+                <p>Choose a requirements reference or explore the future evidence collection workspace.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-6" style="max-width:960px;">
+                <div class="premium-card interactive" role="button" tabindex="0" onclick="navigateTo('requirements-assistant')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
+                    <div class="card-icon-wrapper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8l-5-5h-4"/><path d="M8 3h8v5h5M7 13h10M7 17h7"/></svg></div>
+                    <h3>Requirements Assistant</h3>
+                    <p>Browse existing ITGC evidence requirements by system, search and filter controls, and export selected requirements to CSV or Excel.</p>
+                    <div class="mt-4" style="color:var(--brand-blue);font-size:.9rem;font-weight:650;">Open Requirements Assistant &rsaquo;</div>
+                </div>
+                <div class="premium-card interactive" role="button" tabindex="0" onclick="navigateTo('collector-select')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
+                    <div class="card-icon-wrapper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3m6 0h4"/></svg></div>
+                    <div class="flex items-center justify-between gap-2" style="flex-wrap:wrap;"><h3>Evidence Collector</h3><span class="badge badge-coming-soon">Coming Soon</span></div>
+                    <p>Preview the planned collector interface. Command collection, script generation and execution remain inactive.</p>
+                    <div class="mt-4" style="color:var(--text-muted);font-size:.9rem;font-weight:650;">View Collector Preview &rsaquo;</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Embedded requirements assistant lives in an isolated shadow root so its presentation cannot affect audit engines. -->
+        <section id="view-requirements-assistant" class="view-section hidden" style="max-width:96rem;padding-top:1.75rem;">
+            <button class="btn btn-outline mb-4" onclick="navigateTo('collector-hub')">&larr; Back to Evidence Collector</button>
+            <div id="requirements-assistant-mount"></div>
+        </section>
+
+        <section id="view-collector-select" class="view-section hidden">
+            <button class="btn btn-outline mb-8" onclick="navigateTo('collector-hub')">&larr; Back to Home</button>
             <h2>Select System Category</h2>
             <p class="mb-8">Select a target environment category to preview the evidence collection interface. Collection functionality is temporarily inactive.</p>
             
@@ -3332,6 +3438,705 @@ setupWindowsScopeUI();
 refreshScopePresentation();
 
 function prepareWindowsExportRows(rows){for(const r of rows){if(!r.platform)continue;const full=r.val+'\nEvidence sources: '+r.src+'\nObservation and expected baseline: '+r.observation;const lines=[];for(const line of full.split('\n')){let left=line;while(left.length>100){let cut=left.lastIndexOf(' ',100);if(cut<30)cut=100;lines.push(left.slice(0,cut));left=left.slice(cut).trimStart();}lines.push(left);}r.val=lines.join('\n');if(r.observation.length>420)r.observation=(r.reviewKind?r.reviewKind+': ':'')+r.title+'. '+r.status+'; '+(r.exceptions||[]).length+' exception / review records. Expected: '+r.testPerformed+' Full observed values and baselines are in Extracted Details / Appendix.';if(r.src.length>65)r.src='Multiple / long evidence references; see extracted details';r.line='Evidence block';}}
+
+</script>
+<script>
+/* IT ControlLens Database Assessment Adapter (isolated; original Unix/Linux and Windows/AD engines are unchanged). */
+(function(){
+'use strict';
+const DB={active:false,engine:null,legacy:null,blocks:[],warning:[],busy:false,workspaces:Object.create(null),rules:Object.create(null)};
+const catalog={
+ mssql:{name:'MS SQL Server',label:'SQL Server instance',applicable:'Microsoft SQL Server 2012, 2014, 2016, 2017, 2019, 2022 and 2025 (on-premises); features and query columns vary by version and edition. Contained databases require additional database-level evidence.', fields:{
+  SQL_LOGINS:'name, type_desc, is_disabled, is_policy_checked, is_expiration_checked',SQL_SERVER_ROLES:'principal_name, role_name',SQL_PERMISSIONS:'grantee_name, permission_name, state_desc',SQL_AUDITS:'name, is_state_enabled',SQL_AUDIT_SPECS:'name, is_state_enabled, audit_action_name',SQL_BACKUPS:'database_name, backup_finish_date, type',SQL_DATABASES:'name, state_desc, is_trustworthy_on, is_auto_close_on',SQL_GUEST:'database_name, grantee_name, permission_name, state_desc',SQL_AGENT_JOBS:'name, enabled, owner_name',SQL_VERSION:'product_version, edition',SQL_CONNECTIONS:'session_id, encrypt_option',SQL_USERS:'database_name, name, type_desc, authentication_type_desc',SQL_ROLE_MEMBERS:'database_name, member_name, role_name'},
+  policy:[['backupMaxDays','Maximum age of last full backup (days)',7,1,3650],['staleDays','Stale account review threshold (days)',90,1,3650]]},
+ oracle:{name:'Oracle DB',label:'Oracle database instance / PDB',applicable:'Oracle Database 11g, 12c, 18c, 19c, 21c and 23ai. CDB and each PDB must be assessed in their respective container context; DBA_* views and audit mechanisms vary by release.',fields:{
+  ORA_PROFILES:'profile, resource_name, limit',ORA_USERS:'username, account_status, profile, authentication_type, last_login',ORA_ROLE_GRANTS:'grantee, granted_role, admin_option',ORA_SYS_PRIVS:'grantee, privilege, admin_option',ORA_PWFILE:'username, sysdba, sysoper',ORA_AUDIT_CONFIG:'name, value',ORA_AUDIT_POLICIES:'policy_name, enabled_option',ORA_RMAN_BACKUPS:'input_type, status, end_time',ORA_DB_LINKS:'owner, db_link, username',ORA_PARAMETERS:'name, value',ORA_TAB_PRIVS:'grantee, owner, table_name, privilege',ORA_VERSION:'banner or version',ORA_CONTAINERS:'con_id, name, open_mode',ORA_AUDIT_EVENTS:'event_timestamp, dbusername, action_name'},
+  policy:[['passwordMaxDays','Maximum password lifetime (days)',90,1,3650],['failedLoginMax','Maximum failed login attempts',5,1,100],['historyMin','Minimum password reuse history count',12,0,100],['backupMaxDays','Maximum age of last successful full backup (days)',7,1,3650],['staleDays','Stale account review threshold (days)',90,1,3650]]},
+ hana:{name:'SAP HANA DB',label:'HANA database / tenant',applicable:'SAP HANA Platform 1.0 and 2.0; SQL catalog views and configuration parameters vary by SPS release, SYSTEMDB versus tenant DB, and deployment type. SAP HANA Cloud may differ and needs separate validation.',fields:{
+  HANA_PASSWORD_POLICY:'property, value (from M_PASSWORD_POLICY or effective policy)',HANA_USERS:'user_name, user_deactivated, password_change_needed, last_successful_connect',HANA_PRIVILEGES:'grantee, privilege, is_grantable',HANA_ROLES:'grantee, role_name',HANA_AUDIT_CONFIG:'section, key, value (auditing settings)',HANA_AUDIT_POLICIES:'policy_name, is_enabled',HANA_BACKUPS:'entry_type_name, state_name, utc_end_time',HANA_SYSTEM:'version or version_string, database_name',HANA_INIFILE:'file_name, section, key, value',HANA_AUDIT_EVENTS:'event_time, user_name, action',HANA_USER_GROUP_POLICY:'user_name, property, value',HANA_CONNECTIONS:'connection_id, user_name, connection_status'},
+  policy:[['minPasswordLength','Minimum password length',12,1,128],['maxPasswordLifetime','Maximum password lifetime (days)',90,1,3650],['maxInvalidAttempts','Maximum invalid connect attempts',5,1,100],['historyMin','Minimum remembered passwords',12,0,100],['backupMaxDays','Maximum age of successful full backup (days)',7,1,3650],['staleDays','Stale user review threshold (days)',90,1,3650]]}
+};
+const aliases={};for(const [engine,c]of Object.entries(catalog))for(const type of Object.keys(c.fields)){aliases[type.toLowerCase()]=type;aliases[type.toLowerCase().replace(/_/g,' ')]=type;}
+const allTypes=Object.keys(aliases).filter(k=>k.includes('_')).map(k=>aliases[k]);
+function workspace(engine){if(!DB.workspaces[engine])DB.workspaces[engine]={name:'',files:[],policy:Object.fromEntries(catalog[engine].policy.map(([k,,def])=>[k,def])),remarks:Object.create(null),na:Object.create(null),results:[],dirty:true};return DB.workspaces[engine];}
+function current(){return workspace(DB.engine);}
+function val(obj,...keys){if(!obj)return '';const norm=s=>String(s).toLowerCase().replace(/[^a-z0-9]/g,'');for(const k of keys){const found=Object.keys(obj).find(x=>norm(x)===norm(k));if(found!==undefined)return String(obj[found]??'').trim();}return '';}
+function num(x){const s=String(x??'').replace(/[, ]/g,'').trim();return /^(?:-?\d+(?:\.\d+)?|0x[\da-f]+)$/i.test(s)?Number(s):null;}
+function truth(x){if(/^(?:true|yes|enabled|on|1|active|success)$/i.test(String(x).trim()))return true;if(/^(?:false|no|disabled|off|0|inactive)$/i.test(String(x).trim()))return false;return null;}
+function date(x){const s=String(x??'').trim();if(!s)return null;let d;if(/^\d{4}-\d{2}-\d{2}/.test(s))d=new Date(s.replace(' ','T'));else if(/^\d{1,2}-[A-Za-z]{3}-\d{2,4}/.test(s)){const match=s.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{2,4})(?:\s+(.*))?/);const months=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];const mon=months.indexOf(match?.[2].toLowerCase());if(mon<0)return null;let year=+match[3];if(year<100)year+=year>70?1900:2000;d=new Date(Date.UTC(year,mon,+match[1]));}else if(/^\d{1,2}\/\d{1,2}\/\d{4}/.test(s))d=new Date(s);else d=new Date(s);return Number.isNaN(d.getTime())?null:d;}
+function ageDays(x,anchor){const d=date(x);return d?Math.floor(((anchor||new Date())-d)/86400000):null;}
+function result(status,observed,expected,exceptions=[],kind=''){return {status,observed:String(observed),expected:String(expected),exceptions:exceptions.slice(0,150).map(x=>typeof x==='string'?{item:x}:x),reviewKind:kind};}
+function review(message,expected,exceptions=[]){return result('REVIEW',message,expected,exceptions,'Auditor review');}
+function evaluateRows(rows,opts){const {label,expected,inspect,minimum=1,reviewAlways=false}=opts;const failures=[],unknown=[];if(rows.length<minimum)return review('No complete '+label+' records available',expected,[{item:'Population',reason:'No records or incomplete query output'}]);for(const r of rows){const id=val(r,'name','username','user_name','grantee','grantee_name','database_name','principal_name','policy_name','profile','property')||'Unidentified';const a=inspect(r);if(a?.kind==='fail')failures.push({item:id,reason:a.reason});else if(a?.kind==='review')unknown.push({item:id,reason:a.reason});}return result(failures.length?'FAIL':unknown.length||reviewAlways?'REVIEW':'PASS',failures.length+' exceptions, '+unknown.length+' unresolved records across '+rows.length+' '+label,expected,[...failures,...unknown],reviewAlways||unknown.length?'Auditor review':'');}
+function mustField(r,...keys){return keys.every(k=>val(r,k)!=='');}
+function policyValue(name){return current().policy[name];}
+function blocks(key){return DB.blocks.filter(b=>b.key===key&&!b.file.excluded&&!b.file.collectorFailed);}
+function rows(key){return blocks(key).flatMap(b=>b.rows.map(r=>({...r,_dbEvidenceDate:b.evidenceDate})));}
+function rule(engine,id,title,area,needs,objective,risk,check,rec){const r={id,title,area,needs,platform:catalog[engine].name,frameworkId:'DB.'+engine.toUpperCase(),description:objective,testPerformed:objective,targetEvidence:needs.map(k=>k+' ('+catalog[engine].fields[k]+')').join('; '),risk,rec:rec||'Review noted exceptions against the approved baseline and supporting authorization records.',check};(DB.rules[engine]||(DB.rules[engine]=[])).push(r);}
+function recordCoverage(label,key,columns){return ()=>{const data=rows(key);return review(data.length+' '+label+' records extracted; validate completeness, approval and least-privilege assignments.','Complete authoritative '+label+' population and approved access',[...data.slice(0,40).map(r=>({item:val(r,...columns)||'Unknown',reason:Object.entries(r).filter(([k])=>!k.startsWith('_')).map(([k,v])=>k+': '+v).join(' | ')}))]);};}
+// Microsoft SQL Server controls: assessment of an exported population is not proof of business authorization.
+rule('mssql','MSSQL-01','SQL login password policy','Authentication',['SQL_LOGINS'],'Enabled SQL-authenticated logins should enforce operating-system password policy and expiration.','Weak SQL authentication',()=>evaluateRows(rows('SQL_LOGINS').filter(r=>!/windows/i.test(val(r,'type_desc'))),{label:'SQL login',expected:'Enabled SQL logins have is_policy_checked=1 and is_expiration_checked=1',inspect:r=>{if(!mustField(r,'name','is_disabled','is_policy_checked','is_expiration_checked'))return {kind:'review',reason:'Missing mandatory SQL login fields'};if(truth(val(r,'is_disabled'))===true)return null;const a=truth(val(r,'is_policy_checked')),b=truth(val(r,'is_expiration_checked'));return a===false||b===false?{kind:'fail',reason:'CHECK_POLICY / CHECK_EXPIRATION disabled'}:a===null||b===null?{kind:'review',reason:'Unrecognized flag values'}:null;}}));
+rule('mssql','MSSQL-02','Built-in sa account status','Authentication',['SQL_LOGINS'],'The built-in sa login should be disabled unless a documented exception is approved.','Unnecessary high privilege',()=>{const sa=rows('SQL_LOGINS').filter(r=>val(r,'name').toLowerCase()==='sa');if(!sa.length)return review('sa record not supplied','sa disabled; provide authoritative login population');return evaluateRows(sa,{label:'sa login',expected:'is_disabled = 1',inspect:r=>truth(val(r,'is_disabled'))===false?{kind:'fail',reason:'sa is enabled'}:truth(val(r,'is_disabled'))===null?{kind:'review',reason:'is_disabled missing'}:null});});
+rule('mssql','MSSQL-03','Server sysadmin membership','Privileged access',['SQL_SERVER_ROLES'],'Review all members of fixed sysadmin role for authorized access.','Excessive DBA privilege',()=>recordCoverage('server role','SQL_SERVER_ROLES',['principal_name'])());
+rule('mssql','MSSQL-04','High-risk server permissions','Privileged access',['SQL_PERMISSIONS'],'Review public and broad server-level permissions, including CONTROL SERVER and ALTER ANY LOGIN.','Privilege escalation',()=>evaluateRows(rows('SQL_PERMISSIONS'),{label:'server permission',expected:'No broad high-risk GRANT on PUBLIC; other grants require approval',reviewAlways:true,inspect:r=>{if(!mustField(r,'grantee_name','permission_name','state_desc'))return {kind:'review',reason:'Missing permission details'};if(/^public$/i.test(val(r,'grantee_name'))&&/CONTROL SERVER|ALTER ANY LOGIN|IMPERSONATE ANY LOGIN|UNSAFE ASSEMBLY/i.test(val(r,'permission_name'))&&/^GRANT/i.test(val(r,'state_desc')))return {kind:'fail',reason:'High-risk permission granted to PUBLIC'};return null;}}));
+rule('mssql','MSSQL-05','SQL Server Audit status','Audit & monitoring',['SQL_AUDITS'],'Confirm at least one server audit is enabled; policy coverage and retention require separate review.','Missing audit trail',()=>{const x=rows('SQL_AUDITS');return !x.length?review('No audit rows supplied','Enabled server audit(s); confirm full audit population'):x.some(r=>truth(val(r,'is_state_enabled'))===true)?review('Enabled audit object found; audit action coverage not established','Enabled audit(s), defined audit specifications and approved retention'):x.every(r=>truth(val(r,'is_state_enabled'))===false)?result('FAIL','All listed audits disabled','At least one appropriate audit enabled'):review('Audit state cannot be parsed','Valid state for all audit objects');});
+rule('mssql','MSSQL-06','Server audit specifications','Audit & monitoring',['SQL_AUDIT_SPECS'],'Review enabled audit specifications and action groups for logons and security changes.','Inadequate audit coverage',()=>{const x=rows('SQL_AUDIT_SPECS');return !x.length?review('No audit specifications supplied','Enabled security-relevant audit action coverage'):x.every(r=>truth(val(r,'is_state_enabled'))===false)?result('FAIL','All listed audit specifications disabled','Enabled server audit specification'):review(x.length+' specification/action records; scope needs auditor confirmation','Cover logon and changes to users, roles, permissions and audit settings',x.slice(0,35).map(r=>({item:val(r,'name'),action:val(r,'audit_action_name'),enabled:val(r,'is_state_enabled')})));});
+rule('mssql','MSSQL-07','Full backup currency','Backup & recovery',['SQL_BACKUPS','SQL_DATABASES'],'Check latest successful full backup per online database against configured maximum age.','Inadequate recoverability',()=>{const dbs=rows('SQL_DATABASES').filter(r=>!/^(?:master|model|msdb|tempdb)$/i.test(val(r,'name'))&&(!val(r,'state_desc')||/^ONLINE$/i.test(val(r,'state_desc'))));const xs=rows('SQL_BACKUPS');if(!xs.length)return review('No backup records','Successful full backups for all applicable databases');const names=dbs.length?dbs.map(r=>val(r,'name')):[...new Set(xs.map(r=>val(r,'database_name')).filter(Boolean))];const bad=[],unknown=[];for(const name of names){const rec=xs.filter(r=>val(r,'database_name')===name&&/^(?:D|FULL|DATABASE)$/i.test(val(r,'type'))&&(!val(r,'backup_status')||/success|complete/i.test(val(r,'backup_status'))));if(!rec.length){bad.push({item:name,reason:'No successful full backup in supplied history'});continue;}const a=rec.map(r=>ageDays(val(r,'backup_finish_date'),r._dbEvidenceDate)).filter(n=>n!==null&&n>=0);if(!a.length)unknown.push({item:name,reason:'Backup timestamp unavailable'});else if(Math.min(...a)>policyValue('backupMaxDays'))bad.push({item:name,reason:'Latest full backup '+Math.min(...a)+' days old'});}return result(bad.length?'FAIL':unknown.length?'REVIEW':'PASS',names.length+' databases; '+bad.length+' overdue/no backup; '+unknown.length+' unknown','Successful full backup ≤ '+policyValue('backupMaxDays')+' days',[...bad,...unknown]);});
+rule('mssql','MSSQL-08','TRUSTWORTHY and AUTO_CLOSE settings','Database hardening',['SQL_DATABASES'],'Review user databases with TRUSTWORTHY enabled or AUTO_CLOSE enabled.','Unsafe database configuration',()=>evaluateRows(rows('SQL_DATABASES').filter(r=>!/^(?:master|model|msdb|tempdb)$/i.test(val(r,'name'))),{label:'user database',expected:'TRUSTWORTHY=0; AUTO_CLOSE=0',inspect:r=>!mustField(r,'name','is_trustworthy_on','is_auto_close_on')?{kind:'review',reason:'Missing database setting'}:truth(val(r,'is_trustworthy_on'))===true||truth(val(r,'is_auto_close_on'))===true?{kind:'fail',reason:'TRUSTWORTHY or AUTO_CLOSE enabled'}:null}));
+rule('mssql','MSSQL-09','Guest access grants','Database hardening',['SQL_GUEST'],'Identify explicit CONNECT permissions granted to guest outside required system databases.','Unauthenticated or overbroad access',()=>evaluateRows(rows('SQL_GUEST'),{label:'guest permission',expected:'No unauthorized guest CONNECT grants to user databases',reviewAlways:true,inspect:r=>!mustField(r,'database_name','grantee_name','permission_name')?{kind:'review',reason:'Missing guest permission details'}:/^guest$/i.test(val(r,'grantee_name'))&&!/^(?:master|tempdb)$/i.test(val(r,'database_name'))&&/^CONNECT$/i.test(val(r,'permission_name'))&&/^GRANT$/i.test(val(r,'state_desc'))?{kind:'fail',reason:'Guest CONNECT explicitly granted'}:null}));
+rule('mssql','MSSQL-10','Agent job owners and enablement','Operations',['SQL_AGENT_JOBS'],'Review SQL Agent jobs, service accounts and owners for authorization and change control.','Unauthorized automated execution',()=>recordCoverage('SQL Agent job','SQL_AGENT_JOBS',['name'])());
+rule('mssql','MSSQL-11','Encrypted connection samples','Transport security',['SQL_CONNECTIONS'],'Inspect encrypted connection state; active sessions are a sample, not coverage of all endpoints.','Unencrypted connections',()=>evaluateRows(rows('SQL_CONNECTIONS'),{label:'sampled connection',expected:'encrypt_option = TRUE for connections requiring encryption',reviewAlways:true,inspect:r=>!mustField(r,'session_id','encrypt_option')?{kind:'review',reason:'Missing session encryption metadata'}:truth(val(r,'encrypt_option'))===false?{kind:'fail',reason:'Unencrypted connection observed'}:null}));
+rule('mssql','MSSQL-12','Contained database users','Identity lifecycle',['SQL_USERS'],'Review contained users and authorization separately from server logins.','Untracked database identities',()=>recordCoverage('database user','SQL_USERS',['name'])());
+rule('mssql','MSSQL-13','Database role membership','Privileged access',['SQL_ROLE_MEMBERS'],'Review db_owner and security-related database role members for authorization.','Excess database privilege',()=>recordCoverage('database role membership','SQL_ROLE_MEMBERS',['member_name'])());
+rule('mssql','MSSQL-14','SQL Server version inventory','Configuration',['SQL_VERSION'],'Record exact SQL Server build and edition; patch support requires current vendor lifecycle and patch references.','Unsupported or unpatched versions',()=>review(rows('SQL_VERSION').length+' version rows collected','Reconcile build, security updates and vendor support against approved patch policy'));
+// Oracle controls.
+rule('oracle','ORA-01','Password profile lifetime','Authentication',['ORA_PROFILES'],'Check explicit PASSWORD_LIFE_TIME limits for database profiles.','Passwords may never expire',()=>{const x=rows('ORA_PROFILES').filter(r=>/^PASSWORD_LIFE_TIME$/i.test(val(r,'resource_name')));return evaluateRows(x,{label:'profile lifetime',expected:'Positive lifetime ≤ '+policyValue('passwordMaxDays')+' days (DEFAULT needs resolution)',inspect:r=>{const n=num(val(r,'limit'));return /^UNLIMITED$/i.test(val(r,'limit'))?{kind:'fail',reason:'Password lifetime set to UNLIMITED'}:n===null?{kind:'review',reason:'DEFAULT or unresolved profile inheritance'}:n<=0||n>policyValue('passwordMaxDays')?{kind:'fail',reason:'Password lifetime '+n+' days exceeds baseline'}:null;}});});
+rule('oracle','ORA-02','Failed login profile limits','Authentication',['ORA_PROFILES'],'Review FAILED_LOGIN_ATTEMPTS by profile.','Password guessing',()=>evaluateRows(rows('ORA_PROFILES').filter(r=>/^FAILED_LOGIN_ATTEMPTS$/i.test(val(r,'resource_name'))),{label:'profile lockout',expected:'1–'+policyValue('failedLoginMax')+' failed attempts',inspect:r=>{const n=num(val(r,'limit'));return /^UNLIMITED$/i.test(val(r,'limit'))?{kind:'fail',reason:'Failed login attempts are UNLIMITED'}:n===null?{kind:'review',reason:'DEFAULT or unrecognized inherited setting'}:n<=0||n>policyValue('failedLoginMax')?{kind:'fail',reason:'Allowed attempts '+n}:null;}}));
+rule('oracle','ORA-03','Password reuse history','Authentication',['ORA_PROFILES'],'Review PASSWORD_REUSE_MAX and PASSWORD_REUSE_TIME in each profile; history counts require interpretation.','Password reuse',()=>evaluateRows(rows('ORA_PROFILES').filter(r=>/^PASSWORD_REUSE_MAX$/i.test(val(r,'resource_name'))),{label:'profile password history',expected:'PASSWORD_REUSE_MAX ≥ '+policyValue('historyMin')+' with compatible PASSWORD_REUSE_TIME',reviewAlways:true,inspect:r=>{const n=num(val(r,'limit'));return n===null?{kind:'review',reason:'UNLIMITED/DEFAULT or nonnumeric reuse setting'}:n<policyValue('historyMin')?{kind:'fail',reason:'Reuse history '+n+' < '+policyValue('historyMin')}:null;}}));
+rule('oracle','ORA-04','Open default accounts','User lifecycle',['ORA_USERS'],'Identify open built-in/sample accounts for review.','Exposed default credentials',()=>evaluateRows(rows('ORA_USERS'),{label:'database user',expected:'Sample accounts SCOTT, HR, OE, SH, BI disabled unless approved',reviewAlways:true,inspect:r=>/^(SCOTT|HR|OE|SH|BI)$/i.test(val(r,'username'))&&/^OPEN$/i.test(val(r,'account_status'))?{kind:'fail',reason:'Sample account OPEN'}:!mustField(r,'username','account_status')?{kind:'review',reason:'Missing username/account_status'}:null}));
+rule('oracle','ORA-05','DBA role grants','Privileged access',['ORA_ROLE_GRANTS'],'List DBA role grants for approval, including direct and inherited privilege paths.','Excess database administrative access',()=>recordCoverage('DBA role grant','ORA_ROLE_GRANTS',['grantee'])());
+rule('oracle','ORA-06','SYSDBA and SYSOPER users','Privileged access',['ORA_PWFILE'],'Review privileged password-file users and approvals.','High-impact access',()=>recordCoverage('password-file administrator','ORA_PWFILE',['username'])());
+rule('oracle','ORA-07','System privilege grants','Privileged access',['ORA_SYS_PRIVS'],'Review powerful privileges and PUBLIC grants against least privilege.','Uncontrolled system privileges',()=>evaluateRows(rows('ORA_SYS_PRIVS'),{label:'system privilege grant',expected:'No high-risk system privilege GRANT to PUBLIC without authorization',reviewAlways:true,inspect:r=>!mustField(r,'grantee','privilege')?{kind:'review',reason:'Missing grantee/privilege'}:/^PUBLIC$/i.test(val(r,'grantee'))&&/^(?:CREATE ANY|ALTER ANY|DROP ANY|GRANT ANY|SELECT ANY|ADMINISTER DATABASE|EXEMPT ACCESS POLICY|BECOME USER|SYSDBA)/i.test(val(r,'privilege'))?{kind:'fail',reason:'Broad system privilege granted to PUBLIC'}:null}));
+rule('oracle','ORA-08','Audit configuration','Audit & monitoring',['ORA_AUDIT_CONFIG'],'Review traditional and unified auditing state with edition/release context.','Inadequate audit logging',()=>{const r=rows('ORA_AUDIT_CONFIG');const t=r.find(x=>/^audit_trail$/i.test(val(x,'name')));if(!t)return review('Audit mode not evidenced','Audit trail or unified auditing enabled; support version-specific alternatives');if(/^NONE$/i.test(val(t,'value')))return result('FAIL','audit_trail=NONE','Enabled auditing unless unified-only mode proven');return review('audit_trail='+val(t,'value')+'; unified policy coverage unverified','Configured database audit trail and enabled policies');});
+rule('oracle','ORA-09','Unified audit policies','Audit & monitoring',['ORA_AUDIT_POLICIES'],'Inspect enabled unified audit policies and covered users.','Security events not recorded',()=>review(rows('ORA_AUDIT_POLICIES').length+' audit policy assignments supplied','Enabled policies cover privileged activity, logons and security changes'));
+rule('oracle','ORA-10','RMAN full backup currency','Backup & recovery',['ORA_RMAN_BACKUPS'],'Inspect successful full/database backups in supplied RMAN history.','Incomplete recovery',()=>{const r=rows('ORA_RMAN_BACKUPS').filter(x=>/^(?:DB FULL|DB INCR|FULL|DATABASE|DB FULL BACKUP)$/i.test(val(x,'input_type'))&&/^(?:COMPLETED|SUCCESS)$/i.test(val(x,'status')));if(!r.length)return review('No successful full RMAN backups identified','Successful full backup within '+policyValue('backupMaxDays')+' days');const ages=r.map(x=>ageDays(val(x,'end_time'),x._dbEvidenceDate)).filter(n=>n!==null&&n>=0);if(!ages.length)return review('Backup dates unparseable','Timestamped successful full backups');const last=Math.min(...ages);return result(last>policyValue('backupMaxDays')?'FAIL':'PASS','Latest successful full backup '+last+' days old','Age ≤ '+policyValue('backupMaxDays')+' days');});
+rule('oracle','ORA-11','Database links','External connectivity',['ORA_DB_LINKS'],'Review database links and fixed-user identities with approved integrations.','Unapproved cross-database access',()=>recordCoverage('database link','ORA_DB_LINKS',['db_link'])());
+rule('oracle','ORA-12','Remote OS authentication','Database hardening',['ORA_PARAMETERS'],'Flag explicit remote_os_authent=TRUE where parameter is supported; absent parameter requires version context.','Weak trusted authentication',()=>{const r=rows('ORA_PARAMETERS').filter(x=>/^remote_os_authent$/i.test(val(x,'name')));if(!r.length)return review('Parameter not in exported set / may not exist in release','remote_os_authent=FALSE where applicable');return evaluateRows(r,{label:'remote OS auth configuration',expected:'FALSE',inspect:x=>truth(val(x,'value'))===true?{kind:'fail',reason:'Remote OS authentication enabled'}:truth(val(x,'value'))===null?{kind:'review',reason:'Unrecognized parameter value'}:null});});
+rule('oracle','ORA-13','PUBLIC grants on sensitive packages','Privileged access',['ORA_TAB_PRIVS'],'Review EXECUTE granted to PUBLIC on network, file and job execution packages.','Potential escalation via powerful packages',()=>evaluateRows(rows('ORA_TAB_PRIVS'),{label:'object privilege grant',expected:'Sensitive PUBLIC EXECUTE grants are justified/restricted',reviewAlways:true,inspect:r=>/^PUBLIC$/i.test(val(r,'grantee'))&&/^EXECUTE$/i.test(val(r,'privilege'))&&/^(?:UTL_FILE|UTL_HTTP|UTL_TCP|DBMS_SCHEDULER|DBMS_SQL|DBMS_JAVA)$/i.test(val(r,'table_name'))?{kind:'review',reason:'Sensitive package EXECUTE grant requires approval'}:null}));
+rule('oracle','ORA-14','Oracle DB version and container scope','Configuration',['ORA_VERSION','ORA_CONTAINERS'],'Verify release, CDB/PDB scope and edition; obtain each applicable container’s evidence.','Incomplete scope or unsupported release',()=>review(rows('ORA_VERSION').length+' version and '+rows('ORA_CONTAINERS').length+' container rows','Document version, edition, target container and lifecycle support'));
+rule('oracle','ORA-15','Audit event samples','Audit & monitoring',['ORA_AUDIT_EVENTS'],'Review security event samples and retention separately; records alone do not demonstrate policy coverage.','Gaps in audit monitoring',()=>review(rows('ORA_AUDIT_EVENTS').length+' audit events exported','Verify audit policies, collection period, retention and alerting'));
+// SAP HANA controls. Property/value, user-group effective overrides must be interpreted separately.
+function hanaPolicy(property,key,op,description){return ()=>{const r=rows('HANA_PASSWORD_POLICY').filter(x=>val(x,'property').toLowerCase()===property);if(!r.length)return review('Password property '+property+' absent','Required '+description+' and review of group-specific overrides');return evaluateRows(r,{label:'password policy setting',expected:description,inspect:x=>{const n=num(val(x,'value'));return n===null?{kind:'review',reason:'Nonnumeric / inherited setting'}:op(n,policyValue(key))?null:{kind:'fail',reason:property+'='+n+' fails baseline '+policyValue(key)};}});};}
+rule('hana','HANA-01','Minimum password length','Authentication',['HANA_PASSWORD_POLICY'],'Check minimal_password_length against configured policy.','Weak passwords',hanaPolicy('minimal_password_length','minPasswordLength',(n,req)=>n>=req,'Minimum password length ≥ configured baseline'));
+rule('hana','HANA-02','Maximum password lifetime','Authentication',['HANA_PASSWORD_POLICY'],'Check maximum_password_lifetime for database-password users.','Passwords may not expire',hanaPolicy('maximum_password_lifetime','maxPasswordLifetime',(n,req)=>n>0&&n<=req,'Positive lifetime ≤ configured baseline'));
+rule('hana','HANA-03','Maximum invalid connect attempts','Authentication',['HANA_PASSWORD_POLICY'],'Check maximum_invalid_connect_attempts for lockout.','Brute-force attacks',hanaPolicy('maximum_invalid_connect_attempts','maxInvalidAttempts',(n,req)=>n>0&&n<=req,'1 to configured maximum invalid attempts'));
+rule('hana','HANA-04','Password history','Authentication',['HANA_PASSWORD_POLICY'],'Check last_used_passwords threshold.','Password reuse',hanaPolicy('last_used_passwords','historyMin',(n,req)=>n>=req,'Remembered passwords ≥ configured baseline'));
+rule('hana','HANA-05','Database user lifecycle','User lifecycle',['HANA_USERS'],'Review deactivated users, last successful connection and age of access.','Stale privileged database access',()=>evaluateRows(rows('HANA_USERS'),{label:'HANA user',expected:'Active users have reviewed access and no stale logon > '+policyValue('staleDays')+' days',reviewAlways:true,inspect:r=>{if(!mustField(r,'user_name','user_deactivated'))return {kind:'review',reason:'Missing user/status'};if(truth(val(r,'user_deactivated'))===true)return null;const d=val(r,'last_successful_connect');if(!d)return {kind:'review',reason:'No login date for enabled account'};const age=ageDays(d,r._dbEvidenceDate);return age===null?{kind:'review',reason:'Invalid last-login date'}:age>policyValue('staleDays')?{kind:'fail',reason:'Active user last connected '+age+' days ago'}:null;}}));
+rule('hana','HANA-06','SYSTEM user status','Privileged access',['HANA_USERS'],'Review status and use of SYSTEM administrative account.','Abuse of default administrator',()=>{const r=rows('HANA_USERS').filter(x=>/^SYSTEM$/i.test(val(x,'user_name')));return !r.length?review('SYSTEM not in supplied user population','Identify SYSTEM account and document use'):review('SYSTEM user state: '+val(r[0],'user_deactivated'),'Review approved emergency administration and traceability',[{item:'SYSTEM',reason:'Manual authorization check required'}]);});
+rule('hana','HANA-07','System privilege grants','Privileged access',['HANA_PRIVILEGES'],'Review system privileges including USER ADMIN, ROLE ADMIN, INIFILE ADMIN, AUDIT ADMIN and CATALOG READ.','Excessive privileged access',()=>recordCoverage('system privilege grant','HANA_PRIVILEGES',['grantee'])());
+rule('hana','HANA-08','Role assignments','Privileged access',['HANA_ROLES'],'Review sensitive role grants and recipient authorization.','Overprivileged roles',()=>recordCoverage('role grant','HANA_ROLES',['grantee'])());
+rule('hana','HANA-09','Audit service configuration','Audit & monitoring',['HANA_AUDIT_CONFIG','HANA_INIFILE'],'Review global_auditing_state and audit trail configuration in current tenant/system database.','Audit monitoring disabled',()=>{const x=[...rows('HANA_AUDIT_CONFIG'),...rows('HANA_INIFILE')].filter(r=>/global_auditing_state|audit_enabled/i.test(val(r,'key')));if(!x.length)return review('No auditable state configuration found','Configured database auditing; verify policies and trail');return evaluateRows(x,{label:'audit state',expected:'global auditing enabled',reviewAlways:true,inspect:r=>truth(val(r,'value'))===false?{kind:'fail',reason:'Audit disabled'}:truth(val(r,'value'))===null?{kind:'review',reason:'Unparseable audit state'}:null});});
+rule('hana','HANA-10','Audit policies enabled','Audit & monitoring',['HANA_AUDIT_POLICIES'],'Review defined enabled audit policies and their event coverage.','Critical changes not audited',()=>{const x=rows('HANA_AUDIT_POLICIES');if(!x.length)return review('No audit policy list','Enabled audit policies for logon/security changes');return evaluateRows(x,{label:'audit policy',expected:'Required policies enabled, event coverage reviewed',reviewAlways:true,inspect:r=>truth(val(r,'is_enabled'))===false?{kind:'review',reason:'Policy disabled; determine whether it is mandatory'}:null});});
+rule('hana','HANA-11','Complete data backup currency','Backup & recovery',['HANA_BACKUPS'],'Validate latest successful complete data backup in current tenant against baseline.','Backup/recovery loss',()=>{const x=rows('HANA_BACKUPS').filter(r=>/COMPLETE DATA BACKUP|COMPLETE_DATA_BACKUP|COMPLETE/i.test(val(r,'entry_type_name'))&&/SUCCESS|SUCCESSFUL|COMPLETED/i.test(val(r,'state_name')));if(!x.length)return review('No successful complete-data backup identified','Successful complete backup within '+policyValue('backupMaxDays')+' days');const days=x.map(r=>ageDays(val(r,'utc_end_time'),r._dbEvidenceDate)).filter(v=>v!==null&&v>=0);if(!days.length)return review('Backup timestamps missing/unparseable','Timestamped complete backup');const min=Math.min(...days);return result(min>policyValue('backupMaxDays')?'FAIL':'PASS','Latest complete backup '+min+' days old','Backup age ≤ '+policyValue('backupMaxDays')+' days');});
+rule('hana','HANA-12','Database version and tenant scope','Configuration',['HANA_SYSTEM'],'Record SAP HANA SPS/build and tenant context.','Unsupported/unassessed tenant',()=>review(rows('HANA_SYSTEM').length+' system/tenant records','Confirm supported SPS, tenant and evidence coverage'));
+rule('hana','HANA-13','Effective user-group password policies','Authentication',['HANA_USER_GROUP_POLICY'],'Review user-specific effective policy overrides in M_EFFECTIVE_PASSWORD_POLICY.','Weaker effective passwords',()=>evaluateRows(rows('HANA_USER_GROUP_POLICY'),{label:'effective policy row',expected:'No user-group overrides weaker than configured minimum password length',reviewAlways:true,inspect:r=>{if(!mustField(r,'user_name','property','value'))return {kind:'review',reason:'Incomplete effective setting'};if(/^minimal_password_length$/i.test(val(r,'property'))&&num(val(r,'value'))!==null&&num(val(r,'value'))<policyValue('minPasswordLength'))return {kind:'fail',reason:'Effective minimum length under policy'};return null;}}));
+rule('hana','HANA-14','Audit event records','Audit & monitoring',['HANA_AUDIT_EVENTS'],'Review audit trail sample and evidence of retention/monitoring.','Undetected database activity',()=>review(rows('HANA_AUDIT_EVENTS').length+' audit records supplied','Verify audited events, retention, complete time window and monitoring'));
+rule('hana','HANA-15','Active connection inventory','Operations',['HANA_CONNECTIONS'],'Review database connection identities and sources for investigation.','Unauthorized connections',()=>recordCoverage('active connection','HANA_CONNECTIONS',['user_name'])());
+// TXT evidence adapter: supports marked consolidated sections, pipe/tab/comma tables, SQL*Plus-style tables and key:value listings.
+function normalizeType(s){const k=String(s||'').trim().replace(/\.(txt|log)$/i,'').replace(/[^\w]+/g,'_').replace(/^_+|_+$/g,'').toUpperCase();return allTypes.includes(k)?k:null;}
+function detectType(engine,file,content){if(file.manualOverride&&Object.hasOwn(catalog[engine].fields,file.manualOverride))return file.manualOverride;const fname=normalizeType(file.name.replace(/\s*\[.*$/,''));if(fname&&Object.hasOwn(catalog[engine].fields,fname))return fname;const top=content.slice(0,3500).toLowerCase();const pattern={
+ mssql:[['SQL_LOGINS',/is_policy_checked.*is_expiration_checked|is_expiration_checked.*is_policy_checked/],['SQL_SERVER_ROLES',/role_name.*principal_name|principal_name.*role_name/],['SQL_PERMISSIONS',/permission_name.*state_desc.*grantee_name|grantee_name.*permission_name.*state_desc/],['SQL_AUDITS',/audit_guid|is_state_enabled.*on_failure_desc/],['SQL_AUDIT_SPECS',/audit_action_name/],['SQL_BACKUPS',/backup_finish_date/],['SQL_DATABASES',/is_trustworthy_on|is_auto_close_on/],['SQL_GUEST',/guest.*connect.*database_name/],['SQL_AGENT_JOBS',/owner_name.*enabled|enabled.*owner_name/],['SQL_VERSION',/product_version.*edition/],['SQL_CONNECTIONS',/encrypt_option/],['SQL_USERS',/authentication_type_desc/],['SQL_ROLE_MEMBERS',/member_name.*role_name/]],
+ oracle:[['ORA_PROFILES',/resource_name.*limit|profile.*resource_name/],['ORA_USERS',/account_status.*profile|username.*account_status/],['ORA_ROLE_GRANTS',/granted_role.*grantee|grantee.*granted_role/],['ORA_SYS_PRIVS',/grantee.*privilege/],['ORA_PWFILE',/username.*sysdba/],['ORA_AUDIT_CONFIG',/audit_trail/],['ORA_AUDIT_POLICIES',/policy_name.*enabled_option/],['ORA_RMAN_BACKUPS',/input_type.*status.*end_time|input_type.*end_time/],['ORA_DB_LINKS',/db_link.*username|owner.*db_link/],['ORA_PARAMETERS',/remote_os_authent/],['ORA_TAB_PRIVS',/table_name.*grantee.*privilege|grantee.*table_name.*privilege/],['ORA_VERSION',/oracle database.*release|oracle database.*version/],['ORA_CONTAINERS',/con_id.*open_mode/],['ORA_AUDIT_EVENTS',/event_timestamp.*dbusername/]],
+ hana:[['HANA_PASSWORD_POLICY',/minimal_password_length|maximum_invalid_connect_attempts|maximum_password_lifetime/],['HANA_USERS',/user_name.*user_deactivated|user_deactivated.*user_name/],['HANA_PRIVILEGES',/grantee.*privilege/],['HANA_ROLES',/grantee.*role_name/],['HANA_AUDIT_CONFIG',/global_auditing_state/],['HANA_AUDIT_POLICIES',/policy_name.*is_enabled/],['HANA_BACKUPS',/entry_type_name.*state_name|utc_end_time.*state_name/],['HANA_SYSTEM',/version_string|database_name.*version/],['HANA_INIFILE',/file_name.*section.*key.*value/],['HANA_AUDIT_EVENTS',/event_time.*user_name.*action/],['HANA_USER_GROUP_POLICY',/user_name.*property.*value/],['HANA_CONNECTIONS',/connection_id.*connection_status/]]};
+ for(const [k,re]of pattern[engine])if(re.test(top))return k;return null;}
+function parseDelimited(lines){const clean=lines.filter(l=>l.trim()&&!/^\s*(?:\(\d+ rows? affected\)|\d+ rows? selected\.?|rows? selected\.?|SQL>|hdbsql>|SQLCMD>)/i.test(l.trim()));if(!clean.length)return [];
+ const top=clean.findIndex(l=>!/^[-=+|\s]+$/.test(l)&&!/^(?:#|--)/.test(l.trim()));if(top<0)return [];
+ const h=clean[top];let split;let separator='';if(h.includes('|')){separator='|';split=l=>l.split('|').map(x=>x.trim()).filter((x,i,a)=>!(i===0&&!x)&&!(i===a.length-1&&!x));}else if(h.includes('\t')){separator='\t';split=l=>l.split('\t').map(x=>x.trim());}else if(h.includes(',')&&h.split(',').length>1){separator=',';split=l=>csvRows(l)[0]?.map(x=>x.trim())||[];}else if(/\s{2,}/.test(h)){separator='spaces';split=l=>l.trim().split(/\s{2,}/).map(x=>x.trim());}else return [];
+ let header=split(h).map(v=>v.replace(/^"|"$/g,'').trim());if(header.length<2)return [];const rows=[];for(const l of clean.slice(top+1)){if(/^\s*[-=+|\s]{4,}\s*$/.test(l))continue;const cells=split(l);if(cells.length<2||cells.every(x=>/^[-=]+$/.test(x)))continue;if(cells.length!==header.length)continue;if(cells.every((v,i)=>v===header[i]))continue;const r={};header.forEach((k,i)=>{r[k]=cells[i]});rows.push(r);}return rows;}
+function parseTxt(content){const cleaned=String(content).replace(/^\uFEFF/,'').replace(/\r\n?/g,'\n');const lines=cleaned.split('\n').filter(l=>!/^(?:#\s*)?(?:EvidenceDate|CollectionDate|CollectedAt|Instance|SID|Tenant|DatabaseScope|RowCount)\s*[:=]\s*/i.test(l));
+ // Format-List style: Field: Value, blank line between records (SQL client wrappers can use same format).
+ const kv=lines.filter(x=>/^\s*[A-Za-z_][\w .()-]{0,75}\s*:\s*/.test(x));if(kv.length>=2&&kv.length/Math.max(1,lines.filter(l=>l.trim()).length)>.55){const data=parseFormatList(lines.join('\n'));return {rows:data,warnings:[]};}
+ const tbl=parseDelimited(lines);if(tbl.length)return {rows:tbl,warnings:[]};
+ if(/(?:\d+ rows? selected|\(0 rows? affected\)|no rows selected|0 rows selected)/i.test(cleaned))return {rows:[],warnings:['Query returned no rows; confirm the exported population and permissions.']};
+ return {rows:[],warnings:['No supported TXT table or field-list records detected. Supply untruncated column-labelled output.']};}
+function sliceSections(file){const lines=file.content.split('\n'),marks=[];for(let i=0;i<lines.length;i++){const m=lines[i].match(/^\s*(?:={3,}\s*([A-Za-z][\w -]{2,70})\s*={3,}|--\s*BEGIN\s+([A-Za-z][\w -]{2,70})\s*--|\[([A-Za-z][\w -]{2,70})\])\s*$/i);if(m)marks.push({i,section:(m[1]||m[2]||m[3]).trim()});}
+ if(!marks.length)return [{name:file.name,content:file.content,type:null}];const slices=[];if(marks[0].i>0&&lines.slice(0,marks[0].i).join('').trim())slices.push({name:file.name+' [preamble]',content:lines.slice(0,marks[0].i).join('\n'),type:null});for(let i=0;i<marks.length;i++){const from=marks[i].i+1,to=marks[i+1]?.i??lines.length;slices.push({name:file.name+' ['+marks[i].section+']',content:lines.slice(from,to).join('\n'),type:normalizeType(marks[i].section)});}return slices;}
+function redactDB(text){return String(text).split('\n').map(line=>{if(/^\s*(?:password|password_hash|credential|secret|private_key|access_token|connection_string|pwd)\s*[:=|]/i.test(line))return line.replace(/([:=|]).*$/,'$1 [REDACTED]');return line;}).join('\n');}
+function parseEvidence(){DB.blocks=[];DB.warning=[];for(const file of State.files){let successes=0,hasUnknown=false,warnings=[];const units=sliceSections(file);for(const unit of units){if(!unit.content.trim())continue;const key=unit.type||detectType(DB.engine,file,unit.content);if(key&&!Object.hasOwn(catalog[DB.engine].fields,key)){warnings.push('Section '+key+' is for a different database engine; excluded.');hasUnknown=true;continue;}if(!key){if(unit.type===null){hasUnknown=true;warnings.push('Unrecognized section '+unit.name+'. Use a supported section label or matching file name.');}continue;}
+ const dateText=(unit.content.match(/^\s*(?:EvidenceDate|CollectionDate|CollectedAt)\s*[:=]\s*(.+)$/im)||file.content.match(/^\s*(?:EvidenceDate|CollectionDate|CollectedAt)\s*[:=]\s*(.+)$/im))?.[1];const collectionDate=dateText?date(dateText):null;const out=parseTxt(unit.content);if(dateText&&!collectionDate)out.warnings.push('Unparseable evidence collection date.');if(/(?:access denied|insufficient privileges|ORA-\d{5}|Msg \d+, Level|error executing|permission denied|not authorized)/i.test(unit.content))out.warnings.push('Collection error or insufficient permissions in TXT output.');if(/(?:\.\.\.|…)$/.test(unit.content.trim()))out.warnings.push('Evidence appears truncated.');const block={file,key,section:unit.name,rows:out.rows,warnings:out.warnings,evidenceDate:collectionDate};DB.blocks.push(block);successes++;warnings.push(...out.warnings.map(w=>unit.name+': '+w));}
+ file.type=successes?[...new Set(DB.blocks.filter(b=>b.file===file).map(b=>b.key))].join(', '):'Unrecognized DB evidence';file.status=warnings.length?'Manual review':successes?'Parsed':'Unrecognized';file.dbWarnings=warnings;if(hasUnknown)DB.warning.push(file.name+': at least one unrecognized or cross-engine section was excluded.');if(warnings.length)DB.warning.push(...warnings.map(w=>file.name+': '+w));}UI.renderFileTable();renderWarnings();}
+function runRules(){Lens.results=[];const list=DB.rules[DB.engine],wp=current();for(const r of list){const related=DB.blocks.filter(b=>r.needs.includes(b.key)),available=related.filter(b=>!b.file.collectorFailed&&!b.file.excluded);let z;if(Lens.na[r.id])z=result('N/A','Auditor marked not applicable: '+Lens.na[r.id],r.testPerformed);else if(!available.length)z=result('NT','Required TXT evidence missing',r.targetEvidence);else if(available.some(b=>b.warnings.length))z=review('Evidence parse / extraction warnings','Supply complete, untruncated TXT evidence',available.flatMap(b=>b.warnings.map(reason=>({item:b.file.name,reason}))));else try{z=r.check();}catch(e){z=review('Unable to evaluate: '+e.message,r.testPerformed);}const exceptions=z.exceptions||[],text=exceptions.length?'\nExceptions / population:\n'+exceptions.map(x=>Object.entries(x).map(([k,v])=>k+': '+v).join(' | ')).join('\n'):'';Lens.results.push({...r,...z,observation:z.observed+'. Expected: '+z.expected,val:z.observed+text,src:available.map(b=>b.file.name+' ['+b.key+']').join('; ')||'Evidence missing',line:available.some(b=>b.evidenceDate)?'Collection date provided':'Evaluation date: analysis day',params:z.params||[]});}Lens.dirty=false;Upgrade.dirty=false;wp.results=Lens.results;wp.dirty=false;State.stats={pass:Lens.results.filter(r=>r.status==='PASS').length,fail:Lens.results.filter(r=>r.status==='FAIL').length,warn:Lens.results.filter(r=>r.status==='REVIEW').length,tested:Lens.results.filter(r=>['PASS','FAIL','REVIEW'].includes(r.status)).length};renderResults();notify('Analysis complete: '+Lens.results.length+' '+catalog[DB.engine].name+' checks; '+State.stats.tested+' assessed.');switchTab('tab-findings');}
+function persist(){if(!DB.active)return;const s=current();s.files=State.files;s.name=document.getElementById('server-name').value.trim();s.remarks=Lens.remarks;s.na=Lens.na;s.results=Lens.results;s.dirty=Lens.dirty;}
+function swap(engine){if(!catalog[engine])return;if(DB.active)persist();else {DB.legacy={files:State.files,name:document.getElementById('server-name').value,windowsSelected:Win.selected,remarks:Lens.remarks,na:Lens.na,results:Lens.results,dirty:Lens.dirty,context:Lens.context};}DB.active=true;DB.engine=engine;const s=current();State.files=s.files;Lens.remarks=s.remarks;Lens.na=s.na;Lens.results=s.results;Lens.dirty=s.dirty;document.getElementById('server-name').value=s.name;Lens.context={server:s.name,dbEngine:engine};document.getElementById('ws-server').textContent=s.name||'Not entered';navigateTo('analyzer-workspace');switchTab('tab-upload');dbPresent();parseEvidence();renderResults();}
+function exit(){if(!DB.active)return;persist();const l=DB.legacy;DB.active=false;DB.engine=null;State.files=l.files;Win.selected=l.windowsSelected;document.getElementById('server-name').value=l.name;Lens.remarks=l.remarks;Lens.na=l.na;Lens.results=l.results;Lens.dirty=l.dirty;Lens.context=l.context;document.getElementById('ws-server').textContent=l.name||'Not entered';DB.blocks=[];DB.warning=[];}
+function dbPresent(){const engine=DB.engine,s=catalog[engine];document.getElementById('windows-scope-row').classList.add('hidden');document.getElementById('assessment-target-heading').textContent='Database Instance Details';document.getElementById('assessment-name-label').textContent=s.label+' *';document.getElementById('ws-scope-label').textContent='Database';document.getElementById('server-name').placeholder=engine==='mssql'?'e.g. SQLSRV01\\PROD':engine==='oracle'?'e.g. ORCL / PROD_PDB':'e.g. HANA PRD / TENANT';document.getElementById('assessment-name-hint').textContent='Identify the specific instance/tenant before analysis. TXT exports from different databases must be assessed separately.';document.getElementById('upload-formats').textContent='Supported format: TXT only · individual or consolidated labeled sections';document.getElementById('file-input').accept='.txt';document.querySelector('#tab-policy > .grid').classList.add('hidden');document.getElementById('windows-policy').classList.add('hidden');document.getElementById('db-policy').classList.remove('hidden');for(const id of ['guide-unix-title','guide-controls','guide-aix-title','guide-aix-desc','guide-templates'])document.getElementById(id).classList.add('hidden');const wg=document.getElementById('windows-guide');if(wg)wg.classList.add('hidden');document.getElementById('database-guide').classList.remove('hidden');document.getElementById('ws-os').textContent=s.name;renderDBPolicy();renderDBGuide();}
+function renderDBPolicy(){const c=catalog[DB.engine],host=document.getElementById('db-policy');host.innerHTML='<div class="premium-card"><h3>Database Policy Baselines</h3><p class="mb-4">Thresholds are specific to '+esc(c.name)+'. Audit-only population listings remain REVIEW until validated.</p>'+c.policy.map(([k,label,,min,max])=>'<div class="form-group flex justify-between items-center" style="gap:1rem"><label for="dbpol_'+esc(k)+'" class="form-label" style="margin:0">'+esc(label)+'</label><input class="form-input" id="dbpol_'+esc(k)+'" type="number" step="1" min="'+min+'" max="'+max+'" value="'+current().policy[k]+'" style="width:120px"></div>').join('')+'</div><div class="premium-card"><h3>Database Applicability</h3><p>'+esc(c.applicable)+'</p><p class="mt-4">One assessment per database instance/tenant. SQL Server instance roles, Oracle PDB/CDB grants and SAP HANA tenant controls require the appropriate evidence scope.</p></div>';}
+function renderDBGuide(){const c=catalog[DB.engine],list=DB.rules[DB.engine];document.getElementById('database-guide').innerHTML='<h3 class="mb-4">'+esc(c.name)+' — '+list.length+' registered ITGC checks</h3><p class="mb-4"><b>DB applicability:</b> '+esc(c.applicable)+'</p><p class="mb-4">TXT only: use per-control files named after the evidence type (for example '+esc(Object.keys(c.fields)[0])+'.txt), or a consolidated TXT containing section markers such as <code>=== '+esc(Object.keys(c.fields)[0])+' ===</code>. Pipe, tab, comma, SQL*Plus-aligned and field-list outputs are accepted when column names match. SQL collection scripts are out of scope. Extract only necessary metadata and omit credentials/password hashes. Missing evidence: NOT TESTED. Incomplete/ambiguous evidence: REVIEW.</p>'+list.map(r=>'<details class="premium-card guide-control mb-4"><summary><span class="badge">'+esc(r.id)+'</span><strong>'+esc(r.title)+'</strong><span class="guide-domain">'+esc(r.area)+'</span></summary><div class="guide-body"><p><b>Engine:</b> '+esc(c.name)+'</p><p><b>Evidence source & required TXT columns:</b> '+esc(r.targetEvidence)+'</p><p><b>Test performed:</b> '+esc(r.testPerformed)+'</p><p><b>Risk:</b> '+esc(r.risk)+'</p><p><b>Action:</b> '+esc(r.rec)+'</p><p><b>Conclusions:</b> PASS for supported quantitative checks only; FAIL for demonstrable exceptions; REVIEW for access populations, approval, missing coverage, or uncertain output.</p></div></details>').join('');}
+function readDBPolicy(){const c=catalog[DB.engine],next={...current().policy};for(const [key,label,,min,max]of c.policy){const el=document.getElementById('dbpol_'+key);if(!el)throw Error('Missing database policy field '+key);const n=Number(el.value);if(!el.value.trim()||!Number.isInteger(n)||n<min||n>max)throw Error('Enter a valid '+label+' ('+min+'–'+max+').');next[key]=n;}current().policy=next;}
+async function uploadDB(files){if(DB.busy)return;DB.busy=true;const errors=[];try{for(const f of Array.from(files)){try{if(!/\.txt$/i.test(f.name))throw Error('Database assessments accept TXT only.');if(f.size>30*1024*1024)throw Error('Maximum 30 MB per evidence file.');const bytes=new Uint8Array(await f.arrayBuffer());if(bytes.includes(0)&&!((bytes[0]===255&&bytes[1]===254)||(bytes[0]===254&&bytes[1]===255))){const sample=bytes.slice(0,8192);let odd=0,even=0;sample.forEach((b,i)=>{if(b===0)(i%2?odd++:even++);});if(!(odd>sample.length*.15&&odd>even*3))throw Error('Binary or unsupported text encoding.');}const content=redactDB(decodeEvidenceBytes(bytes));if(State.files.reduce((n,f)=>n+f.content.length,0)+content.length>100*1024*1024)throw Error('Assessment text exceeds 100 MB.');if(State.files.some(x=>x.name===f.name&&x.content===content)){errors.push(f.name+': duplicate skipped');continue;}State.files.push({name:f.name,origin:f.name,content,manualOverride:null,type:'',status:'Unprocessed',segmented:true});}catch(e){errors.push(f.name+': '+e.message);}}parseEvidence();invalidate();notify(errors.length?errors.join(' | '):State.files.length+' TXT evidence files loaded for '+catalog[DB.engine].name+'.');}finally{DB.busy=false;document.getElementById('file-input').value='';}}
+const originals={openWorkspace,activeControlRules,sources,refreshEvidence,refreshScopePresentation,readPolicy,runAnalysisEngine,processUpload,saveAssessment,loadAssessment,exportReport,exportOriginal,syncServer,renderFileTable:UI.renderFileTable,renderWarnings};
+openWorkspace=function(platform){if(DB.active)exit();return originals.openWorkspace(platform);};
+activeControlRules=function(){return DB.active?DB.rules[DB.engine]:originals.activeControlRules();};
+sources=function(r){if(DB.active)return [...new Set(DB.blocks.filter(b=>r.needs?.includes(b.key)).map(b=>b.file))];return originals.sources(r);};
+refreshEvidence=function(){if(DB.active)return parseEvidence();return originals.refreshEvidence();};
+refreshScopePresentation=function(){if(DB.active)return dbPresent();const r=originals.refreshScopePresentation();document.getElementById('db-policy').classList.add('hidden');document.getElementById('database-guide').classList.add('hidden');const wg=document.getElementById('windows-guide');if(wg&&Win.selected)wg.classList.remove('hidden');return r;};
+readPolicy=function(){if(DB.active)return readDBPolicy();return originals.readPolicy();};
+runAnalysisEngine=function(){if(!DB.active)return originals.runAnalysisEngine();syncServer();if(!Lens.context.server){notify('Enter the database instance / tenant name before running analysis.');switchTab('tab-upload');document.getElementById('server-name').focus();return;}try{readDBPolicy();parseEvidence();runRules();}catch(e){invalidate();notify('DB analysis could not complete: '+e.message);console.error(e);}};
+processUpload=function(files){return DB.active?uploadDB(files):originals.processUpload(files);};
+syncServer=function(){if(!DB.active)return originals.syncServer();const name=document.getElementById('server-name').value.trim();current().name=name;Lens.context={server:name,dbEngine:DB.engine};document.getElementById('ws-server').textContent=name||'Not entered';};
+UI.renderFileTable=function(){if(!DB.active)return originals.renderFileTable();const keys=Object.keys(catalog[DB.engine].fields);document.getElementById('file-list-body').innerHTML=State.files.map((f,i)=>'<tr><td><strong>'+esc(f.name)+'</strong><details><summary>Preview TXT evidence</summary><pre style="white-space:pre-wrap;max-height:240px;overflow:auto">'+esc(f.content.slice(0,12000))+'</pre></details></td><td><select class="form-input" aria-label="Override database evidence classification" onchange="dbReclassify('+i+',this.value)"><option value="">Auto-detect</option>'+keys.map(k=>'<option value="'+k+'" '+(f.manualOverride===k?'selected':'')+'>'+k+'</option>').join('')+'</select><p>'+esc(f.type||'Not classified')+'</p></td><td>'+esc(f.status||'Unknown')+'</td><td style="text-align:right"><button class="btn btn-danger" onclick="removeEvidence('+i+')">Remove</button></td></tr>').join('')||'<tr><td colspan="4">No evidence uploaded yet.</td></tr>';};
+renderWarnings=function(){if(!DB.active)return originals.renderWarnings();document.getElementById('evidence-warnings').innerHTML=[...new Set(DB.warning)].map(w=>'<p class="toast-banner">'+esc(w)+'</p>').join('');};
+window.dbReclassify=function(index,type){if(!DB.active)return;State.files[index].manualOverride=type||null;refreshEvidence();invalidate();};
+// Original save/load format is left untouched for legacy engines. DB workspace JSON is isolated and validated.
+saveAssessment=function(){if(!DB.active)return originals.saveAssessment();try{syncServer();readDBPolicy();persist();const payload={format:'it-controllens-db',version:1,activeEngine:DB.engine,workspaces:Object.fromEntries(Object.entries(DB.workspaces).map(([k,v])=>[k,{name:v.name,policy:v.policy,remarks:v.remarks,na:v.na,files:v.files.map(f=>({name:f.name,content:redactDB(f.content),manualOverride:f.manualOverride||null}))}]))};download('IT_ControlLens_DB_Assessment.json',JSON.stringify(payload,null,2),'application/json');}catch(e){alert(e.message);}};
+loadAssessment=async function(file){if(file.size>150*1024*1024){alert('Assessment exceeds 150 MB.');return;}let obj;try{obj=JSON.parse(await file.text());}catch(e){alert('Invalid JSON assessment: '+e.message);return;}if(obj.format!=='it-controllens-db'){if(DB.active)exit();return originals.loadAssessment(file);}try{if(obj.version!==1||!catalog[obj.activeEngine]||typeof obj.workspaces!=='object'||!obj.workspaces)throw Error('Unsupported DB assessment format.');const replace=Object.create(null);for(const [engine,v]of Object.entries(obj.workspaces)){if(!catalog[engine])throw Error('Unknown DB engine '+engine);if(!v||typeof v.name!=='string'||v.name.length>255||!Array.isArray(v.files)||v.files.length>1000)throw Error('Invalid workspace');const policy=Object.fromEntries(catalog[engine].policy.map(([key,,,min,max])=>{const n=v.policy?.[key];if(!Number.isInteger(n)||n<min||n>max)throw Error('Invalid policy: '+key);return [key,n];}));let size=0;const files=v.files.map(f=>{if(typeof f.name!=='string'||!/^.{1,255}\.txt$/i.test(f.name)||typeof f.content!=='string'||f.content.length>30*1024*1024)throw Error('Invalid TXT evidence file');size+=f.content.length;return {name:f.name,origin:f.name,content:redactDB(f.content),manualOverride:Object.hasOwn(catalog[engine].fields,f.manualOverride)?f.manualOverride:null,status:'Unprocessed',type:'',segmented:true};});if(size>100*1024*1024)throw Error('Evidence size exceeds 100 MB');replace[engine]={name:v.name,files,policy,remarks:Object.assign(Object.create(null),v.remarks||{}),na:Object.assign(Object.create(null),v.na||{}),results:[],dirty:true};}if(DB.active)exit();DB.workspaces=replace;swap(obj.activeEngine);notify('Database assessment loaded. Run analysis to refresh results.');}catch(e){alert('Could not load DB assessment: '+e.message);}};
+exportReport=function(){if(!DB.active)return originals.exportReport();if(Lens.dirty){alert('Run analysis before exporting.');return;}const c=catalog[DB.engine],r=Lens.results;let html='<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\';style-src \'unsafe-inline\'"><title>IT ControlLens DB report</title><style>body{font:14px system-ui;max-width:1100px;margin:36px auto;color:#1e293b}section{border-top:1px solid #ddd;padding:18px 0}pre{white-space:pre-wrap}p{line-height:1.55}</style></head><body><h1>'+esc(c.name)+' — ITGC Assessment</h1><p>Database instance: '+esc(Lens.context.server)+' | Checks: '+r.length+'</p><p>Platform scope: '+esc(c.applicable)+'</p><h2>Configured policy</h2><pre>'+esc(JSON.stringify(current().policy,null,2))+'</pre>'+r.map(x=>'<section><h2>'+esc(x.id+' — '+x.title+' — '+x.status)+'</h2><p><b>Objective:</b> '+esc(x.testPerformed)+'</p><p><b>Evidence:</b> '+esc(x.src)+'</p><p><b>Observation:</b> '+esc(x.observation)+'</p><pre>'+esc(x.val)+'</pre><p><b>Risk:</b> '+esc(x.risk)+'</p><p><b>Auditor remarks:</b> '+esc(Lens.remarks[x.id]||'')+'</p></section>').join('')+'</body></html>';download('IT_ControlLens_'+DB.engine.toUpperCase()+'_Report.html',html,'text/html');};
+exportOriginal=function(method){if(!DB.active)return originals.exportOriginal(method);if(Lens.dirty){alert('Run analysis before exporting.');return;}const saved=State.findings,savedOS=State.os;const fw={id:'DB.'+DB.engine.toUpperCase(),name:catalog[DB.engine].name,desc:'Database ITGC assessment'};ControlFramework.push(fw);State.findings=Lens.results.map(r=>({...r,status:r.status==='REVIEW'?'WARNING':r.status,observation:r.observation+(Lens.remarks[r.id]?' Auditor notes: '+Lens.remarks[r.id]:''),val:r.val,src:r.src}));State.os={...State.os,family:catalog[DB.engine].name};try{Exporters[method]();}finally{State.findings=saved;State.os=savedOS;ControlFramework.pop();}};
+function installUI(){const card=document.getElementById('db-target-card');if(!card)throw Error('Missing database target card');const sel=document.getElementById('db-sub-selector');card.onclick=()=>{sel.classList.toggle('hidden');card.classList.toggle('db-selected',!sel.classList.contains('hidden'));if(!sel.classList.contains('hidden'))sel.scrollIntoView({behavior:'smooth',block:'nearest'});};document.querySelectorAll('[data-db-engine]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-db-engine]').forEach(b=>b.classList.toggle('selected',b===btn));swap(btn.dataset.dbEngine);}));const panel=document.createElement('div');panel.id='db-policy';panel.className='grid grid-cols-2 gap-8 hidden';document.getElementById('tab-policy').append(panel);const guide=document.createElement('div');guide.id='database-guide';guide.className='hidden';document.getElementById('tab-matrix').append(guide);document.getElementById('tab-policy').addEventListener('input',e=>{if(DB.active&&e.target.id.startsWith('dbpol_'))invalidate();});window.ITControlLens=window.ITControlLens||{};window.ITControlLens.Database={catalog,DB,parseTxt,detectType,parseEvidence,runRules};}
+installUI();
+})();
+
+</script>
+<script>
+/* IT ControlLens SAP Landscape adapter. Only ABAP and AS Java; HANA remains under Database.
+   This module is appended after the existing OS/Windows/DB modules. No existing parser is edited. */
+(function () {
+'use strict';
+const SAP = {active:false,engine:null,legacy:null,workspaces:Object.create(null),blocks:[],warnings:[],busy:false};
+const MAX_FILE=8*1024*1024, MAX_TOTAL=24*1024*1024, MAX_LINES=12000, MAX_ROWS=5000, MAX_FILES=50;
+const catalog={
+ abap:{name:'SAP ABAP (ECC & S/4HANA)',label:'SAP system / client',applicable:'SAP NetWeaver AS ABAP supporting ECC and SAP S/4HANA. Review effective instance/profile parameters, target SAP client and active application servers separately when required.',keys:{PARAMETERS:'RSPFPAR or RSPARAM parameter name and current value',DEFAULT_USERS:'RSUSR003 output or filtered USR02 (MANDT, BNAME, UFLAG; password assessment)',PRIVILEGED_PROFILES:'UST04 (MANDT, BNAME, PROFILE)',CLIENTS:'T000 (MANDT, CCCATEGORY, CCNOCLIIND)'},policy:[['passwordMin','Minimum password length',8,1,128],['passwordAge','Maximum password expiration (days)',90,1,3650],['failedLogons','Maximum failed attempts before user lock',5,1,100],['historyMin','Minimum password history count',5,0,100]]},
+ java:{name:'SAP AS Java',label:'SAP AS Java system / UME',applicable:'SAP NetWeaver AS Java with User Management Engine (UME). Actual property names, data source and administrative screens may vary by NetWeaver version and authentication provider.',keys:{UME_POLICY:'UME security-policy property names and effective values',ADMINISTRATORS:'UME Administrators group member listing'},policy:[['passwordMin','Minimum password length',8,1,128],['passwordAge','Maximum password expiration (days)',90,1,3650],['failedLogons','Maximum failed login attempts before lock',5,1,100]]}
+};
+const typeAlias={
+ PARAMETERS:['PARAMETERS','SAP_ABAP_PARAMETERS','RSPFPAR','RSPARAM','PROFILE_PARAMETERS'],
+ DEFAULT_USERS:['DEFAULT_USERS','SAP_ABAP_DEFAULT_USERS','RSUSR003','USR02'],
+ PRIVILEGED_PROFILES:['PRIVILEGED_PROFILES','SAP_ABAP_PRIVILEGED_PROFILES','UST04'],
+ CLIENTS:['CLIENTS','SAP_ABAP_CLIENTS','T000'],
+ UME_POLICY:['UME_POLICY','SAP_JAVA_UME_POLICY','UME_PROPERTIES','JAVA_SECURITY_POLICY'],
+ ADMINISTRATORS:['ADMINISTRATORS','SAP_JAVA_ADMINISTRATORS','JAVA_ADMINISTRATORS','UME_ADMINISTRATORS']
+};
+const allowed={abap:new Set(Object.keys(catalog.abap.keys)),java:new Set(Object.keys(catalog.java.keys))};
+const rules={abap:[],java:[]};
+const norm=x=>String(x??'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+const val=(obj,...keys)=>{if(!obj)return '';const map=Object.keys(obj);for(const k of keys){const found=map.find(name=>norm(name)===norm(k));if(found!==undefined)return String(obj[found]??'').trim();}return '';};
+const nval=x=>{const t=String(x??'').trim();return /^-?\d+$/.test(t)?Number(t):null;};
+const safe=x=>esc(String(x??''));
+const result=(status,observation,expected,exceptions=[])=>({status,observed:String(observation),expected:String(expected),exceptions:exceptions.slice(0,100)});
+const review=(obs,expected,exceptions=[])=>result('REVIEW',obs,expected,exceptions);
+function ws(engine){if(!SAP.workspaces[engine])SAP.workspaces[engine]={name:'',files:[],policy:Object.fromEntries(catalog[engine].policy.map(([k,,d])=>[k,d])),remarks:Object.create(null),na:Object.create(null),results:[],dirty:true};return SAP.workspaces[engine];}
+const current=()=>ws(SAP.engine);
+function canonical(name){const k=norm(name);for(const [key,aliases] of Object.entries(typeAlias))if(aliases.some(x=>norm(x)===k))return key;return null;}
+function lineClean(s){return String(s).replace(/^\uFEFF/,'').replace(/\r\n?/g,'\n');}
+function isRule(s){return /^\s*[|+\-=\s]{3,}\s*$/.test(s)||/^\s*\+[-+]+\+\s*$/.test(s);}
+function csvSplit(s){const out=[];let q=false,token='';for(let i=0;i<s.length;i++){const ch=s[i];if(ch==='"'){if(q&&s[i+1]==='"'){token+='"';i++;}else q=!q;}else if(ch===','&&!q){out.push(token.trim());token='';}else token+=ch;}if(q)throw Error('Unclosed CSV quoted field');out.push(token.trim());return out;}
+function splitCells(s,mode){const t=s.trim();let a;
+ if(mode==='pipe'){a=t.split('|').map(x=>x.trim());if(t.startsWith('|'))a.shift();if(t.endsWith('|'))a.pop();}
+ else if(mode==='tab')a=t.split('\t').map(x=>x.trim());
+ else if(mode==='comma')a=csvSplit(t);
+ else a=t.split(/\s{2,}/).map(x=>x.trim());
+ return a.map(x=>x.replace(/^"|"$/g,'').trim());}
+function tableParse(raw,requiredAny){
+ try{
+  const lines=lineClean(raw).split('\n');if(lines.length>MAX_LINES)throw Error('Exceeds '+MAX_LINES+' lines; export a smaller, filtered table.');
+  let ix=-1,mode='',headers=[];
+  for(let i=0;i<lines.length;i++){
+   const l=lines[i].trim();if(!l||isRule(l)||/^(?:#|--|\*\*)/.test(l))continue;
+   const m=l.includes('|')?'pipe':l.includes('\t')?'tab':l.includes(',')?'comma':/\s{2,}/.test(l)?'spaces':'';
+   if(!m)continue;const cells=splitCells(l,m);if(cells.length<2||cells.length>60)continue;
+   if(cells.some(c=>requiredAny.some(k=>norm(k)===norm(c)))){ix=i;mode=m;headers=cells;break;}
+  }
+  if(ix<0)return {rows:[],warnings:['Required SAP GUI table header not found. Supply untruncated column names in the first row.']};
+  const rows=[];let malformed=0;
+  for(const rawLine of lines.slice(ix+1)){
+   const l=rawLine.trim();if(!l||isRule(l)||/^\s*(?:#|--|\*\*|\d+\s+(?:entries|rows)|no entries found)/i.test(l))continue;
+   if(rows.length>=MAX_ROWS)throw Error('More than '+MAX_ROWS+' rows; export a filtered population.');
+   if(mode==='pipe'&&!l.includes('|')){malformed++;continue;}
+   const cells=splitCells(l,mode);
+   if(cells.length!==headers.length){malformed++;continue;}
+   if(cells.every((c,j)=>norm(c)===norm(headers[j]))||cells.every(c=>/^[-=]+$/.test(c)))continue;
+   const row=Object.create(null);headers.forEach((k,j)=>{row[k]=cells[j];});rows.push(row);
+  }
+  const warnings=[];if(malformed)warnings.push(malformed+' row(s) had missing/misaligned pipe or table delimiters. Re-export complete evidence.');
+  if(!rows.length)warnings.push('No verifiable data rows beneath the table header.');
+  return {rows,warnings};
+ }catch(e){return {rows:[],warnings:['SAP GUI table parsing failed: '+e.message]};}
+}
+function kvParse(raw,expectedPrefix){
+ try{
+  const lines=lineClean(raw).split('\n');if(lines.length>MAX_LINES)throw Error('Too many lines for a policy export.');
+  const props=Object.create(null);let matches=0;
+  for(const line of lines){const l=line.trim();if(!l||l.startsWith('#')||l.startsWith(';')||isRule(l))continue;
+   const m=l.match(/^([A-Za-z][\w./-]+)\s*(?:=|:)\s*(.*?)\s*$/);
+   if(!m)continue;
+   if(expectedPrefix&&!m[1].toLowerCase().startsWith(expectedPrefix))continue;
+   props[m[1].trim()]=m[2].trim().replace(/^"|"$/g,'');matches++;
+  }
+  return {props,warnings:matches?[]:['No recognized key=value entries in policy export.']};
+ }catch(e){return {props:Object.create(null),warnings:[e.message]};}
+}
+function parseSection(key,text){
+ if(key==='PARAMETERS'){
+  const kv=kvParse(text);const t=tableParse(text,['Parameter','Parameter Name','ParameterName','Name','Param Name','Param']);
+  const props={...kv.props};for(const r of t.rows){const k=val(r,'Parameter','Parameter Name','ParameterName','Name','Param Name','Param');const v=val(r,'Current Value','CurrentValue','Value','Effective Value','Value in profile');if(k)props[k]=v;}
+  return {rows:t.rows,props,warnings:Object.keys(props).length?(t.rows.length?t.warnings:[]):[...new Set([...kv.warnings,...t.warnings])]};
+ }
+ if(key==='UME_POLICY'){
+  const kv=kvParse(text,'ume.');const t=tableParse(text,['Property','Property Name','Name','Key']);
+  const props={...kv.props};for(const r of t.rows){const k=val(r,'Property','Property Name','Name','Key');if(k.toLowerCase().startsWith('ume.'))props[k]=val(r,'Value','Effective Value','Current Value');}
+  return {rows:t.rows,props,warnings:Object.keys(props).length?(t.rows.length?t.warnings:[]):[...new Set([...kv.warnings,...t.warnings])]};
+ }
+ if(key==='DEFAULT_USERS')return {...tableParse(text,['BNAME','User Name','User','User ID','Username','Mandt','Client']),props:{}};
+ if(key==='PRIVILEGED_PROFILES')return {...tableParse(text,['BNAME','Profile','User','Username']),props:{}};
+ if(key==='CLIENTS')return {...tableParse(text,['MANDT','CCNOCLIIND','CCCATEGORY','Client']),props:{}};
+ if(key==='ADMINISTRATORS'){
+  const t=tableParse(text,['Member','Member Name','MemberName','User','Username','Name','Group']);
+  if(t.rows.length)return {...t,props:{}};
+  // Allow simple line lists only when their scope is explicitly declared as Administrators.
+  const lines=lineClean(text).split('\n').map(x=>x.trim());
+  const scoped=/\bAdministrators\b/i.test(text.slice(0,600));
+  if(!scoped)return {...t,props:{}};
+  const memberLines=lines.filter(x=>x&&!isRule(x)&&!/^(?:Administrators|Group\s*[:=]|Members\s*[:=]?|User\s*Name|Name\s*[:=]?|---|#|--|Total\s*:)/i.test(x)&&!/[|=]/.test(x));
+  if(memberLines.length>MAX_ROWS)return {rows:[],props:{},warnings:['Administrator group export exceeds row limit.']};
+  return {rows:memberLines.map(x=>({Group:'Administrators',Member:x})),props:{},warnings:memberLines.length?[]:t.warnings};
+ }
+ return {rows:[],props:{},warnings:['Unsupported evidence type']};
+}
+function sectionParts(file){const text=lineClean(file.content),lines=text.split('\n');if(lines.length>MAX_LINES)throw Error('TXT/CSV contains more than '+MAX_LINES+' lines.');const marks=[];
+ for(let i=0;i<lines.length;i++){const m=lines[i].match(/^\s*(?:={3,}\s*([\w -]{3,70})\s*={3,}|--\s*BEGIN\s+([\w -]{3,70})\s*--|\[([\w -]{3,70})\])\s*$/i);if(m)marks.push({index:i,label:(m[1]||m[2]||m[3]).trim()});}
+ if(!marks.length)return [{label:file.name,text,type:null}];
+ const parts=[];if(marks[0].index>0&&lines.slice(0,marks[0].index).join('').trim())parts.push({label:'Preamble',text:lines.slice(0,marks[0].index).join('\n'),type:null});
+ for(let i=0;i<marks.length;i++)parts.push({label:marks[i].label,text:lines.slice(marks[i].index+1,marks[i+1]?.index??lines.length).join('\n'),type:canonical(marks[i].label),rawTag:marks[i].label});
+ return parts;
+}
+function detect(file,part){if(file.manualOverride&&allowed[SAP.engine].has(file.manualOverride))return file.manualOverride;
+ if(part.rawTag)return canonical(part.rawTag); // explicit unsupported labels are never silently guessed
+ const fromName=canonical(file.name.replace(/\.(txt|csv)$/i,'').replace(/[- ]/g,'_'));if(fromName)return fromName;
+ const name=file.name.toUpperCase(),h=part.text.slice(0,3000).toUpperCase();
+ for(const [key,aliases] of Object.entries(typeAlias))if(aliases.some(x=>name.includes(x)))return key;
+ if(/UME\.LOGON\.SECURITY_POLICY\./i.test(h))return 'UME_POLICY';
+ if(/CCNOCLIIND|CCCATEGORY/.test(h))return 'CLIENTS';
+ if(/PROFILE/.test(h)&&/BNAME|USERNAME/.test(h))return 'PRIVILEGED_PROFILES';
+ if(/UFLAG|RSUSR003/.test(h)&&/BNAME|USER/.test(h))return 'DEFAULT_USERS';
+ if(/LOGIN\/MIN_PASSWORD_LNG|LOGIN\/FAILS_TO_USER_LOCK|RSAU\/ENABLE/.test(h))return 'PARAMETERS';
+ if(/\bADMINISTRATORS\b/.test(h)&&/\bGROUP|MEMBERS|MEMBER_NAME/.test(h))return 'ADMINISTRATORS';
+ return null;
+}
+function redact(text){return String(text).split('\n').map(l=>/^\s*(?:password|password_hash|passwordhash|passwd|secret|api_key|private_key|credential)\s*(?:[:=]|\|)/i.test(l)?l.replace(/([:=|]).*$/,'$1 [REDACTED]'):l).join('\n');}
+function parseEvidence(){SAP.blocks=[];SAP.warnings=[];
+ for(const file of State.files){let types=[],warnings=[];try{
+   for(const part of sectionParts(file)){if(!part.text.trim())continue;const type=detect(file,part);if(!type){warnings.push(part.label+': Unrecognized SAP evidence; use a supported section marker or matching file name.');continue;}
+    if(!allowed[SAP.engine].has(type)){warnings.push(part.label+': Evidence belongs to a different SAP system; excluded.');continue;}
+    const out=parseSection(type,part.text);
+    if(/(?:authorization failed|not authorized|permission denied|error while executing|truncated|\.\.\.$)/im.test(part.text))out.warnings.push('Possible collection error or truncated output.');
+    SAP.blocks.push({file,type,section:part.label,...out});types.push(type);warnings.push(...out.warnings.map(x=>part.label+': '+x));
+   }
+  }catch(e){warnings.push('Could not parse file: '+e.message);}
+  file.type=types.length?[...new Set(types)].join(', '):'Unrecognized SAP evidence';file.status=warnings.length?'Manual review':types.length?'Parsed':'Unrecognized';file.sapWarnings=warnings;
+  SAP.warnings.push(...warnings.map(w=>file.name+': '+w));
+ }
+ UI.renderFileTable();renderWarnings();
+}
+function blocks(key){return SAP.blocks.filter(x=>x.type===key&&!x.file.excluded&&!x.file.collectorFailed);}
+function getRows(key){return blocks(key).flatMap(b=>b.rows);}
+function getProps(key){return Object.assign(Object.create(null),...blocks(key).map(b=>b.props||{}));}
+function prop(props,key){return val(props,key);}
+function policyCheck(properties,configs,extra){
+ const fails=[],unknown=[],measure=[];
+ for(const [name,expected,baseline,mode]of configs){
+  const raw=prop(properties,name),actual=nval(raw);
+  if(actual===null){unknown.push({item:name,reason:'Parameter missing or non-numeric: '+(raw||'(missing)')});continue;}
+  const good=mode==='min'?actual>=baseline:mode==='exact'?actual===baseline:(actual>0&&actual<=baseline);
+  measure.push(name+'='+raw);
+  if(!good)fails.push({item:name,reason:'Observed '+raw+'; expected '+expected});
+ }
+ if(extra)extra(properties,fails,unknown,measure);
+ return result(fails.length?'FAIL':unknown.length?'REVIEW':'PASS',measure.join('; ')||'No recognized policy values',configs.map(c=>c[0]+' '+c[1]).join('; '),[...fails,...unknown]);
+}
+function checkABAPParams(){const p=getProps('PARAMETERS'),v=current().policy;return policyCheck(p,[
+ ['login/min_password_lng','>= '+v.passwordMin,v.passwordMin,'min'],
+ ['login/password_expiration_time','1–'+v.passwordAge+' days',v.passwordAge,'max'],
+ ['login/fails_to_user_lock','1–'+v.failedLogons,v.failedLogons,'max'],
+ ['login/password_history_size','>= '+v.historyMin,v.historyMin,'min'],
+ ['rsau/enable','= 1',1,'exact']]);}
+function checkDefaultUsers(){const list=getRows('DEFAULT_USERS'),names=new Set(['SAP*','DDIC','EARLYWATCH','TMSADM']);if(!list.length)return review('No standard-user records detected','Export RSUSR003 or filtered USR02 for all relevant clients.');
+ const relevant=list.filter(r=>names.has(val(r,'BNAME','User','User Name','User ID','Username').toUpperCase()));
+ if(!relevant.length)return review('No expected standard IDs found','Provide standard-user coverage across relevant clients, including SAP*, DDIC, EARLYWATCH and TMSADM.');
+ const fails=[],unknown=[],summary=[];
+ for(const r of relevant){const name=val(r,'BNAME','User','User Name','User ID','Username'),mandt=val(r,'MANDT','Client'),id=(mandt?mandt+'/':'')+name;
+  const u=val(r,'UFLAG','Lock Status','Lock Flag');const defaultFlag=val(r,'Default Password','Initial Password');const status=val(r,'Password Status','Password Check','Password State')||defaultFlag;
+  if(u!==''&&nval(u)===0)fails.push({item:id,reason:'UFLAG = 0; default user unlocked'});
+  const insecure=/^(?:yes|true|1|x|y)$/i.test(defaultFlag)||/^(?:default|initial|trivial|standard)$/i.test(status)||/(?:default password|initial password|trivial password|password not changed|standard password|unchanged)/i.test(status)&&!/^(?:no|false|not default|changed|secure)/i.test(status);
+  if(insecure)fails.push({item:id,reason:'Password report indicates insecure/default password: '+status});
+  if(u==='')unknown.push({item:id,reason:'No user lock flag; unlocked status cannot be confirmed'});
+  if(!status)unknown.push({item:id,reason:'No password-status information; default-password risk not verified'});
+  if(u!==''&&nval(u)===null&&!/locked|disabled|not active/i.test(u))unknown.push({item:id,reason:'Unrecognized UFLAG/lock value '+u});
+  summary.push(id+' (UFLAG='+ (u||'not provided')+', password='+ (status||'not provided')+')');
+ }
+ // A filtered export can be incomplete: never report full PASS without all target IDs represented.
+ const covered=new Set(relevant.map(r=>val(r,'BNAME','User','User Name','User ID','Username').toUpperCase()));const missing=[...names].filter(n=>!covered.has(n));
+ if(missing.length)unknown.push({item:'Coverage',reason:'Missing standard IDs in supplied extract: '+missing.join(', ')});
+ return result(fails.length?'FAIL':unknown.length?'REVIEW':'PASS',relevant.length+' standard account record(s): '+summary.slice(0,20).join('; '),'All critical standard users locked and without default passwords; complete client coverage',[...fails,...unknown]);
+}
+function checkProfiles(){const list=getRows('PRIVILEGED_PROFILES');if(!list.length)return review('No UST04 records found','Complete UST04 population with BNAME, PROFILE and MANDT for relevant clients.');
+ const bad=[],unknown=[];for(const r of list){const prof=val(r,'PROFILE','Profile'),name=val(r,'BNAME','User','Username'),mandt=val(r,'MANDT','Client');if(!prof||!name){unknown.push({item:'Incomplete record',reason:'Missing BNAME or PROFILE'});continue;}if(['SAP_ALL','SAP_NEW'].includes(prof.toUpperCase()))bad.push({item:(mandt?mandt+'/':'')+name,reason:'High-privilege profile '+prof+'; validate authorization and necessity'});}
+ return review('Identified '+bad.length+' SAP_ALL / SAP_NEW assignment(s) from '+list.length+' UST04 record(s). Auditor must validate entitlement, scope and completeness.','Privileged assignments are documented, approved and periodically reviewed',[...bad,...unknown]);
+}
+function checkClients(){const list=getRows('CLIENTS');if(!list.length)return review('No T000 client records found','Complete T000 client list with CCCATEGORY and CCNOCLIIND.');
+ const prod=list.filter(r=>val(r,'CCCATEGORY','Client Category','Category').toUpperCase()==='P');
+ if(!prod.length)return review('No production clients identified in T000 extract','Provide production clients with CCCATEGORY=P and CCNOCLIIND=3');
+ const fails=[],unknown=[];for(const r of prod){const id=val(r,'MANDT','Client')||'Unidentified client';const raw=val(r,'CCNOCLIIND','Cross-Client Changes');if(raw==='')unknown.push({item:id,reason:'Missing CCNOCLIIND'});else if(raw!=='3')fails.push({item:id,reason:'CCNOCLIIND='+raw+'; expected 3'});}
+ return result(fails.length?'FAIL':unknown.length?'REVIEW':'PASS',prod.length+' production client(s) evaluated; '+fails.length+' exception(s)','Production CCCATEGORY=P; CCNOCLIIND=3',[...fails,...unknown]);
+}
+function checkJavaPolicy(){const p=getProps('UME_POLICY'),v=current().policy;return policyCheck(p,[
+ ['ume.logon.security_policy.password_min_length','>= '+v.passwordMin,v.passwordMin,'min'],
+ ['ume.logon.security_policy.password_expire_days','1–'+v.passwordAge+' days',v.passwordAge,'max'],
+ ['ume.logon.security_policy.lock_after_invalid_attempts','1–'+v.failedLogons,v.failedLogons,'max']]);}
+function checkJavaAdmins(){const r=getRows('ADMINISTRATORS');if(!r.length)return review('Administrator group members not established from supplied export','Complete UME Administrators group member list');
+ const people=[],unknown=[];for(const x of r){const group=val(x,'Group','Group Name','GroupName');if(group&&!/^administrators$/i.test(group))continue;const member=val(x,'Member','Member Name','MemberName','User','Username','Name');if(member)people.push(member);else unknown.push({item:'Unidentified',reason:'Member name missing'});}
+ const unique=[...new Set(people)];return review(unique.length+' Administrators group member(s) extracted. Auditor authorization review required.','Complete Administrators group membership with authorization evidence',[...unique.slice(0,100).map(x=>({item:x,reason:'Validate administrator approval, business need and periodic review'})),...unknown]);}
+function makeRule(engine,id,title,area,need,objective,risk,command,check){rules[engine].push({id,title,area,needs:[need],platform:catalog[engine].name,frameworkId:'SAP.'+engine.toUpperCase(),description:objective,testPerformed:objective,targetEvidence:need+' — '+catalog[engine].keys[need],risk,rec:'Verify the actual configuration and obtain supporting approval/review records where needed.',command,check});}
+makeRule('abap','SAP-ABAP-01','ABAP password policy and security audit log','Authentication','PARAMETERS','Compare password and audit log parameters with configured thresholds.','Weak user authentication or disabled security logging','Run transaction RSPFPAR or report RSPARAM. Export Parameter Name / Current Value as TXT or CSV (label section SAP_ABAP_PARAMETERS).',checkABAPParams);
+makeRule('abap','SAP-ABAP-02','Protection of standard SAP users','Privileged Access','DEFAULT_USERS','Inspect critical standard accounts for unlocked status or default credentials.','Default accounts may enable unauthorized access','Run report RSUSR003, or SE16/SE16N → table USR02; filter BNAME to SAP*, DDIC, EARLYWATCH, TMSADM in each relevant client; export MANDT, BNAME, UFLAG and any password-status columns.',checkDefaultUsers);
+makeRule('abap','SAP-ABAP-03','SAP_ALL / SAP_NEW profile membership','Privileged Access','PRIVILEGED_PROFILES','Extract privileged profile holders from UST04; auditor validates business authorization.','Excessive SAP privileged access','SE16/SE16N → UST04; export MANDT, BNAME, PROFILE. Filter PROFILE for SAP_ALL / SAP_NEW, or supply the complete UST04 export. No authorization-object joins or SoD checks.',checkProfiles);
+makeRule('abap','SAP-ABAP-04','Production cross-client change protection','Change Management','CLIENTS','Validate cross-client modification configuration of production clients.','Production client changes could bypass change controls','SE16/SE16N → T000; export MANDT, CCCATEGORY, CCNOCLIIND and identify CCCATEGORY=P production clients.',checkClients);
+makeRule('java','SAP-JAVA-01','UME password and account lockout policy','Authentication','UME_POLICY','Check effective UME password policy parameters against configured thresholds.','Weak Java application authentication','In NetWeaver Administrator, navigate to Configuration → Security → Authentication and Single Sign-On / User Management Engine configuration (menu varies by version). Export the effective UME security-policy properties as key=value TXT.',checkJavaPolicy);
+makeRule('java','SAP-JAVA-02','UME Administrators group members','Privileged Access','ADMINISTRATORS','List Administrators group members for approval and least-privilege review.','Excessive SAP AS Java administration access','In NetWeaver Administrator, open Identity Management / User Management, locate group Administrators and export its member listing as TXT or CSV with Group and Member columns.',checkJavaAdmins);
+function persist(){if(!SAP.active)return;const w=current();w.files=State.files;w.name=document.getElementById('server-name').value.trim();w.remarks=Lens.remarks;w.na=Lens.na;w.results=Lens.results;w.dirty=Lens.dirty;}
+function leave(){if(!SAP.active)return;persist();const l=SAP.legacy;SAP.active=false;SAP.engine=null;SAP.blocks=[];SAP.warnings=[];State.files=l.files;Win.selected=l.windowsSelected;Lens.remarks=l.remarks;Lens.na=l.na;Lens.results=l.results;Lens.dirty=l.dirty;Lens.context=l.context;document.getElementById('server-name').value=l.name;document.getElementById('ws-server').textContent=l.name||'Not entered';}
+function openSAP(engine){if(!catalog[engine])return;
+ if(!SAP.active){const d=window.ITControlLens.Database.DB;if(d.active){const previous=d.legacy?.windowsSelected?'windows':undefined;original.openWorkspace(previous);}SAP.legacy={files:State.files,name:document.getElementById('server-name').value,windowsSelected:Win.selected,remarks:Lens.remarks,na:Lens.na,results:Lens.results,dirty:Lens.dirty,context:Lens.context};}else persist();
+ SAP.active=true;SAP.engine=engine;const w=current();State.files=w.files;Lens.remarks=w.remarks;Lens.na=w.na;Lens.results=w.results;Lens.dirty=w.dirty;document.getElementById('server-name').value=w.name;Lens.context={server:w.name,sapEngine:engine};document.getElementById('ws-server').textContent=w.name||'Not entered';navigateTo('analyzer-workspace');switchTab('tab-upload');present();parseEvidence();renderResults();
+}
+function present(){const s=catalog[SAP.engine];document.getElementById('windows-scope-row').classList.add('hidden');document.getElementById('assessment-target-heading').textContent='SAP System Details';document.getElementById('assessment-name-label').textContent=s.label+' *';document.getElementById('ws-scope-label').textContent='SAP System';document.getElementById('server-name').placeholder=SAP.engine==='abap'?'e.g. ECC PRD / Client 100':'e.g. Java PRD';document.getElementById('assessment-name-hint').textContent='Assess one SAP system/landscape scope at a time. Label multiple TXT sections clearly to prevent mixed evidence.';document.getElementById('upload-formats').textContent='Supported formats: TXT and CSV · SAP GUI pipe-delimited exports accepted';document.getElementById('file-input').accept='.txt,.csv';document.querySelector('#tab-policy > .grid').classList.add('hidden');document.getElementById('windows-policy').classList.add('hidden');document.getElementById('db-policy').classList.add('hidden');document.getElementById('sap-policy').classList.remove('hidden');for(const id of ['guide-unix-title','guide-controls','guide-aix-title','guide-aix-desc','guide-templates'])document.getElementById(id).classList.add('hidden');document.getElementById('windows-guide').classList.add('hidden');document.getElementById('database-guide').classList.add('hidden');document.getElementById('sap-guide').classList.remove('hidden');document.getElementById('ws-os').textContent=s.name;renderPolicy();renderGuide();}
+function renderPolicy(){const s=catalog[SAP.engine];document.getElementById('sap-policy').innerHTML='<div class="premium-card"><h3>SAP Policy Baselines</h3><p class="mb-4">Configure thresholds for '+safe(s.name)+'. Missing parameters cannot be assumed compliant.</p>'+s.policy.map(([key,label,,min,max])=>'<div class="form-group flex justify-between items-center" style="gap:1rem"><label class="form-label" for="sappol_'+key+'" style="margin:0">'+safe(label)+'</label><input class="form-input" style="width:120px" id="sappol_'+key+'" type="number" step="1" min="'+min+'" max="'+max+'" value="'+current().policy[key]+'"></div>').join('')+'</div><div class="premium-card"><h3>SAP Applicability</h3><p>'+safe(s.applicable)+'</p><p class="mt-4">Use low-volume, scoped TXT / CSV evidence. No SoD processing, multi-table joins, or authorization-object matrix analysis.</p></div>';}
+function renderGuide(){const s=catalog[SAP.engine],rs=rules[SAP.engine];document.getElementById('sap-guide').innerHTML='<h3 class="mb-4">'+safe(s.name)+' — '+rs.length+' ITGC controls</h3><p class="mb-4"><b>Applicable systems:</b> '+safe(s.applicable)+'</p><p class="mb-4">Upload TXT or CSV exports with visible headers. SAP GUI pipe-delimited tables may include dashed separator rows. Individual files can be named RSPARAM.txt, RSUSR003.txt, UST04.txt, T000.txt, UME_POLICY.txt, or ADMINISTRATORS.txt. Consolidated TXT uses markers such as <code>=== SAP_ABAP_PARAMETERS ===</code>. Maximum 8 MB per file and 5,000 records per section. No SoD analysis.</p>'+rs.map(r=>'<details class="premium-card guide-control mb-4"><summary><span class="badge">'+safe(r.id)+'</span><strong>'+safe(r.title)+'</strong><span class="guide-domain">'+safe(r.area)+'</span></summary><div class="guide-body"><p><b>Evidence:</b> '+safe(r.targetEvidence)+'</p><p><b>Extraction guidance:</b> '+safe(r.command)+'</p><p><b>Test performed:</b> '+safe(r.testPerformed)+'</p><p><b>Risk:</b> '+safe(r.risk)+'</p><p><b>Result logic:</b> FAIL for established policy exceptions, REVIEW for incomplete scope or privileged-access populations, NOT TESTED when evidence is absent.</p></div></details>').join('');}
+function readSAPPolicy(){const next={...current().policy};for(const [key,label,,min,max]of catalog[SAP.engine].policy){const input=document.getElementById('sappol_'+key);if(!input)throw Error('SAP policy field missing: '+key);const value=Number(input.value);if(!input.value.trim()||!Number.isInteger(value)||value<min||value>max)throw Error('Enter a valid '+label+' ('+min+'–'+max+').');next[key]=value;}current().policy=next;}
+function runRules(){const w=current();Lens.results=[];for(const r of rules[SAP.engine]){const evidence=blocks(r.needs[0]);let out;
+  if(Lens.na[r.id])out=result('N/A','Auditor set not applicable: '+Lens.na[r.id],r.testPerformed);
+  else if(!evidence.length)out=result('NT','Required SAP evidence not uploaded',r.targetEvidence);
+  else try{
+    out=r.check();
+    const warnings=evidence.flatMap(e=>e.warnings.map(w=>({item:e.file.name,reason:w})));
+    if(warnings.length){out.exceptions.push(...warnings);if(out.status!=='FAIL')out.status='REVIEW';out.observed+='; evidence has parsing/completeness warnings';}
+  }catch(e){out=review('Unable to evaluate: '+e.message,r.testPerformed);}
+  const details=out.exceptions.length?'\nExceptions / population:\n'+out.exceptions.map(x=>x.item+': '+x.reason).join('\n'):'';
+  Lens.results.push({...r,...out,observation:out.observed+'. Expected: '+out.expected,val:out.observed+details,src:evidence.map(e=>e.file.name+' ['+e.type+']').join('; ')||'Evidence missing',line:'SAP source: '+r.needs[0]});
+ }
+ Lens.dirty=false;Upgrade.dirty=false;w.results=Lens.results;w.dirty=false;State.stats={pass:Lens.results.filter(x=>x.status==='PASS').length,fail:Lens.results.filter(x=>x.status==='FAIL').length,warn:Lens.results.filter(x=>x.status==='REVIEW').length,tested:Lens.results.filter(x=>['PASS','FAIL','REVIEW'].includes(x.status)).length};renderResults();notify('SAP analysis complete: '+Lens.results.length+' checks for '+catalog[SAP.engine].name+'.');switchTab('tab-findings');}
+async function uploadSAP(files){if(SAP.busy)return;SAP.busy=true;const errors=[];try{for(const f of Array.from(files))try{
+   if(!/\.(txt|csv)$/i.test(f.name))throw Error('SAP evidence accepts TXT or CSV only.');if(f.size>MAX_FILE)throw Error('File exceeds 8 MB. Export a smaller table.');if(State.files.length>=MAX_FILES)throw Error('Maximum 50 evidence files per system.');
+   const bytes=new Uint8Array(await f.arrayBuffer());if(bytes.length>=2&&bytes[0]===0x50&&bytes[1]===0x4B)throw Error('Compressed archives are unsupported.');
+   const content=redact(decodeEvidenceBytes(bytes));if(content.split('\n').length>MAX_LINES)throw Error('More than 12,000 lines. Re-export with filters.');
+   if(State.files.reduce((n,x)=>n+x.content.length,0)+content.length>MAX_TOTAL)throw Error('SAP assessment exceeds 24 MB.');
+   if(State.files.some(x=>x.name===f.name&&x.content===content)){errors.push(f.name+': duplicate skipped');continue;}
+   State.files.push({name:f.name,origin:f.name,content,manualOverride:null,type:'',status:'Unprocessed',segmented:true});
+  }catch(e){errors.push(f.name+': '+e.message);}
+  parseEvidence();invalidate();notify(errors.length?errors.join(' | '):State.files.length+' SAP evidence file(s) loaded.');
+ }finally{SAP.busy=false;document.getElementById('file-input').value='';}}
+const original={openWorkspace,activeControlRules,sources,refreshEvidence,refreshScopePresentation,readPolicy,runAnalysisEngine,processUpload,saveAssessment,loadAssessment,exportReport,exportOriginal,syncServer,renderFileTable:UI.renderFileTable,renderWarnings};
+openWorkspace=function(platform){if(SAP.active)leave();return original.openWorkspace(platform);};
+activeControlRules=function(){return SAP.active?rules[SAP.engine]:original.activeControlRules();};
+sources=function(r){return SAP.active?[...new Set(SAP.blocks.filter(b=>r.needs?.includes(b.type)).map(b=>b.file))]:original.sources(r);};
+refreshEvidence=function(){return SAP.active?parseEvidence():original.refreshEvidence();};
+refreshScopePresentation=function(){if(SAP.active)return present();const ans=original.refreshScopePresentation();document.getElementById('sap-policy').classList.add('hidden');document.getElementById('sap-guide').classList.add('hidden');return ans;};
+readPolicy=function(){return SAP.active?readSAPPolicy():original.readPolicy();};
+runAnalysisEngine=function(){if(!SAP.active)return original.runAnalysisEngine();syncServer();if(!Lens.context.server){notify('Enter SAP system / client name before analysis.');switchTab('tab-upload');document.getElementById('server-name').focus();return;}try{readSAPPolicy();parseEvidence();runRules();}catch(e){invalidate();notify('SAP analysis failed: '+e.message);console.error(e);}};
+processUpload=function(files){return SAP.active?uploadSAP(files):original.processUpload(files);};
+syncServer=function(){if(!SAP.active)return original.syncServer();const s=document.getElementById('server-name').value.trim();current().name=s;Lens.context={server:s,sapEngine:SAP.engine};document.getElementById('ws-server').textContent=s||'Not entered';};
+UI.renderFileTable=function(){if(!SAP.active)return original.renderFileTable();const types=Object.keys(catalog[SAP.engine].keys);document.getElementById('file-list-body').innerHTML=State.files.map((f,i)=>'<tr><td><strong>'+safe(f.name)+'</strong><details><summary>Preview</summary><pre style="white-space:pre-wrap;max-height:220px;overflow:auto">'+safe(f.content.slice(0,8000))+'</pre></details></td><td><select class="form-input" aria-label="SAP evidence classification override" onchange="sapReclassify('+i+',this.value)"><option value="">Auto-detect</option>'+types.map(k=>'<option value="'+k+'" '+(f.manualOverride===k?'selected':'')+'>'+k+'</option>').join('')+'</select><p>'+safe(f.type||'Not classified')+'</p></td><td>'+safe(f.status)+'</td><td style="text-align:right"><button class="btn btn-danger" onclick="removeEvidence('+i+')">Remove</button></td></tr>').join('')||'<tr><td colspan="4">No SAP evidence uploaded.</td></tr>';};
+renderWarnings=function(){if(!SAP.active)return original.renderWarnings();document.getElementById('evidence-warnings').innerHTML=[...new Set(SAP.warnings)].map(w=>'<p class="toast-banner">'+safe(w)+'</p>').join('');};
+window.sapReclassify=function(i,type){if(!SAP.active)return;State.files[i].manualOverride=type||null;parseEvidence();invalidate();};
+// SAP save format is entirely separate; existing DB and Unix/Windows formats remain unchanged.
+saveAssessment=function(){if(!SAP.active)return original.saveAssessment();try{syncServer();readSAPPolicy();persist();const payload={format:'it-controllens-sap',version:1,engine:SAP.engine,workspaces:Object.fromEntries(Object.entries(SAP.workspaces).map(([k,w])=>[k,{name:w.name,policy:w.policy,remarks:w.remarks,na:w.na,files:w.files.map(f=>({name:f.name,content:redact(f.content),manualOverride:f.manualOverride||null}))}]))};download('IT_ControlLens_SAP_Assessment.json',JSON.stringify(payload,null,2),'application/json');}catch(e){alert(e.message);}};
+loadAssessment=async function(file){if(file.size>60*1024*1024){alert('Assessment JSON exceeds 60 MB.');return;}let obj;try{obj=JSON.parse(await file.text());}catch(e){alert('Invalid JSON: '+e.message);return;}
+ if(obj.format!=='it-controllens-sap'){if(SAP.active)leave();return original.loadAssessment(file);}
+ try{if(obj.version!==1||!catalog[obj.engine]||!obj.workspaces||typeof obj.workspaces!=='object')throw Error('Unsupported SAP assessment.');const replacement=Object.create(null);for(const [engine,w]of Object.entries(obj.workspaces)){
+   if(!catalog[engine]||!w||typeof w.name!=='string'||w.name.length>255||!Array.isArray(w.files)||w.files.length>MAX_FILES)throw Error('Invalid SAP workspace');
+   const p={};for(const [key,,d,min,max]of catalog[engine].policy){const n=w.policy?.[key]??d;if(!Number.isInteger(n)||n<min||n>max)throw Error('Invalid SAP policy '+key);p[key]=n;}
+   let size=0;const files=w.files.map(f=>{if(typeof f.name!=='string'||!/^.{1,255}\.(?:txt|csv)$/i.test(f.name)||typeof f.content!=='string'||f.content.length>MAX_FILE||f.content.split('\n').length>MAX_LINES)throw Error('Invalid SAP TXT/CSV evidence');size+=f.content.length;return {name:f.name,origin:f.name,content:redact(f.content),manualOverride:allowed[engine].has(f.manualOverride)?f.manualOverride:null,segmented:true,status:'Unprocessed',type:''};});if(size>MAX_TOTAL)throw Error('SAP evidence exceeds 24 MB');
+   replacement[engine]={name:w.name,files,policy:p,remarks:Object.assign(Object.create(null),w.remarks||{}),na:Object.assign(Object.create(null),w.na||{}),results:[],dirty:true};
+  }if(SAP.active)leave();SAP.workspaces=replacement;openSAP(obj.engine);notify('SAP assessment loaded. Run analysis to refresh results.');}catch(e){alert('SAP assessment could not be loaded: '+e.message);}};
+exportReport=function(){if(!SAP.active)return original.exportReport();if(Lens.dirty){alert('Run SAP analysis before exporting.');return;}const s=catalog[SAP.engine];const html='<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'"><title>SAP Assessment</title><style>body{font:14px system-ui;max-width:1080px;margin:32px auto;color:#1e293b}section{border-top:1px solid #ddd;padding:14px 0}pre{white-space:pre-wrap}</style></head><body><h1>'+safe(s.name)+' — ITGC Assessment</h1><p>System: '+safe(Lens.context.server)+'</p><p>Scope: '+safe(s.applicable)+'</p>'+Lens.results.map(r=>'<section><h2>'+safe(r.id+' '+r.title+' — '+r.status)+'</h2><p><b>Evidence:</b> '+safe(r.src)+'</p><p><b>Expected:</b> '+safe(r.targetEvidence)+'</p><pre>'+safe(r.val)+'</pre><p><b>Auditor remark:</b> '+safe(Lens.remarks[r.id]||'')+'</p></section>').join('')+'</body></html>';download('IT_ControlLens_SAP_'+SAP.engine.toUpperCase()+'_Report.html',html,'text/html');};
+exportOriginal=function(method){if(!SAP.active)return original.exportOriginal(method);if(Lens.dirty){alert('Run SAP analysis before exporting.');return;}const oldFindings=State.findings,oldOS=State.os;const framework={id:'SAP.'+SAP.engine.toUpperCase(),name:catalog[SAP.engine].name,desc:'SAP ITGC assessment'};ControlFramework.push(framework);State.findings=Lens.results.map(r=>({...r,status:r.status==='REVIEW'?'WARNING':r.status,observation:r.observation+(Lens.remarks[r.id]?' Auditor remarks: '+Lens.remarks[r.id]:'')}));State.os={...State.os,family:catalog[SAP.engine].name};try{Exporters[method]();}finally{State.findings=oldFindings;State.os=oldOS;ControlFramework.pop();}};
+function install(){const card=document.getElementById('sap-target-card'),selector=document.getElementById('sap-sub-selector');if(!card||!selector)throw Error('SAP target selection DOM is missing.');card.addEventListener('click',()=>{const show=selector.classList.contains('hidden');selector.classList.toggle('hidden',!show);card.classList.toggle('db-selected',show);document.getElementById('db-sub-selector').classList.add('hidden');document.getElementById('db-target-card').classList.remove('db-selected');if(show)selector.scrollIntoView({behavior:'smooth',block:'nearest'});});
+ card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}});
+ document.getElementById('db-target-card').addEventListener('click',()=>{selector.classList.add('hidden');card.classList.remove('db-selected');},true);
+ document.querySelectorAll('[data-sap-engine]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-sap-engine]').forEach(x=>x.classList.toggle('selected',b===x));openSAP(b.dataset.sapEngine);}));
+ document.querySelectorAll('[data-db-engine]').forEach(b=>b.addEventListener('click',()=>{if(SAP.active)leave();},true));
+ const p=document.createElement('div');p.id='sap-policy';p.className='grid grid-cols-2 gap-8 hidden';document.getElementById('tab-policy').append(p);
+ const g=document.createElement('div');g.id='sap-guide';g.className='hidden';document.getElementById('tab-matrix').append(g);
+ document.getElementById('tab-policy').addEventListener('input',e=>{if(SAP.active&&e.target.id.startsWith('sappol_'))invalidate();});
+ window.ITControlLens=window.ITControlLens||{};window.ITControlLens.SAP={SAP,catalog,rules,tableParse,parseSection,parseEvidence,openSAP};
+}
+install();
+})();
+</script>
+<script>
+const REQUIREMENTS_ASSISTANT_DATA = {"General ITGC Requirments": [{"S.No": 1, "Area": "ITGC", "Application": "General", "Domain": "Entity-level controls", "Control": "Policy and Charts", "Requirement": "Please provide the following:\n - List of all the latest policies related to ISMS - Access management, Password management, Change management, BCP/DR, Incident management, Cyber security etc.\n - Risk and control matrix for the IT risks"}, {"S.No": 2, "Area": "ITGC", "Application": "General", "Domain": "Entity-level controls", "Control": "Architecture", "Requirement": "Please provide the following:\n - IT organization structure\n - Network diagram and the application data-flow diagram"}, {"S.No": 3, "Area": "ITGC", "Application": "General", "Domain": "Entity-level controls", "Control": "Audit reports", "Requirement": " - Please provide the latest IS audit / internal audit report performed for the current audit period.\n - Please provide the latest VAPT report along with the rescan report"}, {"S.No": 4, "Area": "ITGC", "Application": "General", "Domain": "Entity-level controls", "Control": "Asset management", "Requirement": "Please provide the list of IT assets. Also provide the details of the applications and their infrastructure (OS, DB, Data center) used in the entity during the audit period."}, {"S.No": 5, "Area": "ITGC", "Application": "General", "Domain": "Entity-level controls", "Control": "Contracts", "Requirement": "Please provide the latest contracts (MSAs and the latest SOW) signed with the application service providers / vendors for supporting the applications / infrastructure."}, {"S.No": 6, "Area": "ITGC", "Application": "General", "Domain": "Incident management", "Control": "Incidents", "Requirement": "Please provide the list of incidents during the audit period."}, {"S.No": 7, "Area": "ITGC", "Application": "General", "Domain": "Backup", "Control": "Daily backup", "Requirement": "Please provide the configuration of backup along with the frequency of backup enabled for the database for the in-scope applications."}, {"S.No": 8, "Area": "ITGC", "Application": "General", "Domain": "Backup", "Control": "Location", "Requirement": "Please provide the screenshot of the location of the primary DC and secondary DC."}, {"S.No": 9, "Area": "ITGC", "Application": "General", "Domain": "Firewall", "Control": "Authentication", "Requirement": "Please provide the authentication configuration enforced in Firewall.\n\nAlso provide the periodical firewall rule review."}, {"S.No": 10, "Area": "ITGC", "Application": "General", "Domain": "Firewall", "Control": "Patch management", "Requirement": "Please also provide the list of patches implemented in firewall"}], "Generic application": [{"S.No": 1, "Area": "IT", "Application": "(Insert application name)", "Domain": "Access management", "Control": "Access creation and revocation", "Requirement": "Please provide the following from the application:\n - List of active users in the application as of today\n - List of disabled users in the application during the audit period.\n - List of users created in the application during the audit period.\n - List of users modified (changes in roles / access assigned) in the application during the audit period.\n\nNote: \nA. While etxracting the report: 1) please provide a screenshot of the parameters from the page used to extract the report. 2) Also, provide the screenshot of the first page of the output showing the count of reocrds and the last page of the output.\n\nB. Based on the population of users created, samples will be selected to verify whether adequate approval process was followed prior to user creation / modification."}, {"S.No": 2, "Area": "IT", "Application": "(Insert application name)", "Domain": "Access management", "Control": "Access review", "Requirement": "Please provide the evidence of 2 sample periodical user access review performed during the year. \nNote: The evidence should include the mode of review (email/ticket), user list used for review along with their roles in the system and the approval."}, {"S.No": 3, "Area": "IT", "Application": "(Insert application name)", "Domain": "Access management", "Control": "Authentication", "Requirement": "Non-SSO:\n - Please provide the screenshot of the password configuration enforced in the application. If for any users, exceptions to the password configuration is enforced, please provide the evidence along with the rationale for the same.\n\n - Please provide the evidence of Multi-Factor Authentication being enabled for user logon, if configured.\n\nIf SSO:\n - Please provide the evidence of the SSO configuration enforced for the users, including the evidence of domain and OU configuration\n - From the Domain, provide the evidence of OU along with members configured to access the application."}, {"S.No": 4, "Area": "IT", "Application": "(Insert application name)", "Domain": "Access management", "Control": "Privileged access", "Requirement": "Please provide the following for the in-scope applications:\n - List of roles in the applications along with their permissions\n - List of roles that grant administrator priivleged in the applications (create / modify users, change system settings etc.)\n - List of users assigned with the above identiifed administrator role(s)"}, {"S.No": 5, "Area": "IT", "Application": "(Insert application name)", "Domain": "Access management", "Control": "SOD & DOA", "Requirement": "Please provide the copy of the Segreagtion of Duties matrix maintained, if any.\nAlso provide the copy of the Delegation of Authority matrix maintained, if any."}, {"S.No": 6, "Area": "IT", "Application": "(Insert application name)", "Domain": "Change management", "Control": "Change testing & approval", "Requirement": "Please provide the following for the in-scope applications:\n - From the source code repository, please provide the list of changes merged / deployed in the production instance of the application during the audit period.\n - Evidence of seperate development, testing and production environment\n\nNote: Based on the population of changes deployed, samples will be selected to verify whether adequate testing and approval process was followed prior to the changes being carried out."}, {"S.No": 7, "Area": "IT", "Application": "(Insert application name)", "Domain": "Change management", "Control": "Access to make changes", "Requirement": "Please provide the following for the in-scope applications:\n - List of uses who have access to develop in the development environment\n - List of users who have access to deploy the changes in the production environment"}], "Oracle Fusion": [{"S.No": 1, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Access management", "Control": "Access list", "Requirement": "1. Please provide a list of all active users and corresponding access from the application by obtaining the \"User Role Membership Report\" and \"User and Role Access Audit Report\".\n\nNavigation: Access IT Security Manager role. Select Navigator -> Tools -> Scheduled Processes to open the Scheduled Processes work area. Click \"Schedule New Process\".\nSearch for and select the \"User Role Membership Report\". Repeat the same for \"User and Role Access Audit Report\"."}, {"S.No": 2, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Access management", "Control": "Access review", "Requirement": "Please provide the evidence of Q2 and Q4 user access review performed. \n\nNote: The evidence should include the mode of review (email/ticket), user list used for review along with their roles in the system and the approval by respective line managers."}, {"S.No": 3, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Access management", "Control": "Authentication", "Requirement": "1. Please provide the configuration of password policy. \n\nNavigate to Oracle Cloud inspect 'Password Policy Check' setting. (Home--> Tools --> Security Console --> User Categories)\n\n2. Please provide the \"User Password Changes Audit Report\" report to determine if default password has been changed for the application users.\n\nNavigation: Access IT Security Manager role. Select Navigator -> Tools -> Scheduled Processes to open the Scheduled Processes work area. Click \"Schedule New Process\".\nSearch for and select the \"User Password Changes Audit Report\"."}, {"S.No": 4, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Access management", "Control": "SOD & DOA", "Requirement": "Please provide the copy of the Segregation of Duties matrix maintained, if any.\nAlso provide the copy of the Delegation of Authority matrix maintained, if any."}, {"S.No": 5, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Change management", "Control": "Change testing & approval", "Requirement": "Please provide the listing of changes to the application during the period through inspection of the following:\nA. Changes to Roles, Data Security Policies, Users Data Access, AD Bugs & Ad Applied Patches - LAST_UPDATE_DATE field in each of the following tables:  ASE_ROLE_B, FND_GRANTS, FUN_USER_ROLE_DATA_ASGNMNTS, AD_BUGS, AD_APPLIED_PATCHES, PER_ROLE_MAPPINGS, PER_ROLE_MAPPING_ROLES, GL_FRC_REPORTS_B, GL_FRC_REPORTS_TL tables.\n\nB. Changes to the configuration controls like Ledgers, Journal Sources, Asset Books, FA Categories, AP Invoice Options, Receiving Parameters - LAST_UPDATE_DATE field in each of the following tables: GL_LEDGERS, GL_JE_SOURCES, FA_BOOK_CONTROLS, FA_CATEGORIES_B, AP_SYSTEM_PARAMETERS_ALL, RCV_PARAMETERS, FA_METHODS, XLE_ENTITY_PROFILES, FUN_ALL_BUSINESS_UNITS_V, INV_ORG_PARAMETERS."}, {"S.No": 6, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Job management", "Control": "Job failures", "Requirement": "Please provide a system generated list of job statuses or failures. \nFor Oracle Cloud environment, a listing of jobs and their statuses can be obtained by inspecting the FUSION_ORA_ESS.REQUEST_HISTORY table.  "}, {"S.No": 7, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Job management", "Control": "Access to jobs", "Requirement": "Please provide the list of jobs configured through OIC along with their active status and notification configuration."}, {"S.No": 8, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Third-party management", "Control": "SOC Report", "Requirement": "Kindly provide the SOC 1 Type 2 report (Audit Trail - 11(g) report) covering the audit period for Oracle Fusion application for the period April to March 2026. "}, {"S.No": 9, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Audit Trail", "Control": "Audit Trail", "Requirement": "Please provide the following from Oracle Fusion:\n - List of modules / transactions in the applications and whether they form part of 'Books of Accounts'\n - List of objects in each module.\n - Evidence that audit trail has been enabled in the objects and sub-objects and that the same has not been tampered with.\n - Changes made to audit trail configuration during the audit period.\n - Daily backup of audit trail data\n - Evidence of retention of audit trail from 1st April 2023 (or, from the date of enabling)\n - Evidence of logging enabled at DB level, along with the date of enabling the audit log\n - Folder where the audit logs are stored along with the users having access to the folder/ location"}, {"S.No": 10, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Access management", "Control": "OCI and OIC", "Requirement": "Please provide the list of all users and admin users having access to the Oracle Cloud Infra and Oracle Integration Cloud."}, {"S.No": 11, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Access management", "Control": "OCI", "Requirement": "Please provide the screenshot of password policies configured in Oracle Cloud Infrastructure.\n\nOn the Domains list page, select the name of the identity domain that you want to work in. \n-> On the Domain policies tab, scroll to view the password policies. Select Settings and then select Password policy. All existing password policies are displayed in a table."}, {"S.No": 12, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Entity-level controls", "Control": "Policy and Charts", "Requirement": "Please provide the following:\n - List of all the latest policies related to ISMS - Access management, Password management, Change management for Oracle Fusion.\n - IT organization structure\n - Network diagram and the application data-flow diagram\n - Risk and control matrix for the IT risks"}, {"S.No": 13, "Area": "ITGC", "Application": "Oracle Fusion", "Domain": "Entity-level controls", "Control": "Contracts", "Requirement": "Please provide the latest contracts (MSAs and the latest SOW) signed with the application service providers / vendors for supporting the applications / infrastructure."}], "SAP S4": [{"S.No": 1, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Access creation and revocation", "Requirement": "1. Please provide the population of users (new and modified user access) with roles and profile assignment changes during the audit period (Ad Hoc Changes).\n\nSteps: Navigate to transaction SUIM --> change document for users. Apply audit period as the date range and check selection boxes \"Roles\" and \"Profiles\" and \"User created\"\n\n2. Please also provide the list of all users in SAP application extracted from the table USR02."}, {"S.No": 2, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Access review", "Requirement": "Please provide the evidence of 2 sample periodical user access review performed during the year. \nNote: The evidence should include the mode of review (email/ticket), user list used for review along with their roles in the system and the approval."}, {"S.No": 3, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Authentication", "Requirement": "1. Please provide the list of active servers by executing the Transaction code SM51 or SE16N->Table SAPWLSERV.\n\n2. Please provide the output of t-code SE16 or SE16N and extract table PAHI with filtering criteria on State (PARSTATE) with value \"A\" and Host Name (Hostname) as active servers as identified above.\n\n3. Please provide the output of the security policies configured in SAP S4:\nA. Execute SE16N->  table SEC_POLICY_RT and identify if any security policies are configured. \nB. To identify which security policies are assigned to which user, SE16N-> table USR02, see column \"Security Policy\" (SECURITY_POLICY)."}, {"S.No": 4, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Security Administrative access", "Requirement": "Please provide the list of users who have SAP Security Administration access by executing transaction SUIM => Users By Complex Selection Criteria (report RSUSR002) with the following authorizations (a through g).\n\na. Access to create roles:  \nAuthorization object: S_TCODE \n       Transaction Code: PFCG \n       AND \n   i. Authorization object: S_USER_AGR  \n      Field Values: 01 AND 02 AND 64  \nAND  \n   ii. Auth. Object: S_USER_PRO  \n      Field Values: 01   \nAND  \n  ( iii a. Auth. Object: S_USER_TCD  \n         Field Values: *  \nOR  \n   iii b. Auth. Object: S_USER_VAL  \n          Field Values: *  )\n\nb. Access to create / maintain profiles that are created outside the Profile Generator via OVZ6 OR SU02:\n                       Authorization object: S_TCODE\n                       Transaction Code: OVZ6 OR SU02\n                     AND \n                       Authorization object: S_USER_PRO\n                       Activity:  01 OR 02 AND 03 AND  07 AND 22\n                       PROFILE: *\n\nc. Access to modify roles: \nAuthorization object: S_TCODE \n       Transaction Code: PFCG \n       AND \n   i. Auth. Object: S_USER_AGR  \n      Field Values: 02 AND 64  \nAND  \n   ii a. Auth. Object: S_USER_TCD  \n      Field Values: *  \nOR  \n   ii b. Auth. Object: S_USER_VAL  \n      Field Values: *  \n\nd. Access to create or change user master records (not including role / profile assignments) \n      i.     Authorization object: S_TCODE \n              Transaction Code: SU01 or SU01_NAV or SU10 or SU12 or OY27 or OY30 or OY28  or OY29 or OOUS or OTZ1 or OMDL or OMEH or OMWF or OPF0  or GCE1   (note some of these transactions could be locked, which can be viewed in report RSAUDITC)\n      AND \n      ii.    Authorization object: S_USER_GRP \n             Activity: 01 or 02\n\ne. Access to assign roles to users \n i.     Authorization object: S_TCODE \n              Transaction Code: SU01 or SU01_NAV or SU10 or SU12 or OY27 or OY30 or OY28  or OY29 or OOUS or OTZ1 or OMDL or OMEH or OMWF or OPF0  or GCE1 \n\n\nf. Access to assign profiles to users \n      i.     Authorization object: S_TCODE \n              Transaction Code: SU01 or SU01_NAV or SU10 or SU12 or OY27 or OY30 or OY28  or OY29 or OOUS or OTZ1 or OMDL or OMEH or OMWF or OPF0 or GCE1 (note some of these transactions could be locked, which can be viewed in report RSAUDITC)\n               AND \n      ii.    Authorization object: S_USER_GRP \n               Activity: 02  \n\ng. Access to assign roles to users via PFCG (Profile Generator Tcode): \n     i Authorization object: S_TCODE \n      Transaction Code: PFCG"}, {"S.No": 5, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Table maintenance", "Requirement": "Please provide the list of users who have Table Administration access by executing transaction SUIM => Users By Complex Selection Criteria (report RSUSR002) with the following authorizations (a through g).\n\na. Users with access to ALL tables:    \n               (  Authorization object: S_TABU_DIS (Table Maintenance)   \n                       Activity: 02   \n                       Authorization Group (DICBERCLS): \"\"*\"\"\n                 OR\n                 Authorization object: S_TABU_NAM (Table Maintenance)    \n                      Activity: 02   \n                      Table Name (TABLE): \"\"*\"\" )\n                AND    \n                Transactions Codes: SM30 or SM31\n\nb. Users with Access to One or More tables:\n                 (Authorization object: S_TABU_DIS (Table Maintenance)   \n                    Activity: 02 \n                  OR\n                  Authorization object: S_TABU_NAM  (Table Maintenance)  \n                     Activity: 02 ) \n                 AND\n                 Transactions Codes: SM31 or SM30"}, {"S.No": 6, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Profile parameter access", "Requirement": "Please provide the list of users who have Profile / Password Parameter access by executing transaction SUIM => Users By Complex Selection Criteria (report RSUSR002) with the following authorizations.\n\n      Authorization object: S_RZL_ADM\n                   Activity: 01\n                 AND\n                 Authorization object: S_DATASET\n                   Activity: 33 AND 34\n                   Program: SAPLSPFL\n                 AND \n                 Transactions Codes: RZ10"}, {"S.No": 7, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Program execution access", "Requirement": "Please provide the list of users who have Program Execution access by executing transaction SUIM => Users By Complex Selection Criteria (report RSUSR002) with the following authorizations.\n\n a. Access to execute programs without authorization group or certain programs with authorization groups via SA38:   \n        Authorization Object: S_PROGRAM   \n        P_ACTION: SUBMIT or BTCSUBMIT   \n        P_GROUP = *   \n        Authorization Object: S_TCODE   \n        Transaction Code: SA38 OR EWFM OR EWFZ OR OODR\n\nb. Access to execute ALL programs regardless the programs are assigned authorization groups or not via SA38:   \n        Authorization Object: S_PROGRAM   \n        P_ACTION: SUBMIT or BTCSUBMIT     \n        P_GROUP = \"*\"  \n        Authorization Object: S_TCODE   \n        Transaction Code: SA38 OR EWFM OR EWFZ OR OODR\n\nc. List of users with access to all transactions by executing transaction SUIM => Users By Complex Selection Criteria (report RSUSR002) with the following authorizations:  \n    a. Populate “*” in S_TCODE. (Access to all SAP transaction codes) . Execute.  \n\nd. Access to execute certain programs without authorization groups via SE38 or SE80:  \n        Authorization Object: S_DEVELOP   \n        ACTVT= 16 and 03   \n        OBJTYPE=PROG \n        OBJNAME = *\n        DEVCLASS = *\n        Authorization Object: S_TCODE   \n       Transaction Code: SE38 OR SE80\n\ne. Access to execute “ALL” programs without authorization groups via SE38 or SE80:   \n        Authorization Object: S_DEVELOP   \n        ACTVT = 16 and 03  \n        OBJTYPE =PROG   \n        OBJNAME = “*” \n        DEVCLASS = \"*\"\n        Authorization Object: S_TCODE   \n       Transaction Code: SE38 OR SE80"}, {"S.No": 8, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Privileged access", "Requirement": "1. Please provide the list of users who have access to powerful profiles. Provide dialog and service users assigned to profiles SAP_ALL and SAP_NEW by executing transaction SUIM => Users By Complex Selection Criteria (report RSUSR002) with the following authorizations.    \nIn the portion of the screen noted as “Profile name”, click on the yellow arrow icon and enter the following:  \n          i. SAP_ALL\n          ii. SAP_NEW \n          iii. any custom SAP_ALL profile\n\n2. Please provide the change history for profile assignments for SAP_ALL and SAP_NEW profiles during the audit period. "}, {"S.No": 9, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Remote access", "Requirement": "1. Please provide the list of accounts used for SAP Support (eg naming convention includes \"OSS*\" or *SAPSUPPORT*)\n\n2. For the above IDs, please provide the activations through SUIM -> Change Documents -> User -> \"(as above)\" Dates: Audit period"}, {"S.No": 10, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Default password", "Requirement": "1. Please provide the output of the Transaction Code: S_ALR_87101194 or SA38 to run report RSUSR003.\n\n2. Please provide the output of SE16N->Table PAHI -> paramater \"login/no_automatic_user_sapstar. Also provide the change log for the audit period ."}, {"S.No": 11, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Job management", "Requirement": "Please provide the output of transaction SM37 (cancelled jobs) and Table TBTCO.   "}, {"S.No": 12, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Job management", "Requirement": "1. Change Job Schedules under ONE OR MORE IDs (SM36)\na. \nT_CODE  SM36\nAND \nS_BTCH_NAM BTCUNAME  * \nAND\nS_BTCH_JOB JOBACTION RELE AND MODI\n\nb. \nT_CODE  SM36\nAND\nS_BTCH_NAM BTCUNAME  * \nAND\nS_BTCH_ADM BTCADMIN Y\n\n2. Change Job Schedules under ALL IDs (SM36)\nc. \nT_CODE  SM36\nAND \nS_BTCH_NAM BTCUNAME  \"*\" \nAND\nS_BTCH_JOB JOBACTION RELE AND MODI\n\nd. \nT_CODE  SM36\nAND\nS_BTCH_NAM BTCUNAME  \"*\" \nAND\nS_BTCH_ADM BTCADMIN Y\n\nChange Job Schedules under ONE OR MORE IDs (SM37)\na. \nS_TCODE SM37\nAND\nS_BTCH_NAM BTCUNAME * \nAND\nS_BTCH_JOB JOBACTION RELE AND MODI\n\nb. \nS_TCODE SM37\nAND\nS_BTCH_NAM BTCUNAME * \nAND\nS_BTCH_ADM BTCADMIN Y\n\n'Change Job Schedules under ALL IDs (SM37)\nc.\nS_TCODE SM37\nAND\nS_BTCH_NAM BTCUNAME \"*\" \nAND\nS_BTCH_JOB JOBACTION RELE AND MODI\n\nd. \nS_TCODE SM37\nAND\nS_BTCH_NAM BTCUNAME \"*\" \nAND\nS_BTCH_ADM BTCADMIN Y"}, {"S.No": 13, "Area": "IT", "Application": "SAP S4", "Domain": "Access management", "Control": "Job management", "Requirement": "Please provide the population of failed IDOCS through IDOC history of Table \"EDIDS\" through transaction SE16/SE16N; filter on the field \"Status\" with value: 51."}, {"S.No": 14, "Area": "IT", "Application": "SAP S4", "Domain": "Change management", "Control": "Change approvals", "Requirement": "1. Please provide the listing of transports (Downloaded import history via transaction SE16N-> table E070.\n\n2. For the transports imported, please provide the output from table TPALOG."}, {"S.No": 15, "Area": "IT", "Application": "SAP S4", "Domain": "Change management", "Control": "Access to make a change", "Requirement": "Please provide a listing of users who can import changes into Production by executing transaction SUIM => Users By Complex Selection Criteria (report RSUSR002) with the following authorizations:    \n   a. Import changes into Production (tested in Production):  \n       Authorization object: S_TCODE \n      Transaction Code: STMS or STMS_IMPORT  \n     AND \n      i. Auth. Object: S_TRANSPRT   \n      Activity 03   \n     AND  \n     ii. (Auth. Object: S_CTS_ADMI  \n        Activity: IMPS or IMPA) \n        OR\n        (Auth. Object: S_CTS_SADM  \n        Activity: IMPS or IMPA) \n"}, {"S.No": 16, "Area": "IT", "Application": "SAP S4", "Domain": "Change management", "Control": "Client & System settings", "Requirement": "1. Please provide the evidence of Transaction Code: SCC4  -> Double click on each client (production & non-production) for \"Changes and transports for client-dependent objects\".\n\n2. Provide evidence of System Change Options from the Transaction Code: SE06\n\n3. For active servers, provide the output of SE16N->Table PAHI -> the current value of rec/client \n\n4. Changes to SCC4 Client Settings.\n            Execute Transaction Code: SE16N\n            Table: DD09L (as the object name)\n            PROTOKOLL: X (This will identify the tables that have their changes logged)\n            Enter table name T000\n\n5. Changes made to the SE06 Global Settings\n    1. Execute transaction SE06:\n    i. Click on System Change Option button to display the global system change option settings.\n    ii. Click on the “Log” button to display the change log for the system change option, hit F5 to expand the log to show dates "}, {"S.No": 17, "Area": "IT", "Application": "SAP S4", "Domain": "Change management", "Control": "Client & System settings", "Requirement": "1. Please provide the output of  transaction SE16N->TDDAT table\n\n2. Execute transaction SUIM => Users By Complex Selection Criteria (report RSUSR002) with the following authorizations:  \n   i.  Authorization object: S_TCODE \n             Transaction Code: SCC4 AND SM30 or SM31 or OY24 or S_B20_88000036\n       AND  \n  ii.  (Authorization Object: S_TABU_DIS,   \n             Field ACTVT: 02 \n               OR\n             Authorization Object: S_TABU_NAM,   \n             Field ACTVT: 02 \n             TABLE=T000 )\n       AND     \n   iii. Authorization object: S_TABU_CLI \n              Field CLIIDMAINT = X  \n      AND  \n   iv. Authorization object: S_CTS_ADMI  \n             Field CTS_ADMFCT = TABL \n\n3.Execute transaction SUIM => Users By Complex Selection Criteria (report RSUSR002) with the following authorizations:  \n       a. Authorization object: S_TCODE \n          Transaction Code: SE06 / SE03 / RSWBO004\n      AND\n         Authorization object S_TRANSPRT\n         Activity: 03\n      AND\n         (Authorization object S_CTS_ADMI, \n         Value for Administration Tasks for Change and Transport INIT AND SYSC \n         OR\n         Authorization object S_CTS_SADM, \n         Value for Administration Tasks for Change and Transport INIT AND SYSC   "}, {"S.No": 18, "Area": "IT", "Application": "SAP S4", "Domain": "Change management", "Control": "Access to develop", "Requirement": "Please provide a listing of users with access to perform development activities in the production system with the following authorizations:       \n  \n    Authorization Object: S_DEVELOP  \n                Field: Activity   \n                Values: 01 or 02 (Create, Change) AND 03 (Display) \n                Object type:  *"}, {"S.No": 19, "Area": "IT", "Application": "SAP S4", "Domain": "Change management", "Control": "Access to debug", "Requirement": "Please provide a listing of users with access to perform debug activities in the production system with the following authorizations:       \n\n       Authorization Object: S_DEVELOP  \n                Field: Activity  \n                Values: 02  (Change) AND 03 (Display) \n                Field: Object Type  \n                Value: DEBUG  "}]};
+</script>
+<script>
+/* Requirements Assistant isolated presenter. Original ITGC_DATA and filter logic retained. */
+(function () {
+  const mount=document.getElementById('requirements-assistant-mount');
+  if(!mount) return;
+  const root=mount.attachShadow({mode:'open'});
+  root.innerHTML="<style>:host{\n    --navy:#0B2D5C;\n    --navy-deep:#081E3F;\n    --blue:#1E5FBF;\n    --blue-bright:#2E77E6;\n    --blue-tint:#EAF1FC;\n    --blue-tint-2:#F4F8FE;\n    --ink:#1B2530;\n    --slate:#5B6B7E;\n    --line:#D7E3F7;\n    --paper:#FFFFFF;\n    --canvas:#F5F8FC;\n    --good:#1E7A46;\n  }\n  *{box-sizing:border-box;}\n  :host,.ra-shell{margin:0;padding:0;}\n  .ra-shell{\n    font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif;\n    background:var(--canvas);\n    color:var(--ink);\n    -webkit-font-smoothing:antialiased;\n  }\n\n  /* ---------- Top strip ---------- */\n  .topstrip{\n    background:var(--navy-deep);\n    color:#B9CCEA;\n    font-size:11px;\n    letter-spacing:.06em;\n    text-transform:uppercase;\n    text-align:center;\n    padding:6px 12px;\n    font-weight:600;\n  }\n\n  /* ---------- Header ---------- */\n  header{\n    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%);\n    color:#fff;\n    padding:22px 28px 20px;\n    display:flex;\n    align-items:center;\n    justify-content:space-between;\n    gap:16px;\n    flex-wrap:wrap;\n    border-bottom:3px solid var(--blue-bright);\n  }\n  .brand{display:flex;align-items:center;gap:14px;}\n  .brand-mark{\n    width:42px;height:42px;border-radius:10px;\n    background:var(--blue-bright);\n    display:flex;align-items:center;justify-content:center;\n    font-weight:800;font-size:18px;color:#fff;\n    box-shadow:0 2px 8px rgba(0,0,0,.25);\n    flex-shrink:0;\n  }\n  header h1{\n    font-size:22px;\n    margin:0;\n    font-weight:700;\n    letter-spacing:-.01em;\n  }\n  header p.tag{\n    margin:2px 0 0;\n    font-size:12.5px;\n    color:#BFD3F2;\n    font-weight:500;\n  }\n  .header-stats{\n    display:flex;gap:18px;\n    font-size:12.5px;\n    color:#DCE8FB;\n  }\n  .header-stats b{display:block;font-size:18px;color:#fff;font-weight:700;}\n\n  /* ---------- Layout ---------- */\n  .layout{\n    display:flex;\n    align-items:flex-start;\n    max-width:1500px;\n    margin:0 auto;\n    padding:20px 20px 60px;\n    gap:20px;\n  }\n\n  /* ---------- Sidebar ---------- */\n  .sidebar{\n    width:280px;\n    flex-shrink:0;\n    background:var(--paper);\n    border:1px solid var(--line);\n    border-radius:14px;\n    padding:18px;\n    position:sticky;\n    top:20px;\n  }\n  .sidebar h2{\n    font-size:12px;\n    text-transform:uppercase;\n    letter-spacing:.06em;\n    color:var(--slate);\n    margin:0 0 4px;\n    font-weight:700;\n  }\n  .sidebar .hint{\n    font-size:11.5px;\n    color:var(--slate);\n    margin:0 0 14px;\n    line-height:1.4;\n  }\n  .app-actions{\n    display:flex;\n    gap:8px;\n    margin-bottom:12px;\n  }\n  .app-actions button{\n    flex:1;\n    font-size:11.5px;\n    padding:6px 8px;\n    border-radius:8px;\n    border:1px solid var(--line);\n    background:var(--blue-tint-2);\n    color:var(--blue);\n    font-weight:600;\n    cursor:pointer;\n  }\n  .app-actions button:hover{background:var(--blue-tint);}\n\n  .app-list{\n    display:flex;\n    flex-direction:column;\n    gap:6px;\n  }\n  .app-item{\n    display:flex;\n    align-items:center;\n    gap:10px;\n    padding:10px 10px;\n    border-radius:10px;\n    cursor:pointer;\n    border:1px solid transparent;\n    transition:background .12s ease;\n  }\n  .app-item:hover{background:var(--blue-tint-2);}\n  .app-item.checked{\n    background:var(--blue-tint);\n    border-color:var(--line);\n  }\n  .app-item input{\n    width:16px;height:16px;\n    accent-color:var(--blue);\n    flex-shrink:0;\n    cursor:pointer;\n  }\n  .app-item .name{\n    font-size:13.5px;\n    font-weight:600;\n    color:var(--ink);\n    flex:1;\n  }\n  .app-item .count{\n    font-size:11px;\n    color:var(--slate);\n    background:#fff;\n    border:1px solid var(--line);\n    border-radius:20px;\n    padding:1px 8px;\n    font-weight:600;\n  }\n\n  .version-note{\n    margin-top:20px;\n    padding-top:14px;\n    border-top:1px dashed var(--line);\n    font-size:11px;\n    color:var(--slate);\n  }\n  .version-note .badge{\n    display:inline-block;\n    background:var(--navy);\n    color:#fff;\n    font-weight:700;\n    font-size:10.5px;\n    padding:2px 8px;\n    border-radius:6px;\n    margin-bottom:6px;\n    letter-spacing:.02em;\n  }\n\n  /* ---------- Main ---------- */\n  .main{flex:1; min-width:0;}\n\n  .toolbar{\n    background:var(--paper);\n    border:1px solid var(--line);\n    border-radius:14px;\n    padding:14px 16px;\n    display:flex;\n    align-items:center;\n    gap:12px;\n    flex-wrap:wrap;\n    margin-bottom:18px;\n  }\n  .search-wrap{\n    flex:1;\n    min-width:220px;\n    position:relative;\n  }\n  .search-wrap input{\n    width:100%;\n    padding:10px 14px 10px 36px;\n    border-radius:10px;\n    border:1px solid var(--line);\n    font-size:13.5px;\n    background:var(--blue-tint-2);\n    color:var(--ink);\n  }\n  .search-wrap input:focus{\n    outline:2px solid var(--blue-bright);\n    outline-offset:1px;\n    background:#fff;\n  }\n  .search-wrap svg{\n    position:absolute;left:12px;top:50%;\n    transform:translateY(-50%);\n    width:15px;height:15px;\n    color:var(--slate);\n  }\n  .domain-select select{\n    padding:10px 12px;\n    border-radius:10px;\n    border:1px solid var(--line);\n    background:var(--blue-tint-2);\n    font-size:13.5px;\n    color:var(--ink);\n    cursor:pointer;\n  }\n  .export-group{display:flex; gap:8px;}\n  .btn{\n    display:inline-flex;\n    align-items:center;\n    gap:6px;\n    padding:10px 14px;\n    border-radius:10px;\n    border:1px solid var(--blue);\n    background:var(--blue);\n    color:#fff;\n    font-size:13px;\n    font-weight:600;\n    cursor:pointer;\n    white-space:nowrap;\n  }\n  .btn:hover{background:var(--blue-bright); border-color:var(--blue-bright);}\n  .btn.secondary{\n    background:#fff;\n    color:var(--blue);\n  }\n  .btn.secondary:hover{background:var(--blue-tint);}\n\n  /* ---------- Results meta ---------- */\n  .results-meta{\n    font-size:12.5px;\n    color:var(--slate);\n    margin:0 4px 12px;\n    display:flex;\n    justify-content:space-between;\n    align-items:center;\n  }\n\n  /* ---------- Groups & Cards ---------- */\n  .app-group{margin-bottom:26px;}\n  .app-group-title{\n    display:flex;\n    align-items:center;\n    gap:10px;\n    margin:0 0 12px;\n    font-size:15px;\n    font-weight:700;\n    color:var(--navy);\n  }\n  .app-group-title .line{flex:1;height:1px;background:var(--line);}\n\n  .req-card{\n    background:var(--paper);\n    border:1px solid var(--line);\n    border-left:4px solid var(--blue-bright);\n    border-radius:12px;\n    padding:14px 16px;\n    margin-bottom:10px;\n  }\n  .req-card-head{\n    display:flex;\n    align-items:baseline;\n    gap:10px;\n    flex-wrap:wrap;\n    margin-bottom:6px;\n  }\n  .req-no{\n    font-size:11px;\n    font-weight:700;\n    color:#fff;\n    background:var(--navy);\n    border-radius:6px;\n    padding:2px 7px;\n  }\n  .req-domain{\n    font-size:11.5px;\n    font-weight:700;\n    color:var(--blue);\n    text-transform:uppercase;\n    letter-spacing:.03em;\n  }\n  .req-control{\n    font-size:13.5px;\n    font-weight:700;\n    color:var(--ink);\n  }\n  .req-body{\n    font-size:13px;\n    line-height:1.55;\n    color:#33404F;\n    white-space:pre-line;\n  }\n  mark{\n    background:#FFE9A8;\n    padding:0 1px;\n    border-radius:2px;\n  }\n\n  .empty-state{\n    text-align:center;\n    padding:60px 20px;\n    color:var(--slate);\n    background:var(--paper);\n    border:1px dashed var(--line);\n    border-radius:14px;\n    font-size:14px;\n  }\n\n  /* ---------- Footer ---------- */\n  footer{\n    text-align:center;\n    font-size:11px;\n    color:var(--slate);\n    padding:18px 20px 30px;\n  }\n\n  @media (max-width: 860px){\n    .layout{flex-direction:column;}\n    .sidebar{width:100%; position:static;}\n  }\n/* IT ControlLens visual skin: isolated to the assistant's shadow DOM */\n:host {\n    display:block;\n    font-family:var(--font-family,system-ui,-apple-system,\"Segoe UI\",sans-serif);\n    --navy:var(--brand-blue,#0055a5);\n    --navy-deep:var(--brand-blue-hover,#003d7a);\n    --blue:var(--brand-blue,#0055a5);\n    --blue-bright:var(--brand-blue,#0055a5);\n    --blue-tint:var(--brand-blue-transparent,rgba(0,85,165,.12));\n    --blue-tint-2:var(--bg-input,#0f172a);\n    --ink:var(--text-main,#f8fafc);\n    --slate:var(--text-muted,#94a3b8);\n    --line:var(--border-color,#334155);\n    --paper:var(--bg-surface,#1e293b);\n    --canvas:var(--bg-base,#0f172a);\n    --good:var(--status-pass-text,#4ade80);\n    color:var(--text-main,#f8fafc);\n}\n.ra-shell {font-family:inherit;background:transparent;color:var(--ink);min-width:0;}\n.ra-shell button,.ra-shell input,.ra-shell select {font-family:inherit;}\n.ra-shell .topstrip {display:none;}\n.ra-shell header {\n    background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:12px;\n    box-shadow:var(--card-shadow);padding:1.45rem 1.65rem;margin:0 0 1.25rem;\n}\n.ra-shell .brand-mark {background:var(--blue);color:#fff;box-shadow:none;}\n.ra-shell header h1 {font-size:1.45rem;line-height:1.25;letter-spacing:-.02em;color:var(--ink);}\n.ra-shell header p.tag {font-size:.88rem;color:var(--slate);}\n.ra-shell .header-stats {color:var(--slate);gap:1.4rem;}\n.ra-shell .header-stats b {color:var(--ink);font-size:1.45rem;}\n.ra-shell .layout {max-width:none;padding:0 0 1.25rem;gap:1.15rem;}\n.ra-shell .sidebar {background:var(--paper);border:1px solid var(--line);box-shadow:var(--card-shadow);top:5.75rem;border-radius:12px;}\n.ra-shell .main {min-width:0;}\n.ra-shell .toolbar {background:var(--paper);border:1px solid var(--line);box-shadow:var(--card-shadow);border-radius:12px;}\n.ra-shell .search-wrap input,.ra-shell .domain-select select {background:var(--blue-tint-2);color:var(--ink);border-color:var(--line);}\n.ra-shell .search-wrap input:focus {outline:2px solid var(--blue);outline-offset:1px;background:var(--paper);}\n.ra-shell .app-actions button {color:var(--blue);background:var(--blue-tint-2);border-color:var(--line);}\n.ra-shell .app-actions button:hover,.ra-shell .app-item:hover {background:var(--blue-tint);}\n.ra-shell .app-item.checked {background:var(--blue-tint);border-color:var(--line);}\n.ra-shell .app-item .name,.ra-shell .req-control {color:var(--ink);}\n.ra-shell .app-item .count {background:var(--canvas);color:var(--slate);border-color:var(--line);}\n.ra-shell .version-note .badge,.ra-shell .req-no {background:var(--blue);color:#fff;}\n.ra-shell .btn {background:var(--blue);color:#fff;border-color:var(--blue);border-radius:7px;}\n.ra-shell .btn:hover {background:var(--navy-deep);border-color:var(--navy-deep);}\n.ra-shell .btn.secondary {background:var(--paper);color:var(--blue);border-color:var(--line);}\n.ra-shell .btn.secondary:hover {background:var(--blue-tint);}\n.ra-shell .app-group-title {color:var(--ink);}\n.ra-shell .req-card,.ra-shell .empty-state {background:var(--paper);border-color:var(--line);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.045);}\n.ra-shell .req-card {border-left:3px solid var(--blue);}\n.ra-shell .req-body {color:var(--text-muted);}\n.ra-shell .req-domain {color:var(--blue);}\n.ra-shell footer {color:var(--slate);}\n.ra-shell mark {background:rgba(250,204,21,.3);color:var(--ink);}\n@media(max-width:680px){.ra-shell header{padding:1rem}.ra-shell .layout{gap:.85rem}.ra-shell .header-stats{gap:1rem}.ra-shell .toolbar{padding:1rem}}\n</style><div class=\"ra-shell\"><div class=\"topstrip\">Internal Use — Not for circulation</div>\n\n<header>\n  <div class=\"brand\">\n    <div>\n      <h1>ITGC Requirements Assistant</h1>\n    </div>\n  </div>\n</header>\n\n<div class=\"layout\">\n  <aside class=\"sidebar\">\n    <h2>Systems</h2>\n    <p class=\"hint\">Select one or more systems to build the requirement list.</p>\n    <div class=\"app-actions\">\n      <button id=\"selectAll\">Select all</button>\n      <button id=\"clearAll\">Clear</button>\n    </div>\n    <div class=\"app-list\" id=\"appList\"></div>\n\n  </aside>\n\n  <main class=\"main\">\n    <div class=\"toolbar\">\n      <div class=\"search-wrap\">\n        <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/></svg>\n        <input type=\"text\" id=\"searchBox\" placeholder=\"Search control, domain or requirement text...\">\n      </div>\n      <div class=\"domain-select\">\n        <select id=\"domainFilter\"><option value=\"\">All domains</option></select>\n      </div>\n      <div class=\"export-group\">\n        <button class=\"btn secondary\" id=\"exportCsv\">Export CSV</button>\n        <button class=\"btn\" id=\"exportXlsx\">Export XLSX</button>\n      </div>\n    </div>\n\n    <div class=\"results-meta\">\n      <span id=\"resultsCount\">Select a system to begin</span>\n    </div>\n\n    <div id=\"results\"></div>\n  </main>\n</div>\n\n</div>";
+})();
+
+</script>
+<script>
+const ITGC_DATA = REQUIREMENTS_ASSISTANT_DATA;
+
+(function(){
+  const root = document.getElementById('requirements-assistant-mount').shadowRoot;
+  const appNames = Object.keys(ITGC_DATA);
+  const selected = new Set();
+
+  const appList = root.getElementById('appList');
+  const domainFilter = root.getElementById('domainFilter');
+  const searchBox = root.getElementById('searchBox');
+  const resultsEl = root.getElementById('results');
+  const resultsCount = root.getElementById('resultsCount');
+
+  // populate domain filter (union of all domains)
+  const domainSet = new Set();
+  appNames.forEach(a => ITGC_DATA[a].forEach(r => { if(r.Domain) domainSet.add(r.Domain); }));
+  Array.from(domainSet).sort().forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d; opt.textContent = d;
+    domainFilter.appendChild(opt);
+  });
+
+  // build app list UI
+  appNames.forEach(name => {
+    const item = document.createElement('label');
+    item.className = 'app-item';
+    item.innerHTML = `
+      <input type="checkbox" data-app="${name}">
+      <span class="name">${name}</span>
+      <span class="count">${ITGC_DATA[name].length}</span>
+    `;
+    appList.appendChild(item);
+    const cb = item.querySelector('input');
+    cb.addEventListener('change', () => {
+      if(cb.checked){ selected.add(name); item.classList.add('checked'); }
+      else { selected.delete(name); item.classList.remove('checked'); }
+      render();
+    });
+  });
+
+  root.getElementById('selectAll').addEventListener('click', () => {
+    appList.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.checked = true;
+      selected.add(cb.dataset.app);
+      cb.closest('.app-item').classList.add('checked');
+    });
+    render();
+  });
+  root.getElementById('clearAll').addEventListener('click', () => {
+    appList.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.checked = false;
+      cb.closest('.app-item').classList.remove('checked');
+    });
+    selected.clear();
+    render();
+  });
+
+  searchBox.addEventListener('input', render);
+  domainFilter.addEventListener('change', render);
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function highlight(text, term){
+    if(!term) return escapeHtml(text);
+    const escaped = escapeHtml(text);
+    const safeTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return escaped.replace(new RegExp('('+safeTerm+')', 'ig'), '<mark>$1</mark>');
+  }
+
+  function currentRows(){
+    const term = searchBox.value.trim().toLowerCase();
+    const domain = domainFilter.value;
+    const rows = [];
+    selected.forEach(appName => {
+      ITGC_DATA[appName].forEach(r => {
+        if(domain && r.Domain !== domain) return;
+        if(term){
+          const hay = (r.Control + ' ' + r.Domain + ' ' + r.Requirement).toLowerCase();
+          if(!hay.includes(term)) return;
+        }
+        rows.push(Object.assign({AppGroup: appName}, r));
+      });
+    });
+    return rows;
+  }
+
+  function render(){
+    const term = searchBox.value.trim();
+    const rows = currentRows();
+    resultsEl.innerHTML = '';
+
+    if(selected.size === 0){
+      resultsCount.textContent = 'Select a system to begin';
+      resultsEl.innerHTML = '<div class="empty-state">Choose one or more systems from the left panel to view their ITGC data requirements.</div>';
+      return;
+    }
+    if(rows.length === 0){
+      resultsCount.textContent = 'No matching requirements';
+      resultsEl.innerHTML = '<div class="empty-state">No requirements match the current search or domain filter.</div>';
+      return;
+    }
+    resultsCount.textContent = rows.length + ' requirement' + (rows.length===1?'':'s') + ' across ' + selected.size + ' system' + (selected.size===1?'':'s');
+
+    // group by AppGroup then keep order
+    const grouped = {};
+    rows.forEach(r => { (grouped[r.AppGroup] = grouped[r.AppGroup] || []).push(r); });
+
+    Object.keys(grouped).forEach(appName => {
+      const groupWrap = document.createElement('div');
+      groupWrap.className = 'app-group';
+      groupWrap.innerHTML = `<div class="app-group-title">${escapeHtml(appName)}<span class="line"></span></div>`;
+      grouped[appName].forEach(r => {
+        const card = document.createElement('div');
+        card.className = 'req-card';
+        card.innerHTML = `
+          <div class="req-card-head">
+            <span class="req-no">#${escapeHtml(r['S.No'])}</span>
+            <span class="req-domain">${highlight(r.Domain, term)}</span>
+            <span class="req-control">${highlight(r.Control, term)}</span>
+          </div>
+          <div class="req-body">${highlight(r.Requirement, term)}</div>
+        `;
+        groupWrap.appendChild(card);
+      });
+      resultsEl.appendChild(groupWrap);
+    });
+  }
+
+  function buildExportData(){
+    const rows = currentRows();
+    return rows.map(r => ({
+      'S.No': r['S.No'],
+      'Application': r.AppGroup,
+      'Area': r.Area,
+      'Domain': r.Domain,
+      'Control': r.Control,
+      'Requirement': r.Requirement,
+      'Client SPOC': '',
+      'Requested date': '',
+      'Status': '',
+      'Remark': ''
+    }));
+  }
+
+  root.getElementById('exportCsv').addEventListener('click', () => {
+    const data = buildExportData();
+    if(data.length === 0){ alert('No requirements to export. Select an application first.'); return; }
+    const headers = Object.keys(data[0]);
+    const escapeCsv = v => '"' + String(v).replace(/"/g,'""') + '"';
+    const lines = [headers.map(escapeCsv).join(',')];
+    data.forEach(row => lines.push(headers.map(h => escapeCsv(row[h])).join(',')));
+    const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'ITGC_Requirements_Export.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  root.getElementById('exportXlsx').addEventListener('click', async () => {
+    const data = buildExportData();
+    if(data.length === 0){ alert('No requirements to export. Select an application first.'); return; }
+
+    // Offline export using IT ControlLens's existing bundled SheetJS library.
+    // Keeps the source workbook's two title rows, blank spacer, header row,
+    // all ten data columns, column widths and original output filename.
+    if (typeof XLSX === 'undefined') {
+      alert('The built-in XLSX exporter is unavailable. Please use Export CSV.');
+      return;
+    }
+    try {
+      const columns = ['S.No','Application','Area','Domain','Control','Requirement','Client SPOC','Requested date','Status','Remark'];
+      const aoa = [
+        ['ITGC Requirements'],
+        ['Audit for the period ended XX Mar 20XX'],
+        [], columns,
+        ...data.map(row => columns.map(c => row[c] ?? ''))
+      ];
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      ws['!merges'] = [
+        {s:{r:0,c:0},e:{r:0,c:4}},
+        {s:{r:1,c:0},e:{r:1,c:4}}
+      ];
+      ws['!cols'] = [8,20,10,20,22,60,18,16,12,22].map(w => ({wch:w}));
+      ws['!rows'] = [{hpt:22},{hpt:20},{hpt:8},{hpt:26}];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'ITGC Requirements');
+      XLSX.writeFile(wb, 'ITGC_Requirements_Export.xlsx', {compression:true});
+    } catch(error) {
+      console.error('Requirements XLSX export failed', error);
+      alert('Unable to create XLSX export: ' + error.message);
+    }
+    return;
+
+    // Original ExcelJS export logic retained below for reference; it is not
+    // invoked by the offline ControlLens integration.
+    const PKF_BLUE = 'FF0B2D5C';
+    const WHITE = 'FFFFFFFF';
+    const BORDER = { style:'thin', color:{argb:'FF9CA3AF'} };
+    const columns = ['S.No','Application','Area','Domain','Control','Requirement','Client SPOC','Requested date','Status','Remark'];
+    const colCount = columns.length;
+
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet('ITGC Requirements', {
+      views: [{ state:'frozen', ySplit:4, showGridLines:false }]
+    });
+
+    // Row 1 - title banner
+    ws.mergeCells(1,1,1,5);
+    ws.getCell(1,1).value = 'ITGC Requirements';
+
+    // Row 2 - subtitle banner
+    ws.mergeCells(2,1,2,5);
+    ws.getCell(2,1).value = 'Audit for the period ended XX Mar 20XX';
+
+    [1,2].forEach(rowIdx => {
+      for(let c=1;c<=colCount;c++){
+        const cell = ws.getCell(rowIdx, c);
+        cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:PKF_BLUE} };
+        cell.font = { name:'Calibri', size:12, bold:true, color:{argb:WHITE} };
+        cell.alignment = { vertical:'middle', horizontal: c===1 ? 'left' : 'left', wrapText:true };
+      }
+    });
+    ws.getRow(1).height = 22;
+    ws.getRow(2).height = 20;
+
+    // Row 3 - blank spacer row
+    for(let c=1;c<=colCount;c++){
+      ws.getCell(3,c).font = { name:'Calibri', size:12 };
+    }
+    ws.getRow(3).height = 8;
+
+    // Row 4 - table header
+    columns.forEach((colName, idx) => {
+      const cell = ws.getCell(4, idx+1);
+      cell.value = colName;
+      cell.font = { name:'Calibri', size:12, bold:true, color:{argb:WHITE} };
+      cell.fill = { type:'pattern', pattern:'solid', fgColor:{argb:PKF_BLUE} };
+      cell.alignment = { vertical:'middle', horizontal:'center', wrapText:true };
+      cell.border = { top:BORDER, left:BORDER, bottom:BORDER, right:BORDER };
+    });
+    ws.getRow(4).height = 26;
+
+    // Data rows from row 5
+    data.forEach((row, i) => {
+      const rIdx = 5 + i;
+      columns.forEach((colName, cIdx) => {
+        const cell = ws.getCell(rIdx, cIdx+1);
+        cell.value = row[colName];
+        cell.font = { name:'Calibri', size:12 };
+        cell.alignment = { vertical:'top', horizontal:'left', wrapText:true };
+        cell.border = { top:BORDER, left:BORDER, bottom:BORDER, right:BORDER };
+      });
+    });
+
+    const widths = [8, 20, 10, 20, 22, 60, 18, 16, 12, 22];
+    widths.forEach((w, idx) => { ws.getColumn(idx+1).width = w; });
+
+    const buffer = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'ITGC_Requirements_Export.xlsx';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  render();
+})();
 
 </script>
 </body></html>
